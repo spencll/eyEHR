@@ -22,7 +22,7 @@ Database: PostgreSQL
 Website 
 
 | Goal        | What goal will your project be designed to achieve?                                                                                                                                                                                                                                                                                                      |         |
-Electronic health record for storing/accessing patient information.
+Electronic health record for storing/accessing patient information and creating exam encounters.
 
 
 | Users       | What kind of users will visit your app? In other words, what is the demographic of your users?                                                                                                                                                                                                                                                           |         |
@@ -56,7 +56,7 @@ Patient database: self created API, full CRUD
 
 - Determining user flow(s)
   Register as health care provider with invitation code -> sign in as HCP -> see appointment schedule -> see patient info -> can create/submit exam encounter->sign exam encounter
-  Register as patient -> sign in as patient -> see own patient information and exam encounters -> logout 
+  Register as patient -> sign in as patient -> see own patient information and exam encounters
 
 - Setting up the backend and database
   Auth/CRUD routes for patient information/exam encounters
@@ -66,7 +66,7 @@ Patient database: self created API, full CRUD
   Usual nav bar stuff/appointments/patient search bar/exam encounter
 
 - What functionality will your app include?
-  Login/Sign up/patient search/see particular exam encounter/submit exam findings to update records 
+  Login/Sign up/patient search/see particular exam encounter/submit exam findings to update records/managing appointments 
 
 Here are a few examples to get you started with. During the proposal stage, you just need to create the tasks. Description and details can be edited at a later time. In addition, more tasks can be added in at a later time.
 
@@ -92,8 +92,6 @@ Labeling is a great way to separate out your tasks and to track progress. Hereâ€
 
 Having a separate front end for creating appointments for patients (site for patients to make appointments, pt info added into database upon completion)
 Calender displaying the appointments.
-Statistical analysis (patient age pie chart, male vs female, etc)
+Statistical analysis for the database (patient age pie chart, male vs female, etc)
 
-
-
-
+ 
