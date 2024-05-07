@@ -54,13 +54,37 @@ router.post("/register", async function (req, res, next) {
       throw new BadRequestError(errs);
     }
 
-    const newUser = await User.register({ ...req.body, isAdmin: false });
+    const newUser = await User.register({ ...req.body, isHCP: false });
     const token = createToken(newUser);
     return res.status(201).json({ token });
   } catch (err) {
     return next(err);
   }
 });
+
+// Register as HCP 
+router.post("/registerHCP", async function (req, res, next) {
+  try {
+    const validator = jsonschema.validate(req.body, userRegisterSchema);
+    if (!validator.valid) {
+      const errs = validator.errors.map(e => e.stack);
+      throw new BadRequestError(errs);
+    }
+
+        // Check if an invitation code is provided in the request body
+        const { invitationCode } = req.body;
+        if (invitationCode !== "69") {
+          throw new BadRequestError("Invalid invitation code");
+        }
+
+    const newUser = await User.register({ ...req.body, isHCP: true });
+    const token = createToken(newUser);
+    return res.status(201).json({ token });
+  } catch (err) {
+    return next(err);
+  }
+});
+
 
 
 module.exports = router;

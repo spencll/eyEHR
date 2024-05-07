@@ -3,6 +3,13 @@
 const fs = require('fs');
 const axios = require('axios')
 
+// Remove previous ehr-seed.sql file if it exists
+const seedFilePath = 'ehr-seed.sql';
+if (fs.existsSync(seedFilePath)) {
+    fs.unlinkSync(seedFilePath);
+    console.log('Previous ehr-seed.sql removed successfully');
+}
+
 let API_URL= 'https://randomuser.me/api/?nat=us&results=10&inc=name,email,cell,dob'
 axios.get(API_URL)
   .then(response => {
@@ -20,7 +27,7 @@ const insertValues = resp.map(({ name, email }) => `('${name.first}', '${name.la
 const insertStatement = `INSERT INTO ${tableName} (firstname, lastname, email) VALUES ${insertValues};`;
 
 // Write SQL content to a file
-fs.writeFileSync('seed_data.sql', insertStatement);
+fs.writeFileSync('ehr-seed.sql', insertStatement);
 
 console.log('SQL file generated successfully');
 

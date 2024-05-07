@@ -30,7 +30,6 @@
       "format": "email"
     }
   },
-  "additionalProperties": false,
   "required": [
     "username",
     "firstName",

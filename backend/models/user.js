@@ -22,7 +22,7 @@ class User {
    **/
 
   static async authenticate(username, password) {
-    // try to find the user first
+    // try to find the user, result is row of objects 
     const result = await db.query(
           `SELECT username,
                   password,
@@ -39,6 +39,7 @@ class User {
 
     if (user) {
       // compare hashed password to a new hash from password
+      // Delete temp user object password for secruity 
       const isValid = await bcrypt.compare(password, user.password);
       if (isValid === true) {
         delete user.password;
@@ -56,8 +57,12 @@ class User {
    * Throws BadRequestError on duplicates.
    **/
 
+
+  // Accepts object of keys 
   static async register(
-      { username, password, firstName, lastName, email, isAdmin }) {
+      { username, password, firstName, lastName, email, isHCP }) {
+
+    // Username check
     const duplicateCheck = await db.query(
           `SELECT username
            FROM users
@@ -69,6 +74,7 @@ class User {
       throw new BadRequestError(`Duplicate username: ${username}`);
     }
 
+    // Hashing the password to store in database
     const hashedPassword = await bcrypt.hash(password, BCRYPT_WORK_FACTOR);
 
     const result = await db.query(
@@ -78,16 +84,16 @@ class User {
             first_name,
             last_name,
             email,
-            is_admin)
+            isHCP)
            VALUES ($1, $2, $3, $4, $5, $6)
-           RETURNING username, first_name AS "firstName", last_name AS "lastName", email, is_admin AS "isAdmin"`,
+           RETURNING username, first_name AS "firstName", last_name AS "lastName", email, isHCP`,
         [
           username,
           hashedPassword,
           firstName,
           lastName,
           email,
-          isAdmin,
+          isHCP,
         ],
     );
 

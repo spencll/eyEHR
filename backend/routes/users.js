@@ -27,6 +27,7 @@ const router = express.Router();
  * Authorization required: admin
  **/
 
+// Forcing creation of new user, not registration 
 router.post("/", ensureAdmin, async function (req, res, next) {
   try {
     const validator = jsonschema.validate(req.body, userNewSchema);
