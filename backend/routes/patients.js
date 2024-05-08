@@ -7,9 +7,9 @@ const jsonschema = require("jsonschema");
 const express = require("express");
 const { ensureCorrectUserOrAdmin, ensureAdmin } = require("../middleware/auth");
 const { BadRequestError } = require("../expressError");
-const User = require("../models/user");
+const Patient = require("../models/patient");
 const { createToken } = require("../helpers/tokens");
-const userNewSchema = require("../schemas/patientNew.json");
+const patientNewSchema = require("../schemas/patientNew.json");
 const userUpdateSchema = require("../schemas/userUpdate.json");
 
 const router = express.Router();
@@ -30,13 +30,13 @@ const router = express.Router();
 // Forcing creation of new user, not registration 
 router.post("/", ensureAdmin, async function (req, res, next) {
   try {
-    const validator = jsonschema.validate(req.body, userNewSchema);
+    const validator = jsonschema.validate(req.body, patientNewSchema);
     if (!validator.valid) {
       const errs = validator.errors.map(e => e.stack);
       throw new BadRequestError(errs);
     }
 
-    const user = await User.register(req.body);
+    const user = await Patient.register(req.body);
     const token = createToken(user);
     return res.status(201).json({ user, token });
   } catch (err) {
@@ -52,10 +52,10 @@ router.post("/", ensureAdmin, async function (req, res, next) {
  * Authorization required: admin
  **/
 
-router.get("/", ensureAdmin, async function (req, res, next) {
+router.get("/", async function (req, res, next) {
   try {
-    const users = await User.findAll();
-    return res.json({ users });
+    const patients = await Patient.findAll();
+    return res.json({ patients});
   } catch (err) {
     return next(err);
   }

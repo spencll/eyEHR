@@ -13,7 +13,7 @@ const { BCRYPT_WORK_FACTOR } = require("../config.js");
 
 /** Related functions for users. */
 
-class User {
+class Patient {
   /** authenticate user with username, password.
    *
    * Returns { username, first_name, last_name, email, is_admin }
@@ -60,36 +60,32 @@ class User {
 
   // Accepts object of keys 
   static async register(
-      { username, password, firstName, lastName, email, isHCP }) {
+      {firstName, lastName, email, isHCP }) {
 
     // Username check
     const duplicateCheck = await db.query(
-          `SELECT username
-           FROM users
-           WHERE username = $1`,
-        [username],
+          `SELECT email
+           FROM patients
+           WHERE email= $1`,
+        [email],
     );
 
     if (duplicateCheck.rows[0]) {
-      throw new BadRequestError(`Duplicate username: ${username}`);
+      throw new BadRequestError(`Duplicate email: ${email}`);
     }
 
     // Hashing the password to store in database
     const hashedPassword = await bcrypt.hash(password, BCRYPT_WORK_FACTOR);
 
     const result = await db.query(
-          `INSERT INTO users
-           (username,
-            password,
-            first_name,
+          `INSERT INTO patients
+           (first_name,
             last_name,
             email,
             isHCP)
-           VALUES ($1, $2, $3, $4, $5, $6)
-           RETURNING username, first_name AS "firstName", last_name AS "lastName", email, isHCP`,
+           VALUES ($1, $2, $3, $4)
+           RETURNING first_name AS "firstName", last_name AS "lastName", email, isHCP`,
         [
-          username,
-          hashedPassword,
           firstName,
           lastName,
           email,
@@ -109,13 +105,12 @@ class User {
 
   static async findAll() {
     const result = await db.query(
-          `SELECT username,
+          `SELECT 
                   first_name AS "firstName",
                   last_name AS "lastName",
-                  email,
-                  is_HCP AS "isHCP"
-           FROM users
-           ORDER BY username`,
+                  email
+           FROM patients
+           ORDER BY last_name`,
     );
 
     return result.rows;
@@ -248,4 +243,4 @@ class User {
 }
 
 
-module.exports = User;
+module.exports = Patient;
