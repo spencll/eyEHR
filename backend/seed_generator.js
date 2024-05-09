@@ -10,7 +10,9 @@ if (fs.existsSync(seedFilePath)) {
     console.log('Previous ehr-seed.sql removed successfully');
 }
 
+// API request
 let API_URL= 'https://randomuser.me/api/?nat=us&results=10&inc=name,email,cell,dob'
+
 axios.get(API_URL)
   .then(response => {
 

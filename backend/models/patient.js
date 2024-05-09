@@ -14,41 +14,7 @@ const { BCRYPT_WORK_FACTOR } = require("../config.js");
 /** Related functions for users. */
 
 class Patient {
-  /** authenticate user with username, password.
-   *
-   * Returns { username, first_name, last_name, email, is_admin }
-   *
-   * Throws UnauthorizedError is user not found or wrong password.
-   **/
 
-  static async authenticate(username, password) {
-    // try to find the user, result is row of objects 
-    const result = await db.query(
-          `SELECT username,
-                  password,
-                  first_name AS "firstName",
-                  last_name AS "lastName",
-                  email,
-                  is_admin AS "isAdmin"
-           FROM users
-           WHERE username = $1`,
-        [username],
-    );
-
-    const user = result.rows[0];
-
-    if (user) {
-      // compare hashed password to a new hash from password
-      // Delete temp user object password for secruity 
-      const isValid = await bcrypt.compare(password, user.password);
-      if (isValid === true) {
-        delete user.password;
-        return user;
-      }
-    }
-
-    throw new UnauthorizedError("Invalid username/password");
-  }
 
   /** Register user with data.
    *
@@ -57,12 +23,11 @@ class Patient {
    * Throws BadRequestError on duplicates.
    **/
 
-
-  // Accepts object of keys 
+  //Registering patient 
   static async register(
-      {firstName, lastName, email, isHCP }) {
+      {firstName, lastName, email}) {
 
-    // Username check
+    // Checking for duplicate email
     const duplicateCheck = await db.query(
           `SELECT email
            FROM patients
@@ -74,35 +39,27 @@ class Patient {
       throw new BadRequestError(`Duplicate email: ${email}`);
     }
 
-    // Hashing the password to store in database
-    const hashedPassword = await bcrypt.hash(password, BCRYPT_WORK_FACTOR);
-
     const result = await db.query(
           `INSERT INTO patients
            (first_name,
             last_name,
-            email,
-            isHCP)
-           VALUES ($1, $2, $3, $4)
-           RETURNING first_name AS "firstName", last_name AS "lastName", email, isHCP`,
+            email)
+           VALUES ($1, $2, $3)
+           RETURNING first_name AS "firstName", last_name AS "lastName", email`,
         [
           firstName,
           lastName,
-          email,
-          isHCP,
-        ],
+          email
+        ]
     );
 
-    const user = result.rows[0];
+    const patient = result.rows[0];
 
-    return user;
+    return patient;
   }
 
-  /** Find all users.
-   *
-   * Returns [{ username, first_name, last_name, email, is_admin }, ...]
-   **/
 
+//   Find all patients 
   static async findAll() {
     const result = await db.query(
           `SELECT 
@@ -116,37 +73,31 @@ class Patient {
     return result.rows;
   }
 
-  /** Given a username, return data about user.
-   *
-   * Returns { username, first_name, last_name, is_admin, jobs }
-   *   where jobs is { id, title, company_handle, company_name, state }
-   *
-   * Throws NotFoundError if user not found.
-   **/
 
-  static async get(username) {
-    const userRes = await db.query(
-          `SELECT username,
+// Access patient via patient id 
+  static async get(pid) {
+    const patientRes = await db.query(
+          `SELECT 
                   first_name AS "firstName",
                   last_name AS "lastName",
-                  email,
-                  is_admin AS "isAdmin"
-           FROM users
-           WHERE username = $1`,
-        [username],
+                  email
+           FROM patients
+           WHERE id = $1`,
+        [pid],
     );
 
-    const user = userRes.rows[0];
+    const patient = patientRes.rows[0];
 
-    if (!user) throw new NotFoundError(`No user: ${username}`);
+    if (!patient) throw new NotFoundError(`Patient not found`);
 
-    const userApplicationsRes = await db.query(
-          `SELECT a.job_id
-           FROM applications AS a
-           WHERE a.username = $1`, [username]);
-
-    user.applications = userApplicationsRes.rows.map(a => a.job_id);
-    return user;
+    const encountersRes = await db.query(
+          `SELECT * 
+           FROM encounters AS e
+           WHERE e.patient_id = $1`, [pid]);
+        
+    // Adding encounters property to patient
+    patient.encounters = encountersRes.rows
+    return patient;
   }
 
   /** Update user data with `data`.
@@ -166,35 +117,32 @@ class Patient {
    * or a serious security risks are opened.
    */
 
-  static async update(username, data) {
-    if (data.password) {
-      data.password = await bcrypt.hash(data.password, BCRYPT_WORK_FACTOR);
-    }
+  static async update(pid, data) {
 
     const { setCols, values } = sqlForPartialUpdate(
         data,
         {
           firstName: "first_name",
           lastName: "last_name",
-          isAdmin: "is_admin",
+          isHCP: "is_HCP",
         });
-    const usernameVarIdx = "$" + (values.length + 1);
+    const patientIDVarIdx = "$" + (values.length + 1);
 
-    const querySql = `UPDATE users 
+    const querySql = `UPDATE patients
                       SET ${setCols} 
-                      WHERE username = ${usernameVarIdx} 
-                      RETURNING username,
+                      WHERE id = ${patientIDVarIdx} 
+                      RETURNING 
                                 first_name AS "firstName",
                                 last_name AS "lastName",
-                                email,
-                                is_admin AS "isAdmin"`;
-    const result = await db.query(querySql, [...values, username]);
-    const user = result.rows[0];
+                                email`;
 
-    if (!user) throw new NotFoundError(`No user: ${username}`);
+    // The actual query
+    const result = await db.query(querySql, [...values, pid]);
+    const patient = result.rows[0];
 
-    delete user.password;
-    return user;
+    if (!patient) throw new NotFoundError(`Patient not found`);
+
+    return patient;
   }
 
   /** Delete given user from database; returns undefined. */
@@ -217,6 +165,8 @@ class Patient {
    * - username: username applying for job
    * - jobId: job id
    **/
+
+
 
   static async applyToJob(username, jobId) {
     const preCheck = await db.query(

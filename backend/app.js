@@ -17,9 +17,12 @@ const morgan = require("morgan");
 
 const app = express();
 
+// Universal
 app.use(cors());
 app.use(express.json());
 app.use(morgan("tiny"));
+
+// Verifying and storing token on response locals 
 app.use(authenticateJWT);
 
 // Routes 

@@ -5,10 +5,10 @@ const { SECRET_KEY } = require("../config");
 
 function createToken(user) {
 
-// The actual stored info 
+// The actual stored info, to be accessed 
   let payload = {
     username: user.username,
-    isAdmin: user.isAdmin || false,
+    isHCP: user.isHCP || false,
   };
 
   // sign and return token 

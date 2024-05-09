@@ -15,7 +15,6 @@ CREATE TABLE patients (
   last_name TEXT NOT NULL,
   email TEXT NOT NULL
     CHECK (position('@' IN email) > 1)
-
 );
 
 CREATE TABLE appointments (
@@ -23,8 +22,10 @@ CREATE TABLE appointments (
     datetime TIMESTAMP NOT NULL,
     user_id INT NOT NULL,
     patient_id INT NOT NULL,
+    patient_email TEXT NOT NULL CHECK (position('@' IN email) > 1), 
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
     FOREIGN KEY (patient_id) REFERENCES patients(id) ON DELETE CASCADE
+    FOREIGN KEY (patient_email) REFERENCES users(email) ON DELETE CASCADE
 );
 
 CREATE TABLE encounters(
@@ -32,7 +33,10 @@ CREATE TABLE encounters(
     datetime TIMESTAMP NOT NULL,
     user_id INT NOT NULL,
     patient_id INT NOT NULL,
+    patient_email TEXT NOT NULL CHECK (position('@' IN email) > 1),
+    results JSONB,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
     FOREIGN KEY (patient_id) REFERENCES patients(id) ON DELETE CASCADE
+    FOREIGN KEY (patient_email) REFERENCES users(email) ON DELETE CASCADE
 );
 

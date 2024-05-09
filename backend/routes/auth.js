@@ -19,6 +19,7 @@ const { BadRequestError } = require("../expressError");
  * Authorization required: none
  */
 
+// Login 
 router.post("/token", async function (req, res, next) {
   try {
     const validator = jsonschema.validate(req.body, userAuthSchema);
@@ -46,6 +47,7 @@ router.post("/token", async function (req, res, next) {
  * Authorization required: none
  */
 
+// Regular sign up for user
 router.post("/register", async function (req, res, next) {
   try {
     const validator = jsonschema.validate(req.body, userRegisterSchema);
@@ -62,7 +64,7 @@ router.post("/register", async function (req, res, next) {
   }
 });
 
-// Register as HCP 
+// Register as HCP
 router.post("/registerHCP", async function (req, res, next) {
   try {
     const validator = jsonschema.validate(req.body, userRegisterSchema);
