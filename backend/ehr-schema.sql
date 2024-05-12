@@ -1,10 +1,10 @@
 CREATE TABLE users (
   id SERIAL PRIMARY KEY,
-  username VARCHAR(25),
+  username VARCHAR(25) UNIQUE,
   password TEXT NOT NULL,
   first_name TEXT NOT NULL,
   last_name TEXT NOT NULL,
-  email TEXT NOT NULL CHECK (position('@' IN email) > 1),
+  email TEXT NOT NULL UNIQUE CHECK (position('@' IN email) > 1),
   is_HCP BOOLEAN NOT NULL DEFAULT FALSE
 );
 
@@ -13,8 +13,7 @@ CREATE TABLE patients (
   id SERIAL PRIMARY KEY,
   first_name TEXT NOT NULL,
   last_name TEXT NOT NULL,
-  email TEXT NOT NULL
-    CHECK (position('@' IN email) > 1)
+  email TEXT NOT NULL UNIQUE CHECK (position('@' IN email) > 1)
 );
 
 CREATE TABLE appointments (
@@ -22,9 +21,9 @@ CREATE TABLE appointments (
     datetime TIMESTAMP NOT NULL,
     user_id INT NOT NULL,
     patient_id INT NOT NULL,
-    patient_email TEXT NOT NULL CHECK (position('@' IN email) > 1), 
+    patient_email TEXT NOT NULL CHECK (position('@' IN patient_email) > 1), 
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-    FOREIGN KEY (patient_id) REFERENCES patients(id) ON DELETE CASCADE
+    FOREIGN KEY (patient_id) REFERENCES patients(id) ON DELETE CASCADE,
     FOREIGN KEY (patient_email) REFERENCES users(email) ON DELETE CASCADE
 );
 
@@ -33,10 +32,10 @@ CREATE TABLE encounters(
     datetime TIMESTAMP NOT NULL,
     user_id INT NOT NULL,
     patient_id INT NOT NULL,
-    patient_email TEXT NOT NULL CHECK (position('@' IN email) > 1),
+    patient_email TEXT NOT NULL CHECK (position('@' IN patient_email) > 1),
     results JSONB,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-    FOREIGN KEY (patient_id) REFERENCES patients(id) ON DELETE CASCADE
+    FOREIGN KEY (patient_id) REFERENCES patients(id) ON DELETE CASCADE,
     FOREIGN KEY (patient_email) REFERENCES users(email) ON DELETE CASCADE
 );
 

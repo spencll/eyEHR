@@ -3,6 +3,9 @@
 
 const express = require("express");
 const cors = require("cors");
+const session = require('express-session');
+
+
 
 const { NotFoundError } = require("./expressError");
 
@@ -17,10 +20,19 @@ const morgan = require("morgan");
 
 const app = express();
 
+// Session 
+app.use(session({
+  secret: 'your_secret', // Secret key used for session encryption
+  resave: false,
+  saveUninitialized: true
+}));
+
 // Universal
 app.use(cors());
 app.use(express.json());
 app.use(morgan("tiny"));
+
+
 
 // Verifying and storing token on response locals 
 app.use(authenticateJWT);

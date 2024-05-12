@@ -9,6 +9,7 @@ function createToken(user) {
   let payload = {
     username: user.username,
     isHCP: user.isHCP || false,
+    email: user.email
   };
 
   // sign and return token 

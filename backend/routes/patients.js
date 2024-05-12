@@ -5,7 +5,7 @@
 const jsonschema = require("jsonschema");
 
 const express = require("express");
-const { ensureCorrectUserOrAdmin, ensureAdmin } = require("../middleware/auth");
+const {ensureCorrectUserOrAdmin, ensureCorrectUserOrHCP, isHCP} = require("../middleware/auth");
 const { BadRequestError } = require("../expressError");
 const Patient = require("../models/patient");
 const { createToken } = require("../helpers/tokens");
@@ -15,7 +15,7 @@ const userUpdateSchema = require("../schemas/userUpdate.json");
 const router = express.Router();
 
 // List of all patients, only accessible as HCP
-router.get("/", async function (req, res, next) {
+router.get("/", isHCP, async function (req, res, next) {
   try {
     const patients = await Patient.findAll();
     return res.json({ patients});
@@ -24,15 +24,10 @@ router.get("/", async function (req, res, next) {
   }
 });
 
-/** GET /[username] => { user }
- *
- * Returns { username, firstName, lastName, isAdmin, jobs }
- *   where jobs is { id, title, companyHandle, companyName, state }
- *
- * Authorization required: admin or same user-as-:username
- **/
 
-router.get("/:pid", async function (req, res, next) {
+// Only own user or HCP can access this specific patient 
+
+router.get("/:pid", ensureCorrectUserOrHCP, async function (req, res, next) {
   try {
     const patient = await Patient.get(req.params.pid);
     return res.json({ patient });
@@ -52,7 +47,9 @@ router.get("/:pid", async function (req, res, next) {
  * Authorization required: admin or same-user-as-:username
  **/
 
-router.patch("/:username", ensureCorrectUserOrAdmin, async function (req, res, next) {
+
+// Middleware requirements: logged in pid patient or HCP
+router.patch("/:pid",  async function (req, res, next) {
   try {
     const validator = jsonschema.validate(req.body, userUpdateSchema);
     if (!validator.valid) {
@@ -60,8 +57,8 @@ router.patch("/:username", ensureCorrectUserOrAdmin, async function (req, res, n
       throw new BadRequestError(errs);
     }
 
-    const user = await User.update(req.params.username, req.body);
-    return res.json({ user });
+    const patient = await Patient.update(req.params.pid, req.body);
+    return res.json({ patient });
   } catch (err) {
     return next(err);
   }
@@ -99,6 +96,5 @@ router.post("/:username/jobs/:id", ensureCorrectUserOrAdmin, async function (req
     return next(err);
   }
 });
-
 
 module.exports = router;

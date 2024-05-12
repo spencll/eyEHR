@@ -1,11 +1,10 @@
 "use strict";
 
 /** Convenience middleware to handle common auth cases in routes. */
-
 const jwt = require("jsonwebtoken");
 const { SECRET_KEY } = require("../config");
 const { UnauthorizedError } = require("../expressError");
-
+const Patient = require("../models/patient");
 
 /** Middleware: Authenticate user.
  *
@@ -15,15 +14,19 @@ const { UnauthorizedError } = require("../expressError");
  * It's not an error if no token was provided or if the token is not valid.
  */
 
+// Global middleware 
+// Verify JWT token that's stored in session after login/sign up
+// Store payload in user in locals 
 
-// Verify JWT token that's created during login/sign up
 function authenticateJWT(req, res, next) {
+  console.log(req.session.token)
   try {
-    const authHeader = req.headers && req.headers.authorization;
-    if (authHeader) {
-      const token = authHeader.replace(/^[Bb]earer /, "").trim();
+    const token = req.session.token
+
+    if (token) {
       res.locals.user = jwt.verify(token, SECRET_KEY);
     }
+    
     return next();
   } catch (err) {
     return next();
@@ -38,6 +41,38 @@ function authenticateJWT(req, res, next) {
 function ensureLoggedIn(req, res, next) {
   try {
     if (!res.locals.user) throw new UnauthorizedError();
+    return next();
+  } catch (err) {
+    return next(err);
+  }
+}
+
+// Is HCP 
+function isHCP(req, res, next) {
+  try {
+    if (!res.locals.user || !res.locals.user.isHCP) throw new UnauthorizedError();
+    return next();
+  } catch (err) {
+    return next(err);
+  }
+}
+
+
+
+// Checks to see right user by checking email 
+
+async function ensureCorrectUserOrHCP(req, res, next) {
+  try {
+    // Logged in user
+    const user = res.locals.user;
+    // Getting patient via parem patient id
+    const patient = await Patient.get(req.params.pid)
+
+
+    // Checking correct user via common email 
+    if (!(user && (user.isHCP || patient.email === user.email))) {
+      throw new UnauthorizedError();
+    }
     return next();
   } catch (err) {
     return next(err);
@@ -61,12 +96,6 @@ function ensureAdmin(req, res, next) {
   }
 }
 
-/** Middleware to use when they must provide a valid token & be user matching
- *  username provided as route param.
- *
- *  If not, raises Unauthorized.
- */
-
 function ensureCorrectUserOrAdmin(req, res, next) {
   try {
     const user = res.locals.user;
@@ -83,6 +112,7 @@ function ensureCorrectUserOrAdmin(req, res, next) {
 module.exports = {
   authenticateJWT,
   ensureLoggedIn,
-  ensureAdmin,
-  ensureCorrectUserOrAdmin,
+  isHCP,
+  ensureCorrectUserOrHCP,
+  ensureAdmin,ensureCorrectUserOrAdmin
 };

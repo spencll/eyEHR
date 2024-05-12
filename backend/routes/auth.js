@@ -31,6 +31,7 @@ router.post("/token", async function (req, res, next) {
     const { username, password } = req.body;
     const user = await User.authenticate(username, password);
     const token = createToken(user);
+    req.session.token= token
     return res.json({ token });
   } catch (err) {
     return next(err);
@@ -47,7 +48,8 @@ router.post("/token", async function (req, res, next) {
  * Authorization required: none
  */
 
-// Regular sign up for user
+// Regular sign up for user. If email exists in patients, add patient id to payload 
+
 router.post("/register", async function (req, res, next) {
   try {
     const validator = jsonschema.validate(req.body, userRegisterSchema);
@@ -58,6 +60,8 @@ router.post("/register", async function (req, res, next) {
 
     const newUser = await User.register({ ...req.body, isHCP: false });
     const token = createToken(newUser);
+    req.session.token= token
+
     return res.status(201).json({ token });
   } catch (err) {
     return next(err);
@@ -81,6 +85,7 @@ router.post("/registerHCP", async function (req, res, next) {
 
     const newUser = await User.register({ ...req.body, isHCP: true });
     const token = createToken(newUser);
+    req.session.token= token
     return res.status(201).json({ token });
   } catch (err) {
     return next(err);
