@@ -5,9 +5,10 @@
 const jsonschema = require("jsonschema");
 
 const express = require("express");
-const { ensureCorrectUserOrAdmin, ensureAdmin } = require("../middleware/auth");
+const { ensureCorrectUserOrAdmin, ensureAdmin,ensureLoggedIn} = require("../middleware/auth");
 const { BadRequestError } = require("../expressError");
 const User = require("../models/user");
+const Patient = require("../models/patient")
 const { createToken } = require("../helpers/tokens");
 const userNewSchema = require("../schemas/patientNew.json");
 const userUpdateSchema = require("../schemas/userUpdate.json");
@@ -53,6 +54,7 @@ router.post("/", ensureAdmin, async function (req, res, next) {
  **/
 
 router.get("/",  async function (req, res, next) {
+  console.log(res.locals.user)
   try {
     const users = await User.findAll();
     return res.json({ users });
@@ -90,7 +92,8 @@ router.get("/:username", ensureCorrectUserOrAdmin, async function (req, res, nex
  * Authorization required: admin or same-user-as-:username
  **/
 
-router.patch("/:username", ensureCorrectUserOrAdmin, async function (req, res, next) {
+// 
+router.patch("/:username", ensureLoggedIn, async function (req, res, next) {
   try {
     const validator = jsonschema.validate(req.body, userUpdateSchema);
     if (!validator.valid) {
@@ -98,7 +101,16 @@ router.patch("/:username", ensureCorrectUserOrAdmin, async function (req, res, n
       throw new BadRequestError(errs);
     }
 
+    // Update user 
     const user = await User.update(req.params.username, req.body);
+
+    // Get patient by email
+    const patient = await Patient.getByEmail(user.email)
+    
+     // patching patient user's email if changed as well 
+     const newEmail= req.body.email || user.email
+     patient = await User.update(patient.id,{email: newEmail})
+
     return res.json({ user });
   } catch (err) {
     return next(err);

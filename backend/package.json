@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node server.js",
-    "dev": "nodemon server.js",
+    "dev": "nodemon --ignore sessions/ server.js",
     "test": "jest -i"
   },
   "jest": {
@@ -22,6 +22,8 @@
     "bcrypt": "^5.0.0",
     "body-parser": "^1.19.0",
     "colors": "^1.4.0",
+    "connect-mongodb-session": "^5.0.0",
+    "connect-redis": "^7.1.1",
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
@@ -29,7 +31,8 @@
     "jsonschema": "^1.2.6",
     "jsonwebtoken": "^8.5.1",
     "morgan": "^1.10.0",
-    "pg": "^8.3.0"
+    "pg": "^8.3.0",
+    "session-file-store": "^1.5.0"
   },
   "devDependencies": {
     "supertest": "^5.0.0-0"

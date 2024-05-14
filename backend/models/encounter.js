@@ -15,29 +15,6 @@ const { BCRYPT_WORK_FACTOR } = require("../config.js");
 
 class Patient {
 
-  // Patient look up by email 
-  static async getByEmail(email) {
-    const patientRes = await db.query(
-          `SELECT 
-                  first_name AS "firstName",
-                  last_name AS "lastName",
-                  email
-           FROM patients
-           WHERE email = $1`,
-        [email],
-    );
-
-    const patient = patientRes.rows[0];
-
-    if (!patient) throw new NotFoundError(`No patient with email: ${email}`);
-
-    return patient;
-  }
-
-
-
-
-
 
   /** Register user with data.
    *
@@ -113,7 +90,6 @@ class Patient {
 
     if (!patient) throw new NotFoundError(`Patient not found`);
 
-    // Appending encounter/appointment arrays 
     const encountersRes = await db.query(
           `SELECT * 
            FROM encounters AS e
@@ -121,15 +97,6 @@ class Patient {
         
     // Adding encounters property to patient
     patient.encounters = encountersRes.rows
-
-    const appointmentRes = await db.query(
-      `SELECT * 
-       FROM appointments AS a
-       WHERE a.patient_id = $1`, [pid]);
-    
-// Adding encounters property to patient
-patient.appointments = appointmentRes.rows
-
     return patient;
   }
 

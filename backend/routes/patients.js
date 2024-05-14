@@ -8,9 +8,12 @@ const express = require("express");
 const {ensureCorrectUserOrAdmin, ensureCorrectUserOrHCP, isHCP} = require("../middleware/auth");
 const { BadRequestError } = require("../expressError");
 const Patient = require("../models/patient");
+const Appointment = require("../models/appointment");
 const { createToken } = require("../helpers/tokens");
 const patientNewSchema = require("../schemas/patientNew.json");
 const userUpdateSchema = require("../schemas/userUpdate.json");
+const patientUpdateSchema = require("../schemas/patientUpdate.json");
+const User = require("../models/user")
 
 const router = express.Router();
 
@@ -36,6 +39,34 @@ router.get("/:pid", ensureCorrectUserOrHCP, async function (req, res, next) {
   }
 });
 
+/** POST / { user }  => { user, token }
+ *
+ * Adds a new user. This is not the registration endpoint --- instead, this is
+ * only for admin users to add new users. The new user being added can be an
+ * admin.
+ *
+ * This returns the newly created user and an authentication token for them:
+ *  {user: { username, firstName, lastName, email, isAdmin }, token }
+ *
+ * Authorization required: admin
+ **/
+
+// Register patient 
+router.post("/", isHCP, async function (req, res, next) {
+  try {
+    const validator = jsonschema.validate(req.body, patientNewSchema);
+    if (!validator.valid) {
+      const errs = validator.errors.map(e => e.stack);
+      throw new BadRequestError(errs);
+    }
+
+    const user = await Patient.register(req.body);
+    return res.status(201).json({ user});
+  } catch (err) {
+    return next(err);
+  }
+});
+
 
 /** PATCH /[username] { user } => { user }
  *
@@ -47,37 +78,45 @@ router.get("/:pid", ensureCorrectUserOrHCP, async function (req, res, next) {
  * Authorization required: admin or same-user-as-:username
  **/
 
-
-// Middleware requirements: logged in pid patient or HCP
-router.patch("/:pid",  async function (req, res, next) {
+// Change patient info 
+// Patching user email as well if user is the patient 
+router.patch("/:pid", ensureCorrectUserOrHCP,  async function (req, res, next) {
   try {
-    const validator = jsonschema.validate(req.body, userUpdateSchema);
+    const validator = jsonschema.validate(req.body, patientUpdateSchema);
     if (!validator.valid) {
       const errs = validator.errors.map(e => e.stack);
       throw new BadRequestError(errs);
     }
+    // getting patient/user info
+    let patient = await Patient.get(req.params.pid)
+    let user = await User.getByEmail(patient.email)
+    // patching patient info
+    patient = await Patient.update(req.params.pid, req.body);
 
-    const patient = await Patient.update(req.params.pid, req.body);
+    // patching patient user's email if changed 
+    const newEmail= req.body.email || patient.email
+    user = await User.update(user.username,{email: newEmail})
+
     return res.json({ patient });
   } catch (err) {
     return next(err);
   }
 });
 
+//encounters
+router.get("/:pid/encounters", async function (req,res,next){
 
-/** DELETE /[username]  =>  { deleted: username }
- *
- * Authorization required: admin or same-user-as-:username
- **/
 
-router.delete("/:username", ensureCorrectUserOrAdmin, async function (req, res, next) {
-  try {
-    await User.remove(req.params.username);
-    return res.json({ deleted: req.params.username });
-  } catch (err) {
-    return next(err);
-  }
-});
+
+  
+})
+//appointments
+router.get("/:pid/appointments", async function (req,res,next){
+
+
+
+
+})
 
 
 /** POST /[username]/jobs/[id]  { state } => { application }

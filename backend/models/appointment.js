@@ -13,30 +13,7 @@ const { BCRYPT_WORK_FACTOR } = require("../config.js");
 
 /** Related functions for users. */
 
-class Patient {
-
-  // Patient look up by email 
-  static async getByEmail(email) {
-    const patientRes = await db.query(
-          `SELECT 
-                  first_name AS "firstName",
-                  last_name AS "lastName",
-                  email
-           FROM patients
-           WHERE email = $1`,
-        [email],
-    );
-
-    const patient = patientRes.rows[0];
-
-    if (!patient) throw new NotFoundError(`No patient with email: ${email}`);
-
-    return patient;
-  }
-
-
-
-
+class Appointment {
 
 
   /** Register user with data.
@@ -46,56 +23,39 @@ class Patient {
    * Throws BadRequestError on duplicates.
    **/
 
-  //Registering patient 
-  static async register(
-      {firstName, lastName, email}) {
-
-    // Checking for duplicate email
-    const duplicateCheck = await db.query(
-          `SELECT email
-           FROM patients
-           WHERE email= $1`,
-        [email],
-    );
-
-    if (duplicateCheck.rows[0]) {
-      throw new BadRequestError(`Duplicate email: ${email}`);
-    }
+  //Making appointment 
+  static async makeAppointment(
+      {datetime, userId, patientId}) {
 
     const result = await db.query(
-          `INSERT INTO patients
-           (first_name,
-            last_name,
-            email)
-           VALUES ($1, $2, $3)
-           RETURNING first_name AS "firstName", last_name AS "lastName", email`,
+        `INSERT INTO appointments (datetime, user_id, patient_id)
+        VALUES ($1, $2, $3)
+        RETURNING *;`,
         [
-          firstName,
-          lastName,
-          email
+          datetime,
+          userId,
+          patientId
         ]
     );
 
-    const patient = result.rows[0];
-
-    return patient;
+    const appointment= result.rows[0];
+    return appointment
   }
 
-
-//   Find all patients 
-  static async findAll() {
-    const result = await db.query(
-          `SELECT 
-                  first_name AS "firstName",
-                  last_name AS "lastName",
-                  email
-           FROM patients
-           ORDER BY last_name`,
-    );
-
-    return result.rows;
-  }
-
+//   Find all appointments for today  
+static async findTodaysAppointments() {
+    try {
+        const result = await db.query(`
+            SELECT id, datetime, user_id, patient_id, patient_email
+            FROM appointments
+            WHERE DATE(datetime) = CURRENT_DATE
+        `);
+        return result.rows;
+    } catch (error) {
+        throw new Error(`Error retrieving today's appointments: ${error.message}`);
+    }
+}
+// 
 
 // Access patient via patient id 
   static async get(pid) {
@@ -113,7 +73,6 @@ class Patient {
 
     if (!patient) throw new NotFoundError(`Patient not found`);
 
-    // Appending encounter/appointment arrays 
     const encountersRes = await db.query(
           `SELECT * 
            FROM encounters AS e
@@ -121,15 +80,6 @@ class Patient {
         
     // Adding encounters property to patient
     patient.encounters = encountersRes.rows
-
-    const appointmentRes = await db.query(
-      `SELECT * 
-       FROM appointments AS a
-       WHERE a.patient_id = $1`, [pid]);
-    
-// Adding encounters property to patient
-patient.appointments = appointmentRes.rows
-
     return patient;
   }
 
@@ -227,4 +177,4 @@ patient.appointments = appointmentRes.rows
 }
 
 
-module.exports = Patient;
+module.exports = Appointment;

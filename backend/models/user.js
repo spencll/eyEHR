@@ -28,7 +28,8 @@ class User {
                   password,
                   first_name AS "firstName",
                   last_name AS "lastName",
-                  email
+                  email, 
+                  is_HCP AS "isHCP"
            FROM users
            WHERE username = $1`,
         [username],
@@ -144,12 +145,41 @@ class User {
 
     if (!user) throw new NotFoundError(`No user: ${username}`);
 
-    const userApplicationsRes = await db.query(
-          `SELECT a.job_id
-           FROM applications AS a
-           WHERE a.username = $1`, [username]);
+     // Appending encounter/appointment arrays 
+     const encountersRes = await db.query(
+      `SELECT * 
+       FROM encounters AS e
+       WHERE e.patient_id = $1`, [pid]);
+    
 
-    user.applications = userApplicationsRes.rows.map(a => a.job_id);
+// Adding encounters property to patient
+user.encounters = encountersRes.rows
+
+const appointmentRes = await db.query(
+  `SELECT * 
+   FROM appointments AS a
+   WHERE a.patient_id = $1`, [pid]);
+
+// Adding encounters property to patient
+user.appointments = appointmentRes.rows
+    return user;
+  }
+
+  static async getByEmail(email) {
+    const userRes = await db.query(
+          `SELECT username,
+                  first_name AS "firstName",
+                  last_name AS "lastName",
+                  email
+           FROM users
+           WHERE email = $1`,
+        [email],
+    );
+
+    const user = userRes.rows[0];
+
+    if (!user) throw new NotFoundError(`No user with email: ${email}`);
+
     return user;
   }
 
@@ -180,7 +210,7 @@ class User {
         {
           firstName: "first_name",
           lastName: "last_name",
-          isAdmin: "is_admin",
+          isHCP: "is_HCP",
         });
     const usernameVarIdx = "$" + (values.length + 1);
 
@@ -191,7 +221,7 @@ class User {
                                 first_name AS "firstName",
                                 last_name AS "lastName",
                                 email,
-                                is_admin AS "isAdmin"`;
+                                is_HCP AS "isHCP"`;
     const result = await db.query(querySql, [...values, username]);
     const user = result.rows[0];
 

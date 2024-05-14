@@ -5,7 +5,7 @@ CREATE TABLE users (
   first_name TEXT NOT NULL,
   last_name TEXT NOT NULL,
   email TEXT NOT NULL UNIQUE CHECK (position('@' IN email) > 1),
-  is_HCP BOOLEAN NOT NULL DEFAULT FALSE
+  is_HCP BOOLEAN NOT NULL DEFAULT FALSE,
 );
 
 

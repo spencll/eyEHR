@@ -19,7 +19,6 @@ const Patient = require("../models/patient");
 // Store payload in user in locals 
 
 function authenticateJWT(req, res, next) {
-  console.log(req.session.token)
   try {
     const token = req.session.token
 
@@ -58,8 +57,7 @@ function isHCP(req, res, next) {
 }
 
 
-
-// Checks to see right user by checking email 
+// Checks to see right user by checking email or HCP
 
 async function ensureCorrectUserOrHCP(req, res, next) {
   try {
@@ -67,7 +65,6 @@ async function ensureCorrectUserOrHCP(req, res, next) {
     const user = res.locals.user;
     // Getting patient via parem patient id
     const patient = await Patient.get(req.params.pid)
-
 
     // Checking correct user via common email 
     if (!(user && (user.isHCP || patient.email === user.email))) {

@@ -4,8 +4,7 @@
 const express = require("express");
 const cors = require("cors");
 const session = require('express-session');
-
-
+const FileStore = require('session-file-store')(session);
 
 const { NotFoundError } = require("./expressError");
 
@@ -20,8 +19,9 @@ const morgan = require("morgan");
 
 const app = express();
 
-// Session 
+// Session, mainly to keep login info throughout nodemon resets during dev
 app.use(session({
+  store: new FileStore({ path: './sessions' }),
   secret: 'your_secret', // Secret key used for session encryption
   resave: false,
   saveUninitialized: true
@@ -31,8 +31,6 @@ app.use(session({
 app.use(cors());
 app.use(express.json());
 app.use(morgan("tiny"));
-
-
 
 // Verifying and storing token on response locals 
 app.use(authenticateJWT);
