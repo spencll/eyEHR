@@ -24,13 +24,10 @@ class Appointment {
    **/
 
   //Making appointment 
-  static async makeAppointment(
-      {datetime, userId, patientId}) {
-
+  static async makeAppointment(datetime, userId, patientId) {
     const result = await db.query(
         `INSERT INTO appointments (datetime, user_id, patient_id)
-        VALUES ($1, $2, $3)
-        RETURNING *;`,
+        VALUES ($1, $2, $3) RETURNING datetime`,
         [
           datetime,
           userId,
@@ -38,7 +35,22 @@ class Appointment {
         ]
     );
 
+    const patientRes = await db.query(
+        `SELECT first_name as "firstName",
+        last_name as "lastName", email
+         FROM patients AS p
+         WHERE p.id = $1`, [patientId]);
+
+         const hcpRes = await db.query(
+            `SELECT first_name as "firstName",
+            last_name as "lastName"
+             FROM users AS u
+             WHERE u.id = $1`, [userId]);
+
     const appointment= result.rows[0];
+    appointment.message= 'Appointment scheduled!'        
+    appointment.patient = patientRes.rows[0]
+    appointment.doctor = hcpRes.rows[0]
     return appointment
   }
 
@@ -58,29 +70,30 @@ static async findTodaysAppointments() {
 // 
 
 // Access patient via patient id 
-  static async get(pid) {
-    const patientRes = await db.query(
-          `SELECT 
-                  first_name AS "firstName",
-                  last_name AS "lastName",
-                  email
-           FROM patients
-           WHERE id = $1`,
+  static async getPatientAppointments(pid) {
+    const apptRes = await db.query(
+          `SELECT a.id,
+          a.datetime AS appointment_datetime,
+          u.first_name AS dr_first_name,
+          u.last_name AS dr_last_name,
+          p.first_name AS patient_first_name,
+          p.last_name AS patient_last_name
+      FROM 
+          appointments AS a
+      JOIN 
+          users AS u ON a.user_id = u.id
+      JOIN 
+          patients AS p ON a.patient_id = p.id
+      WHERE 
+          a.patient_id = $1`,
         [pid],
     );
 
-    const patient = patientRes.rows[0];
+//Array of appointments for patient     
+    const appointments= apptRes.rows;   
 
-    if (!patient) throw new NotFoundError(`Patient not found`);
-
-    const encountersRes = await db.query(
-          `SELECT * 
-           FROM encounters AS e
-           WHERE e.patient_id = $1`, [pid]);
-        
-    // Adding encounters property to patient
-    patient.encounters = encountersRes.rows
-    return patient;
+    //Empty appointment array is fine
+    return appointments;
   }
 
 
@@ -129,19 +142,18 @@ static async findTodaysAppointments() {
     return patient;
   }
 
-  /** Delete given user from database; returns undefined. */
+  /** Remove appointment */
 
-  static async remove(username) {
+  static async remove(apptId) {
     let result = await db.query(
           `DELETE
-           FROM users
-           WHERE username = $1
-           RETURNING username`,
-        [username],
+           FROM appointments
+           WHERE id = $1`,
+        [apptId],
     );
-    const user = result.rows[0];
 
-    if (!user) throw new NotFoundError(`No user: ${username}`);
+
+    if (!result) throw new NotFoundError(`Appointment not found`);
   }
 
   /** Apply for job: update db, returns undefined.
@@ -149,8 +161,6 @@ static async findTodaysAppointments() {
    * - username: username applying for job
    * - jobId: job id
    **/
-
-
 
   static async applyToJob(username, jobId) {
     const preCheck = await db.query(

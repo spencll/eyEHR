@@ -34,11 +34,6 @@ class Patient {
     return patient;
   }
 
-
-
-
-
-
   /** Register user with data.
    *
    * Returns { username, firstName, lastName, email, isAdmin }

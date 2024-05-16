@@ -183,6 +183,26 @@ user.appointments = appointmentRes.rows
     return user;
   }
 
+  // Use to get user id via name for appointment creation
+  static async getHCPByName(firstName, lastName) {
+    const userRes = await db.query(
+          `SELECT id, username,
+                  first_name AS "firstName",
+                  last_name AS "lastName",
+                  email
+           FROM users
+           WHERE first_name = $1 AND last_name= $2`,
+        [firstName,lastName],
+    );
+
+    const user = userRes.rows[0];
+
+    if (!user) throw new NotFoundError(`No HCP with name: ${firstName} ${lastName}`);
+
+    return user;
+  }
+
+
   /** Update user data with `data`.
    *
    * This is a "partial update" --- it's fine if data doesn't contain

@@ -107,16 +107,49 @@ router.patch("/:pid", ensureCorrectUserOrHCP,  async function (req, res, next) {
 router.get("/:pid/encounters", async function (req,res,next){
 
 
-
-  
 })
-//appointments
+
+
+//GET appointments for patient
 router.get("/:pid/appointments", async function (req,res,next){
-
-
-
-
+  try {
+    const appointments= await Appointment.getPatientAppointments(req.params.pid);
+    return res.json({appointments});
+  } catch (err) {
+    return next(err);
+  }
 })
+
+// POST patient appointment 
+router.post("/:pid/appointments/add", async function (req,res,next){
+
+  try {
+    // Validate appointment making schema
+    // const validator = jsonschema.validate(req.body, userAuthSchema);
+    // if (!validator.valid) {
+    //   const errs = validator.errors.map(e => e.stack);
+    //   throw new BadRequestError(errs);
+    // }
+    // Extract needed info to make appointment 
+    const { datetime, firstName, lastName } = req.body;
+    const user = await User.getHCPByName(firstName, lastName);
+    // Fix date time insertion
+    const appointment = await Appointment.makeAppointment(datetime, user.id, req.params.pid)
+    return res.json({appointment });
+  } catch (err) {
+    return next(err);
+  }
+})
+
+// DELETE patient appointment 
+router.delete("/:pid/appointments/:aid", async function (req, res, next) {
+  try {
+    await Appointment.remove(req.params.aid);
+    return res.json({message: "appointment removed"});
+  } catch (err) {
+    return next(err);
+  }
+});
 
 
 /** POST /[username]/jobs/[id]  { state } => { application }
