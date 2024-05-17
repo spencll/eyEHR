@@ -4,9 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node server.js",
+    "start": "concurrently \"npm run start-backend\" \"npm run start-frontend\"",
     "dev": "nodemon --ignore sessions/ server.js",
-    "test": "jest -i"
+    "test": "jest -i",
+    "start-backend": "node server.js",
+    "start-frontend": "cd ../frontend && npm run dev"
   },
   "jest": {
     "testPathIgnorePatterns": [
@@ -35,6 +37,7 @@
     "session-file-store": "^1.5.0"
   },
   "devDependencies": {
+    "concurrently": "^8.2.2",
     "supertest": "^5.0.0-0"
   }
 }

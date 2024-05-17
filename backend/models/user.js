@@ -131,25 +131,23 @@ class User {
 
   static async get(username) {
     const userRes = await db.query(
-          `SELECT username,
+          `SELECT id, username,
                   first_name AS "firstName",
                   last_name AS "lastName",
-                  email,
-                  is_admin AS "isAdmin"
+                  email
            FROM users
            WHERE username = $1`,
         [username],
     );
 
     const user = userRes.rows[0];
-
     if (!user) throw new NotFoundError(`No user: ${username}`);
 
      // Appending encounter/appointment arrays 
      const encountersRes = await db.query(
       `SELECT * 
        FROM encounters AS e
-       WHERE e.patient_id = $1`, [pid]);
+       WHERE e.user_id = $1`, [user.id]);
     
 
 // Adding encounters property to patient
@@ -158,7 +156,7 @@ user.encounters = encountersRes.rows
 const appointmentRes = await db.query(
   `SELECT * 
    FROM appointments AS a
-   WHERE a.patient_id = $1`, [pid]);
+   WHERE a.user_id = $1`, [user.id]);
 
 // Adding encounters property to patient
 user.appointments = appointmentRes.rows
@@ -225,6 +223,7 @@ user.appointments = appointmentRes.rows
       data.password = await bcrypt.hash(data.password, BCRYPT_WORK_FACTOR);
     }
 
+    // function to extract columns AS and $ values from data 
     const { setCols, values } = sqlForPartialUpdate(
         data,
         {

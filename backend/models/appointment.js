@@ -35,6 +35,7 @@ class Appointment {
         ]
     );
 
+    // Just making json return look nicer 
     const patientRes = await db.query(
         `SELECT first_name as "firstName",
         last_name as "lastName", email
@@ -55,29 +56,31 @@ class Appointment {
   }
 
 //   Find all appointments for today  
-static async findTodaysAppointments() {
+static async findTodaysAppointments(username) {
     try {
         const result = await db.query(`
-            SELECT id, datetime, user_id, patient_id, patient_email
-            FROM appointments
-            WHERE DATE(datetime) = CURRENT_DATE
-        `);
+            SELECT a.id, a.datetime, p.first_name AS "patientFirstName",
+            p.last_name AS "patientLastName"
+            FROM appointments AS a
+            JOIN users AS u ON a.user_id=u.id
+            JOIN patients AS p ON a.patient_id = p.id
+            WHERE DATE(datetime) = CURRENT_DATE AND u.username = $1
+        `,[username]);
         return result.rows;
     } catch (error) {
         throw new Error(`Error retrieving today's appointments: ${error.message}`);
     }
 }
-// 
 
 // Access patient via patient id 
   static async getPatientAppointments(pid) {
     const apptRes = await db.query(
           `SELECT a.id,
-          a.datetime AS appointment_datetime,
-          u.first_name AS dr_first_name,
-          u.last_name AS dr_last_name,
-          p.first_name AS patient_first_name,
-          p.last_name AS patient_last_name
+          a.datetime AS "datetime",
+          u.first_name AS "drFirstName",
+          u.last_name AS "drLastName",
+          p.first_name AS "patientFirstName",
+          p.last_name AS "patientLastName"
       FROM 
           appointments AS a
       JOIN 
@@ -96,7 +99,6 @@ static async findTodaysAppointments() {
     return appointments;
   }
 
-
   /** Update user data with `data`.
    *
    * This is a "partial update" --- it's fine if data doesn't contain
@@ -114,32 +116,27 @@ static async findTodaysAppointments() {
    * or a serious security risks are opened.
    */
 
-  static async update(pid, data) {
+  static async update(aid, data) {
 
     const { setCols, values } = sqlForPartialUpdate(
         data,
         {
-          firstName: "first_name",
-          lastName: "last_name",
-          isHCP: "is_HCP",
         });
     const patientIDVarIdx = "$" + (values.length + 1);
 
-    const querySql = `UPDATE patients
+    const querySql = `UPDATE appointments
                       SET ${setCols} 
                       WHERE id = ${patientIDVarIdx} 
                       RETURNING 
-                                first_name AS "firstName",
-                                last_name AS "lastName",
-                                email`;
+                                datetime`;
 
     // The actual query
-    const result = await db.query(querySql, [...values, pid]);
-    const patient = result.rows[0];
+    const result = await db.query(querySql, [...values, aid]);
+    const appointment = result.rows[0];
 
-    if (!patient) throw new NotFoundError(`Patient not found`);
+    if (!appointment) throw new NotFoundError(`Appointment not found`);
 
-    return patient;
+    return appointment;
   }
 
   /** Remove appointment */

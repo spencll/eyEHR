@@ -141,6 +141,25 @@ router.post("/:pid/appointments/add", async function (req,res,next){
   }
 })
 
+// EDIT patient appointment
+router.patch("/:pid/appointments/:aid", async function (req, res, next) {
+  try {
+    const validator = jsonschema.validate(req.body, userUpdateSchema);
+    if (!validator.valid) {
+      const errs = validator.errors.map(e => e.stack);
+      throw new BadRequestError(errs);
+    }
+
+    // Update user 
+    const appointment = await Appointment.update(req.params.aid, req.body);
+
+
+    return res.json({ appointment});
+  } catch (err) {
+    return next(err);
+  }
+});
+
 // DELETE patient appointment 
 router.delete("/:pid/appointments/:aid", async function (req, res, next) {
   try {

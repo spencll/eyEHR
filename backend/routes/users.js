@@ -9,11 +9,13 @@ const { ensureCorrectUserOrAdmin, ensureAdmin,ensureLoggedIn} = require("../midd
 const { BadRequestError } = require("../expressError");
 const User = require("../models/user");
 const Patient = require("../models/patient")
+const Appointment = require("../models/appointment")
 const { createToken } = require("../helpers/tokens");
 const userNewSchema = require("../schemas/patientNew.json");
 const userUpdateSchema = require("../schemas/userUpdate.json");
 
 const router = express.Router();
+
 
 
 /** POST / { user }  => { user, token }
@@ -54,7 +56,6 @@ router.post("/", ensureAdmin, async function (req, res, next) {
  **/
 
 router.get("/",  async function (req, res, next) {
-  console.log(res.locals.user)
   try {
     const users = await User.findAll();
     return res.json({ users });
@@ -72,7 +73,7 @@ router.get("/",  async function (req, res, next) {
  * Authorization required: admin or same user-as-:username
  **/
 
-router.get("/:username", ensureCorrectUserOrAdmin, async function (req, res, next) {
+router.get("/:username", async function (req, res, next) {
   try {
     const user = await User.get(req.params.username);
     return res.json({ user });
@@ -80,6 +81,17 @@ router.get("/:username", ensureCorrectUserOrAdmin, async function (req, res, nex
     return next(err);
   }
 });
+
+//GET today's appointments for user 
+router.get("/:username/appointments", async function (req,res,next){
+  try {
+    const appointments= await Appointment.findTodaysAppointments(req.params.username);
+    return res.json({appointments});
+  } catch (err) {
+    return next(err);
+  }
+})
+
 
 
 /** PATCH /[username] { user } => { user }
@@ -93,7 +105,7 @@ router.get("/:username", ensureCorrectUserOrAdmin, async function (req, res, nex
  **/
 
 // 
-router.patch("/:username", ensureLoggedIn, async function (req, res, next) {
+router.patch("/:username", async function (req, res, next) {
   try {
     const validator = jsonschema.validate(req.body, userUpdateSchema);
     if (!validator.valid) {

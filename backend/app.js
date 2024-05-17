@@ -19,12 +19,12 @@ const morgan = require("morgan");
 
 const app = express();
 
-// Session, mainly to keep login info throughout nodemon resets during dev
+// Local session, keep login throughout nodemon resets during dev
 app.use(session({
   store: new FileStore({ path: './sessions' }),
   secret: 'your_secret', // Secret key used for session encryption
   resave: false,
-  saveUninitialized: true
+  saveUninitialized: false
 }));
 
 // Universal

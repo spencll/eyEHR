@@ -31,13 +31,14 @@ router.post("/token", async function (req, res, next) {
     const { username, password } = req.body;
     const user = await User.authenticate(username, password);
     const token = createToken(user);
+
+    // Letting back end handle token and sessions
     req.session.token= token
     return res.json({ token });
   } catch (err) {
     return next(err);
   }
 });
-
 
 /** POST /auth/register:   { user } => { token }
  *
@@ -92,6 +93,19 @@ router.post("/registerHCP", async function (req, res, next) {
   }
 });
 
+//Logout user by destroying session
+router.post('/logout', (req, res) => {
+  // Destroy the session associated with the user
+  req.session.destroy((err) => {
+    if (err) {
+      console.error('Error destroying session:', err);
+      return res.status(500).send('Logout failed');
+    }
+    // Session destroyed successfully
+    res.clearCookie('connect.sid'); // Clear session cookie
+    return res.sendStatus(200); // Send success response
+  });
+});
 
 
 module.exports = router;

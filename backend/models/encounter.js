@@ -100,7 +100,6 @@ class Patient {
     return patient;
   }
 
-
   /** Update user data with `data`.
    *
    * This is a "partial update" --- it's fine if data doesn't contain
