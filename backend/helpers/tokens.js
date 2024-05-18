@@ -8,8 +8,10 @@ function createToken(user) {
   let payload = {
     username: user.username,
     isHCP: user.isHCP,
-    email: user.email
+    email: user.email,
+    id: user.id
   };
+  console.log(payload)
 
   // sign and return token 
   return jwt.sign(payload, SECRET_KEY);

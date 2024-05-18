@@ -13,91 +13,61 @@ const { BCRYPT_WORK_FACTOR } = require("../config.js");
 
 /** Related functions for users. */
 
-class Patient {
+class Encounter {
 
-
-  /** Register user with data.
+  /** Make encounter
    *
-   * Returns { username, firstName, lastName, email, isAdmin }
+   * Returns {message: "Successfully created encounter", datetime}
    *
    * Throws BadRequestError on duplicates.
    **/
 
-  //Registering patient 
-  static async register(
-      {firstName, lastName, email}) {
-
-    // Checking for duplicate email
-    const duplicateCheck = await db.query(
-          `SELECT email
-           FROM patients
-           WHERE email= $1`,
-        [email],
-    );
-
-    if (duplicateCheck.rows[0]) {
-      throw new BadRequestError(`Duplicate email: ${email}`);
-    }
+  //Making encounter
+  static async makeEncounter(userId, patientId) {
 
     const result = await db.query(
-          `INSERT INTO patients
-           (first_name,
-            last_name,
-            email)
-           VALUES ($1, $2, $3)
-           RETURNING first_name AS "firstName", last_name AS "lastName", email`,
-        [
-          firstName,
-          lastName,
-          email
-        ]
+          `INSERT INTO encounters
+           (datetime,
+            user_id,
+            patient_id)
+           VALUES (NOW(), $1, $2) RETURNING datetime`,
+        [userId, patientId]
     );
 
     const patient = result.rows[0];
+    patient.message= "Successfully created encounter"
 
     return patient;
   }
 
 
-//   Find all patients 
-  static async findAll() {
+//Get all encounters for patient 
+  static async getEncounters(pid) {
     const result = await db.query(
-          `SELECT 
-                  first_name AS "firstName",
-                  last_name AS "lastName",
-                  email
-           FROM patients
-           ORDER BY last_name`,
+          `SELECT *
+           FROM encounters
+           WHERE patient_id = $1
+           ORDER BY datetime`,[pid],
     );
 
     return result.rows;
   }
 
 
-// Access patient via patient id 
-  static async get(pid) {
-    const patientRes = await db.query(
-          `SELECT 
-                  first_name AS "firstName",
-                  last_name AS "lastName",
-                  email
-           FROM patients
+// Access single encounter
+  static async get(eid) {
+    const encounterRes = await db.query(
+          `SELECT *
+           FROM encounters
            WHERE id = $1`,
-        [pid],
+        [eid],
     );
 
-    const patient = patientRes.rows[0];
+    const encounter = encounterRes.rows[0];
 
-    if (!patient) throw new NotFoundError(`Patient not found`);
+    if (!encounter) throw new NotFoundError(`Encounter not found`);
 
-    const encountersRes = await db.query(
-          `SELECT * 
-           FROM encounters AS e
-           WHERE e.patient_id = $1`, [pid]);
-        
-    // Adding encounters property to patient
-    patient.encounters = encountersRes.rows
-    return patient;
+    return encounter;
   }
 
   /** Update user data with `data`.
@@ -117,32 +87,18 @@ class Patient {
    * or a serious security risks are opened.
    */
 
-  static async update(pid, data) {
+//The only thing you can change in encounter is the exam data (results).
+  static async update(results) {
 
-    const { setCols, values } = sqlForPartialUpdate(
-        data,
-        {
-          firstName: "first_name",
-          lastName: "last_name",
-          isHCP: "is_HCP",
-        });
-    const patientIDVarIdx = "$" + (values.length + 1);
+    const result = await db.query(
+        `UPDATE encounters
+        SET results = $1 RETURNING *`,
+      [results]
+  );
 
-    const querySql = `UPDATE patients
-                      SET ${setCols} 
-                      WHERE id = ${patientIDVarIdx} 
-                      RETURNING 
-                                first_name AS "firstName",
-                                last_name AS "lastName",
-                                email`;
+  const encounter= result.rows[0];
 
-    // The actual query
-    const result = await db.query(querySql, [...values, pid]);
-    const patient = result.rows[0];
-
-    if (!patient) throw new NotFoundError(`Patient not found`);
-
-    return patient;
+  return encounter;
   }
 
   /** Delete given user from database; returns undefined. */
@@ -193,4 +149,4 @@ class Patient {
 }
 
 
-module.exports = Patient;
+module.exports = Encounter;

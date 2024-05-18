@@ -24,7 +24,7 @@ class Appointment {
    **/
 
   //Making appointment 
-  static async makeAppointment(datetime, userId, patientId) {
+  static async makeAppointment(userId, patientId) {
     const result = await db.query(
         `INSERT INTO appointments (datetime, user_id, patient_id)
         VALUES ($1, $2, $3) RETURNING datetime`,
@@ -122,11 +122,11 @@ static async findTodaysAppointments(username) {
         data,
         {
         });
-    const patientIDVarIdx = "$" + (values.length + 1);
+    const appointmentId = "$" + (values.length + 1);
 
     const querySql = `UPDATE appointments
                       SET ${setCols} 
-                      WHERE id = ${patientIDVarIdx} 
+                      WHERE id = ${appointmentId} 
                       RETURNING 
                                 datetime`;
 
@@ -153,34 +153,6 @@ static async findTodaysAppointments(username) {
     if (!result) throw new NotFoundError(`Appointment not found`);
   }
 
-  /** Apply for job: update db, returns undefined.
-   *
-   * - username: username applying for job
-   * - jobId: job id
-   **/
-
-  static async applyToJob(username, jobId) {
-    const preCheck = await db.query(
-          `SELECT id
-           FROM jobs
-           WHERE id = $1`, [jobId]);
-    const job = preCheck.rows[0];
-
-    if (!job) throw new NotFoundError(`No job: ${jobId}`);
-
-    const preCheck2 = await db.query(
-          `SELECT username
-           FROM users
-           WHERE username = $1`, [username]);
-    const user = preCheck2.rows[0];
-
-    if (!user) throw new NotFoundError(`No username: ${username}`);
-
-    await db.query(
-          `INSERT INTO applications (job_id, username)
-           VALUES ($1, $2)`,
-        [jobId, username]);
-  }
 }
 
 

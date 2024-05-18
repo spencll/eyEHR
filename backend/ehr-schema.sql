@@ -8,7 +8,6 @@ CREATE TABLE users (
   is_HCP BOOLEAN NOT NULL DEFAULT FALSE
 );
 
-
 CREATE TABLE patients (
   id SERIAL PRIMARY KEY,
   first_name TEXT NOT NULL,

@@ -9,6 +9,7 @@ const {ensureCorrectUserOrAdmin, ensureCorrectUserOrHCP, isHCP} = require("../mi
 const { BadRequestError } = require("../expressError");
 const Patient = require("../models/patient");
 const Appointment = require("../models/appointment");
+const Encounter = require("../models/encounter")
 const { createToken } = require("../helpers/tokens");
 const patientNewSchema = require("../schemas/patientNew.json");
 const userUpdateSchema = require("../schemas/userUpdate.json");
@@ -29,7 +30,6 @@ router.get("/", isHCP, async function (req, res, next) {
 
 
 // Only own user or HCP can access this specific patient 
-
 router.get("/:pid", ensureCorrectUserOrHCP, async function (req, res, next) {
   try {
     const patient = await Patient.get(req.params.pid);
@@ -103,12 +103,6 @@ router.patch("/:pid", ensureCorrectUserOrHCP,  async function (req, res, next) {
   }
 });
 
-//encounters
-router.get("/:pid/encounters", async function (req,res,next){
-
-
-})
-
 
 //GET appointments for patient
 router.get("/:pid/appointments", async function (req,res,next){
@@ -144,15 +138,14 @@ router.post("/:pid/appointments/add", async function (req,res,next){
 // EDIT patient appointment
 router.patch("/:pid/appointments/:aid", async function (req, res, next) {
   try {
-    const validator = jsonschema.validate(req.body, userUpdateSchema);
-    if (!validator.valid) {
-      const errs = validator.errors.map(e => e.stack);
-      throw new BadRequestError(errs);
-    }
+    // const validator = jsonschema.validate(req.body, userUpdateSchema);
+    // if (!validator.valid) {
+    //   const errs = validator.errors.map(e => e.stack);
+    //   throw new BadRequestError(errs);
+    // }
 
-    // Update user 
+    // Update appointment
     const appointment = await Appointment.update(req.params.aid, req.body);
-
 
     return res.json({ appointment});
   } catch (err) {
@@ -170,22 +163,79 @@ router.delete("/:pid/appointments/:aid", async function (req, res, next) {
   }
 });
 
+// POST patient encounter
+router.post("/:pid/encounters/add", async function (req,res,next){
 
-/** POST /[username]/jobs/[id]  { state } => { application }
- *
- * Returns {"applied": jobId}
- *
- * Authorization required: admin or same-user-as-:username
- * */
-
-router.post("/:username/jobs/:id", ensureCorrectUserOrAdmin, async function (req, res, next) {
   try {
-    const jobId = +req.params.id;
-    await User.applyToJob(req.params.username, jobId);
-    return res.json({ applied: jobId });
+    // Validate appointment making schema
+    // const validator = jsonschema.validate(req.body, userAuthSchema);
+    // if (!validator.valid) {
+    //   const errs = validator.errors.map(e => e.stack);
+    //   throw new BadRequestError(errs);
+    // }
+    // Extract needed info to make appointment 
+   
+    const user = res.locals.user
+    const encounter = await Encounter.makeEncounter(user.id, req.params.pid)
+    return res.json({encounter});
   } catch (err) {
     return next(err);
   }
-});
+})
+// GET all patient encounters
+router.get("/:pid/encounters", async function (req,res,next){
+  try {
+    // Validate appointment making schema
+    // const validator = jsonschema.validate(req.body, userAuthSchema);
+    // if (!validator.valid) {
+    //   const errs = validator.errors.map(e => e.stack);
+    //   throw new BadRequestError(errs);
+    // }
+    // Extract needed info to make appointment 
+    const encounters = await Encounter.getEncounters(req.params.pid)
+    return res.json({encounters});
+  } catch (err) {
+    return next(err);
+  }
+})
+
+//GET patient encounter
+router.get("/:pid/encounters/:eid", async function (req,res,next){
+
+  try {
+    // Validate appointment making schema
+    // const validator = jsonschema.validate(req.body, userAuthSchema);
+    // if (!validator.valid) {
+    //   const errs = validator.errors.map(e => e.stack);
+    //   throw new BadRequestError(errs);
+    // }
+    // Extract needed info to make appointment 
+ 
+    const encounter = await Encounter.get(req.params.eid)
+    return res.json({encounter});
+  } catch (err) {
+    return next(err);
+  }
+})
+
+//PATCH patient encounter
+router.patch("/:pid/encounters/:eid", async function (req,res,next){
+
+  try {
+    // Validate appointment making schema
+    // const validator = jsonschema.validate(req.body, userAuthSchema);
+    // if (!validator.valid) {
+    //   const errs = validator.errors.map(e => e.stack);
+    //   throw new BadRequestError(errs);
+    // }
+    // Extract needed info to make appointment 
+ 
+    const encounter = await Encounter.update(req.body.results)
+    return res.json({encounter});
+  } catch (err) {
+    return next(err);
+  }
+})
+
 
 module.exports = router;
