@@ -1,17 +1,17 @@
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import {jwtDecode} from 'jwt-decode';
-import NavBar from './NavBar';
+// import NavBar from './NavBar';
 import './App.css'
 import Home from './Home';
 import EHRApi from './api';
-import CompaniesList from './CompaniesList';
-import JobsList from './JobsList';
-import SignUpForm from './SignupForm';
+// import CompaniesList from './CompaniesList';
+// import JobsList from './JobsList';
+// import SignUpForm from './SignupForm';
 import LoginForm from './LoginForm';
-import CompanyDetails from './CompanyDetails';
-import Profile from './Profile';
-import JobDetails from './JobDetails';
+// import CompanyDetails from './CompanyDetails';
+// import Profile from './Profile';
+// import JobDetails from './JobDetails';
 import { Navigate } from 'react-router-dom';
 
 function App() {
@@ -21,8 +21,7 @@ function App() {
 
     // States 
     const [isLoading, setIsLoading] = useState(true);
-    const [companies, setCompanies] = useState([]);
-    const [jobs, setJobs] = useState([])  
+    const [users, setUsers] = useState([]);
 
     // Basically just stores the token if existing into isLogged
     const [isLogged, setIsLogged] = useState(token)
@@ -35,8 +34,8 @@ function App() {
       try {
           if (isLogged) {
            const { username } = jwtDecode(isLogged);
-          JoblyApi.token = isLogged;
-          const userInfo = await JoblyApi.getUser(username);
+          EHRApi.token = isLogged;
+          const userInfo = await EHRApi.getUser(username);
           setUserInfo(userInfo)
           }
 
@@ -48,10 +47,8 @@ function App() {
     // First render, load companies, jobs, user info.
     useEffect(() => {
       async function pullfromDB() {
-        let companies = await EHRApi.getAllCompanies();
-        let jobs = await JoblyApi.getAllJobs();
-        setJobs(jobs);
-        setCompanies(companies);
+        let users = await EHRApi.getAllUsers();
+        setUsers(users)
         setIsLoading(false);
         fetchUserData()
       }
@@ -73,18 +70,19 @@ function App() {
   return (
     <>
    <Router>
-   <NavBar isLogged={isLogged} logout={logout}/>
+   {/* <NavBar isLogged={isLogged} logout={logout}/> */}
       <Routes>
-      <Route exact path="/" element={<Home userInfo={userInfo} isLogged={isLogged}/>} />
+      <Route exact path="/" element={<Home users={users} />} />
       {/* Protecting companies/jobs routes */}
-        <Route exact path="/companies" element={isLogged? <CompaniesList companies={companies} setCompanies={setCompanies}/>: <Navigate to="/login"/>}/>
+
+      <Route exact path="/login" element={<LoginForm setIsLogged={setIsLogged}/>} />
+        {/* <Route exact path="/companies" element={isLogged? <CompaniesList companies={companies} setCompanies={setCompanies}/>: <Navigate to="/login"/>}/>
         <Route exact path="/jobs" element={isLogged?<JobsList jobs={jobs} setJobs={setJobs} setUserInfo={setUserInfo} userInfo={userInfo}/>:<Navigate to="/login"/>} />
 
         <Route exact path="/signup" element={<SignUpForm setIsLogged={setIsLogged}/>} />
-        <Route exact path="/login" element={<LoginForm setIsLogged={setIsLogged}/>} />
         <Route path="/companies/:handle" element={<CompanyDetails/>} />
         <Route path="/jobs/:title" element={<JobDetails/>} />
-        <Route exact path="/profile" element={<Profile isLogged={isLogged}/> }  /> 
+        <Route exact path="/profile" element={<Profile isLogged={isLogged}/> }  />  */}
       </Routes>
     </Router>
     </>

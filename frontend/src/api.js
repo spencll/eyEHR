@@ -19,6 +19,7 @@ class EHRApi {
 
     const url = `${BASE_URL}/${endpoint}`;
   
+    // If GET, use data as query. If anything else, use as req.body
     const params = (method === "get")
         ? data
         : {};
@@ -34,16 +35,8 @@ class EHRApi {
 
   // Individual API routes
 
-// Get specific user
 
-
-//   Get all users
-static async getAllUsers() {
-    let res = await this.request('users');
-    return res.users;
-  }
-
-// USER 
+//register/login/logout
 
   /** Signup for site. */
   static async signup(data) {
@@ -74,6 +67,13 @@ static async getAllUsers() {
           throw Array.isArray(message) ? message : [message];
       }
     }
+
+//   Get all users
+static async getAllUsers() {
+  let res = await this.request('users');
+  return res.users;
+}
+
 
 // Patch user
   static async updateProfile(username, data) {
