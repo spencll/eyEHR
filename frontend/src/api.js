@@ -74,6 +74,12 @@ static async getAllUsers() {
   return res.users;
 }
 
+// Query patients 
+static async queryPatients(q){
+  let res = await this.request(`patients?query=${q}`)
+  return res.patients
+}
+
 
 // Patch user
   static async updateProfile(username, data) {

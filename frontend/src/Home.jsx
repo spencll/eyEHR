@@ -1,8 +1,8 @@
 import React from "react";
 
-function Home({users}) {
+function Home({userInfo, isLogged}) {
   return (<div>
-    {users ? ( <h1>Welcome back {users[0].username}! </h1>): <h1>Welcome to Jobly!</h1>}
+    {isLogged ? ( <h1>Welcome back {userInfo.username}!  </h1>): <h1>Welcome to EyeHR!</h1>}
     </div>
 )
 }

@@ -1,0 +1,7 @@
+.navbar-nav {
+    list-style-type: none; /* Removes bullet points */
+    padding-left: 0; /* Removes default left padding */
+    display: flex;
+    justify-content: space-evenly
+    
+  }

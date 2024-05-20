@@ -53,40 +53,33 @@ router.post("/token", async function (req, res, next) {
 
 router.post("/register", async function (req, res, next) {
   try {
+    // Schema
     const validator = jsonschema.validate(req.body, userRegisterSchema);
     if (!validator.valid) {
       const errs = validator.errors.map(e => e.stack);
       throw new BadRequestError(errs);
     }
 
-    const newUser = await User.register({ ...req.body, isHCP: false });
-    const token = createToken(newUser);
-    req.session.token= token
+      // Check if an invitation code is provided in the request body
+      const { invitationCode } = req.body;
+      let newUser;
+      if (invitationCode) {
 
-    return res.status(201).json({ token });
-  } catch (err) {
-    return next(err);
-  }
-});
-
-// Register as HCP
-router.post("/registerHCP", async function (req, res, next) {
-  try {
-    const validator = jsonschema.validate(req.body, userRegisterSchema);
-    if (!validator.valid) {
-      const errs = validator.errors.map(e => e.stack);
-      throw new BadRequestError(errs);
-    }
-
-        // Check if an invitation code is provided in the request body
-        const { invitationCode } = req.body;
         if (invitationCode !== "69") {
           throw new BadRequestError("Invalid invitation code");
         }
+       newUser = await User.register({ ...req.body, isHCP: true });
+      }
+      else{
+        newUser = await User.register({ ...req.body, isHCP: false });
+        }
 
-    const newUser = await User.register({ ...req.body, isHCP: true });
+    
+
+      // Create token and store to session 
     const token = createToken(newUser);
     req.session.token= token
+
     return res.status(201).json({ token });
   } catch (err) {
     return next(err);

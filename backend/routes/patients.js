@@ -19,9 +19,20 @@ const User = require("../models/user")
 const router = express.Router();
 
 // List of all patients, only accessible as HCP
-router.get("/", isHCP, async function (req, res, next) {
+router.get("/", async function (req, res, next) {
   try {
-    const patients = await Patient.findAll();
+    const { query } = req.query;
+    const patients = await Patient.queryPatient(query);
+    return res.json({ patients});
+  } catch (err) {
+    return next(err);
+  }
+});
+
+// Patients search, only accessible as HCP
+router.get("/search", async function (req, res, next) {
+  try {
+    const patients = await Patient.queryPatient(req.params);
     return res.json({ patients});
   } catch (err) {
     return next(err);

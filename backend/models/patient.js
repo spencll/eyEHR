@@ -45,7 +45,6 @@ class Patient {
   static async register(
       {firstName, lastName, email}) {
 
-    // Checking for duplicate email
     const duplicateCheck = await db.query(
           `SELECT email
            FROM patients
@@ -77,7 +76,7 @@ class Patient {
   }
 
 
-//   Find all patients 
+//   Find all patients (probably not useful)
   static async findAll() {
     const result = await db.query(
           `SELECT 
@@ -86,6 +85,22 @@ class Patient {
                   email
            FROM patients
            ORDER BY last_name`,
+    );
+
+    return result.rows;
+  }
+
+  //  Querying for patient
+  static async queryPatient(query) {
+    const result = await db.query(
+          `SELECT id,
+                  first_name AS "firstName",
+                  last_name AS "lastName",
+                  email
+           FROM patients
+            WHERE last_name ILIKE $1
+       ORDER BY last_name`,
+      [`%${query}%`],
     );
 
     return result.rows;

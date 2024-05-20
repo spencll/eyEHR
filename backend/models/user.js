@@ -134,7 +134,7 @@ class User {
           `SELECT id, username,
                   first_name AS "firstName",
                   last_name AS "lastName",
-                  email
+                  email, is_HCP AS "isHCP"
            FROM users
            WHERE username = $1`,
         [username],
