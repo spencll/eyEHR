@@ -5,10 +5,11 @@ import NavBar from './NavBar';
 import './App.css'
 import Home from './Home';
 import EHRApi from './api';
-// import CompaniesList from './CompaniesList';
+import AppointmentsList from './AppointmentsList';
 // import JobsList from './JobsList';
 import SignUpForm from './SignupForm';
 import LoginForm from './LoginForm';
+import PatientProfile from './PatientProfile';
 // import CompanyDetails from './CompanyDetails';
 import Profile from './Profile';
 // import JobDetails from './JobDetails';
@@ -19,9 +20,8 @@ function App() {
   // Checks local storage for existing token 
   let token = localStorage.getItem('token')
 
-    // States 
+    // States /////////////////////////////////////////////////////////
     const [isLoading, setIsLoading] = useState(true);
-    const [users, setUsers] = useState([]);
 
     // Stores existing token into isLogged
     const [isLogged, setIsLogged] = useState(token)
@@ -29,24 +29,33 @@ function App() {
     // The actual user info 
     const [userInfo, setUserInfo] = useState({})
 
+    // Appointment state
+    const [appointments, setAppointments] = useState([])  
+
+
+  
     const fetchUserData = async () => {
       // token verification-> username -> getUser
       try {
           if (isLogged) {
+            // Getting username from payload 
            const { username } = jwtDecode(isLogged);
+          //  API requests
           const user = await EHRApi.getUser(username);
+          const appointments = await EHRApi.getAppointments(username)
+          // Setting states 
+
+          setAppointments(appointments)
           setUserInfo(user)
           }
 
       } catch (error) {
-          console.error('Error fetching user data:', error);
+          console.error('Error fetching data:', error);
       }
   };
 
     useEffect(() => {
       async function pullfromDB() {
-        let users = await EHRApi.getAllUsers();
-        setUsers(users)
         setIsLoading(false);
         fetchUserData()
       }
@@ -79,6 +88,9 @@ function App() {
       <Route exact path="/signup" element={<SignUpForm setIsLogged={setIsLogged}/>} />
       <Route exact path="/login" element={<LoginForm setIsLogged={setIsLogged}/>} />
       <Route exact path="/profile" element={<Profile isLogged={isLogged}/> }  />  
+      <Route exact path="/patients/:pid" element={<PatientProfile isLogged={isLogged} /> }  />  
+      <Route exact path="/appointments" element={isLogged? <AppointmentsList appointments={appointments} />: <Navigate to="/login"/>}/>
+
         {/* <Route exact path="/companies" element={isLogged? <CompaniesList companies={companies} setCompanies={setCompanies}/>: <Navigate to="/login"/>}/>
         <Route exact path="/jobs" element={isLogged?<JobsList jobs={jobs} setJobs={setJobs} setUserInfo={setUserInfo} userInfo={userInfo}/>:<Navigate to="/login"/>} />
 

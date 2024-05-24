@@ -20,13 +20,11 @@ const Patient = require("../models/patient");
 
 function authenticateJWT(req, res, next) {
   try {
-    const token = req.session.token
-
-    // store payload in res.locals
-    if (token) {
+    const authHeader = req.headers && req.headers.authorization;
+    if (authHeader) {
+      const token = authHeader.replace(/^[Bb]earer /, "").trim();
       res.locals.user = jwt.verify(token, SECRET_KEY);
     }
-    
     return next();
   } catch (err) {
     return next();

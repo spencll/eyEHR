@@ -15,17 +15,20 @@ class EHRApi {
 
   //API request function, takes endpoit, data, method. Has default of empty data and get 
   static async request(endpoint, data = {}, method = "get") {
-    console.debug("API Call:", endpoint, data, method);
 
+    
+    console.debug("API Call:", endpoint, data, method);
     const url = `${BASE_URL}/${endpoint}`;
+    const headers = { Authorization: `Bearer ${localStorage.getItem('token')}` };
   
     // If GET, use data as query. If anything else, use as req.body
     const params = (method === "get")
         ? data
         : {};
 
+
     try {
-      return (await axios({ url, method, data, params})).data;
+      return (await axios({ url, method, data, params, headers})).data;
     } catch (err) {
       console.error("API Error:", err.response);
       let message = err.response.data.error.message;
@@ -41,20 +44,28 @@ class EHRApi {
   /** Signup for site. */
   static async signup(data) {
     let res = await this.request(`auth/register`, data, "post");
-
-    // Adding token in local storage for logged in state
-    localStorage.setItem('token',res.token)
     return res.token;
   }
       
-  /** Get token for login from username, password. */
-  static async login(data) {
+  /** Get token for login from username, password. Then set localstorage with token */
+  static async login(username, password) {
+    try {
+      const response = await axios.post(`${BASE_URL}/auth/token`, {
+        username,
+        password
+      });
 
-    let res = await this.request(`auth/token`, data, "post");
-    // Adding token in local storage for logged in state
-    localStorage.setItem('token',res.token)
-    return res.token;
+      // Store the token in localStorage
+      localStorage.setItem('token', response.data.token);
+      return response.data.token;
+
+    } catch (err) {
+      console.error("Login API Error:", err.response);
+      let message = err.response?.data?.error?.message || err.message;
+      throw Array.isArray(message) ? message : [message];
+    }
   }
+
  // Logout user
     static async logoutUser() {
       try{
@@ -141,7 +152,7 @@ static async queryPatients(q){
       }
     }
     // Getting today's appointments for user
-    static async getTodayAppointments(username) {
+    static async getAppointments(username) {
       try{
       let res = await this.request(`users/${username}/appointments`)
       return res.appointments

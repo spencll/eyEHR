@@ -5,7 +5,7 @@
 const jsonschema = require("jsonschema");
 
 const express = require("express");
-const {ensureCorrectUserOrAdmin, ensureCorrectUserOrHCP, isHCP} = require("../middleware/auth");
+const {ensureCorrectUserOrHCP, isHCP, authenticateJWT} = require("../middleware/auth");
 const { BadRequestError } = require("../expressError");
 const Patient = require("../models/patient");
 const Appointment = require("../models/appointment");
@@ -22,7 +22,8 @@ const router = express.Router();
 router.get("/", async function (req, res, next) {
   try {
     const { query } = req.query;
-    const patients = await Patient.queryPatient(query);
+    let patients;
+    query? patients = await Patient.queryPatient(query) : patients= await Patient.findAll()
     return res.json({ patients});
   } catch (err) {
     return next(err);

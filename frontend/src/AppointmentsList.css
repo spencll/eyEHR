@@ -1,0 +1,21 @@
+.appointments-list {
+    display: grid;
+    gap: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  }
+  
+  .appointment-card {
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .appointment-name {
+    margin-top: 0;
+  }
+  
+  .appointment-details {
+    margin-top: 10px;
+  }
+  

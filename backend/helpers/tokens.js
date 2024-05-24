@@ -11,7 +11,6 @@ function createToken(user) {
     email: user.email,
     id: user.id
   };
-  console.log(payload)
 
   // sign and return token 
   return jwt.sign(payload, SECRET_KEY);

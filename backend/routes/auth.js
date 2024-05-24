@@ -27,13 +27,14 @@ router.post("/token", async function (req, res, next) {
       const errs = validator.errors.map(e => e.stack);
       throw new BadRequestError(errs);
     }
-
     const { username, password } = req.body;
     const user = await User.authenticate(username, password);
     const token = createToken(user);
 
     // Letting back end handle token and sessions
-    req.session.token= token
+  
+    req.session.token= token; 
+
     return res.json({ token });
   } catch (err) {
     return next(err);

@@ -23,9 +23,8 @@ function LoginForm({setIsLogged}) {
     const handleSubmit = async (event) => {
         event.preventDefault();
           try {
-              const token = await EHRApi.login(formData);
+              const token = await EHRApi.login(formData.username, formData.password);
               setIsLogged(token); 
-              localStorage.setItem('token', token)
               navigate("..", { relative: "path" })
   
             } catch (error) {

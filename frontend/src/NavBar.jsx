@@ -7,7 +7,7 @@ import EHRApi from './api';
 
 function NavBar({isLogged, logout, userInfo}) {
 
-  // Search bar stuff
+  //////////////////////////// Search bar stuff ////////////////////////////////////////////////
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [debouncedQuery, setDebouncedQuery] = useState(searchQuery);
@@ -22,6 +22,13 @@ function NavBar({isLogged, logout, userInfo}) {
       setSearchResults([]);
     }
   };
+
+  
+  const handleNavLinkClick = async () => {
+    setSearchResults("");
+    setSearchQuery([])
+  };
+
 
   // Debounce search query
   useEffect(() => {
@@ -66,12 +73,12 @@ function NavBar({isLogged, logout, userInfo}) {
           
           <NavItem>
             {/* Show today's appointments if HCP, user's appointments if regular user  */}
-            <NavLink to="/companies">Your apppointments</NavLink>
+            <NavLink to="/appointments">{userInfo.isHCP ? "Today's appointments" : 'Your appointments'}</NavLink>
           </NavItem>
 
             {/* Show today's encounters if HCP, user's encounters if regular user */}
           <NavItem>
-            <NavLink to="/jobs">Your encounters</NavLink>
+            <NavLink to="/jobs">{userInfo.isHCP ? "Today's encounters" : 'Your encounters'}</NavLink>
           </NavItem>
 
           <NavItem>
@@ -99,15 +106,15 @@ function NavBar({isLogged, logout, userInfo}) {
               className="search-input"
             />
 
-            {searchResults.length > 0 && (
-              <div className="search-results">
-                {searchResults.map((patient) => (
-                  <div key={patient.id} className="search-result-item">
-                    {patient.firstName} {patient.lastName}
-                  </div>
-                ))}
-              </div>
-            )}
+{searchResults.length > 0 && (
+  <div className="search-results">
+    {searchResults.map((patient) => (
+      <NavLink key={patient.id} to={`/patients/${patient.id}`} className="search-result-item" onClick={handleNavLinkClick}>
+        {patient.firstName} {patient.lastName}
+      </NavLink>
+    ))}
+  </div>
+)}
           </NavItem></> : null}
          
       

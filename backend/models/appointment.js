@@ -55,7 +55,7 @@ class Appointment {
     return appointment
   }
 
-//   Find all appointments for today  
+//   Find today's appointments (useful for HCP)
 static async findTodaysAppointments(username) {
     try {
         const result = await db.query(`
@@ -70,6 +70,23 @@ static async findTodaysAppointments(username) {
     } catch (error) {
         throw new Error(`Error retrieving today's appointments: ${error.message}`);
     }
+}
+
+// Find all appointments 
+static async findAllAppointments(username) {
+  try {
+      const result = await db.query(`
+          SELECT a.id, a.datetime, p.first_name AS "patientFirstName",
+          p.last_name AS "patientLastName"
+          FROM appointments AS a
+          JOIN users AS u ON a.user_id=u.id
+          JOIN patients AS p ON a.patient_id = p.id
+          WHERE u.username = $1
+      `,[username]);
+      return result.rows;
+  } catch (error) {
+      throw new Error(`Error retrieving today's appointments: ${error.message}`);
+  }
 }
 
 // Access patient via patient id 

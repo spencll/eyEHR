@@ -55,7 +55,10 @@ router.get("/:username", async function (req, res, next) {
 //GET today's appointments for user 
 router.get("/:username/appointments", async function (req,res,next){
   try {
-    const appointments= await Appointment.findTodaysAppointments(req.params.username);
+    let appointments;
+    const user = await User.get(req.params.username);
+    // today's appointment if HCP, all appointments if regular user 
+    user.isHCP? appointments= await Appointment.findTodaysAppointments(user.username):  await Appointment.findAllAppointments(req.params.username)
     return res.json({appointments});
   } catch (err) {
     return next(err);
