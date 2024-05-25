@@ -139,6 +139,19 @@ static async queryPatients(q){
       }
     }
 
+    // Make appointment 
+    static async makeAppointment(pid) {
+      try{
+      let res = await this.request(`patients/${pid}/appointments`)
+      return res.appointments
+      }
+      catch(err) {
+          console.error("API Error:", err.response);
+          let message = err.response.data.error.message;
+          throw Array.isArray(message) ? message : [message];
+      }
+    }
+
     // Getting encounters for a patient
     static async getPatientEncounters(pid) {
       try{
@@ -151,7 +164,7 @@ static async queryPatients(q){
           throw Array.isArray(message) ? message : [message];
       }
     }
-    // Getting today's appointments for user
+    // Getting user appointments
     static async getAppointments(username) {
       try{
       let res = await this.request(`users/${username}/appointments`)
@@ -163,7 +176,19 @@ static async queryPatients(q){
           throw Array.isArray(message) ? message : [message];
       }
     }
-
+    
+     // Getting user encounters
+     static async getEncounters(username) {
+      try{
+      let res = await this.request(`users/${username}/encounters`)
+      return res.encounters
+      }
+      catch(err) {
+          console.error("API Error:", err.response);
+          let message = err.response.data.error.message;
+          throw Array.isArray(message) ? message : [message];
+      }
+    }
 
 
 }

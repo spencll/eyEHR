@@ -1,5 +1,5 @@
 import EHRApi from './api';
-import { useParams } from 'react-router-dom';
+import { useParams,NavLink } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 
 
@@ -59,6 +59,10 @@ const formatDateTime = (datetime) => {
           <p>No appointments found</p>
         )}
       </div>
+      <NavLink to={{
+        pathname: `/patients/${pid}/appointments/new`,
+        state: { patient }
+      }}>Make appointment </NavLink>
 
       <div className="patient-encounters">
         <h3>Encounters</h3>
@@ -79,8 +83,10 @@ const formatDateTime = (datetime) => {
           <p>No encounters found</p>
         )}
       </div>
+      <NavLink>Make encounter </NavLink>
             </div>
           </div>
+          
         )
   }
 

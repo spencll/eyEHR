@@ -10,6 +10,7 @@ const { BadRequestError } = require("../expressError");
 const User = require("../models/user");
 const Patient = require("../models/patient")
 const Appointment = require("../models/appointment")
+const Encounters = require("../models/encounter")
 const { createToken } = require("../helpers/tokens");
 const userNewSchema = require("../schemas/patientNew.json");
 const userUpdateSchema = require("../schemas/userUpdate.json");
@@ -52,7 +53,7 @@ router.get("/:username", async function (req, res, next) {
   }
 });
 
-//GET today's appointments for user 
+//GET today's appointments for HCP, all appointments for regular user
 router.get("/:username/appointments", async function (req,res,next){
   try {
     let appointments;
@@ -60,6 +61,19 @@ router.get("/:username/appointments", async function (req,res,next){
     // today's appointment if HCP, all appointments if regular user 
     user.isHCP? appointments= await Appointment.findTodaysAppointments(user.username):  await Appointment.findAllAppointments(req.params.username)
     return res.json({appointments});
+  } catch (err) {
+    return next(err);
+  }
+})
+
+//GET today's encounters for HCP, all encounters for regular user
+router.get("/:username/encounters", async function (req,res,next){
+  try {
+    let encounters;
+    const user = await User.get(req.params.username);
+    // today's appointment if HCP, all appointments if regular user 
+    user.isHCP? encounters= await Encounters.findTodaysEncounters(user.username):  await Encounters.getEncounters(user.username)
+    return res.json({encounters});
   } catch (err) {
     return next(err);
   }

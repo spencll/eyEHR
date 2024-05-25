@@ -6,9 +6,14 @@ import './App.css'
 import Home from './Home';
 import EHRApi from './api';
 import AppointmentsList from './AppointmentsList';
-// import JobsList from './JobsList';
+import EncountersList from './EncountersList';
+// Forms
 import SignUpForm from './SignupForm';
 import LoginForm from './LoginForm';
+import AppointmentForm from './AppointmentForm';
+import EncounterForm from './EncounterForm';
+
+
 import PatientProfile from './PatientProfile';
 // import CompanyDetails from './CompanyDetails';
 import Profile from './Profile';
@@ -29,8 +34,11 @@ function App() {
     // The actual user info 
     const [userInfo, setUserInfo] = useState({})
 
-    // Appointment state
+    // Appointment state, today's apppointments for HCP, all apointments for regular user. Can then query via front end
     const [appointments, setAppointments] = useState([])  
+
+    // Encounter state, unassigned encounters for HCP, all encounters for regular user. Can then query via front end
+    const [encounters, setEncounters] = useState([])  
 
 
   
@@ -43,6 +51,7 @@ function App() {
           //  API requests
           const user = await EHRApi.getUser(username);
           const appointments = await EHRApi.getAppointments(username)
+          const encounters = await EHRApi.getEncounters(username)
           // Setting states 
 
           setAppointments(appointments)
@@ -90,6 +99,10 @@ function App() {
       <Route exact path="/profile" element={<Profile isLogged={isLogged}/> }  />  
       <Route exact path="/patients/:pid" element={<PatientProfile isLogged={isLogged} /> }  />  
       <Route exact path="/appointments" element={isLogged? <AppointmentsList appointments={appointments} />: <Navigate to="/login"/>}/>
+      <Route exact path="/patients/:pid/appointments/new" element={isLogged? <AppointmentForm appointments={appointments} />: <Navigate to="/login"/>}/>
+      <Route exact path="/encounters" element={isLogged? <EncountersList encounters={encounters} />: <Navigate to="/login"/>}/>
+
+      
 
         {/* <Route exact path="/companies" element={isLogged? <CompaniesList companies={companies} setCompanies={setCompanies}/>: <Navigate to="/login"/>}/>
         <Route exact path="/jobs" element={isLogged?<JobsList jobs={jobs} setJobs={setJobs} setUserInfo={setUserInfo} userInfo={userInfo}/>:<Navigate to="/login"/>} />

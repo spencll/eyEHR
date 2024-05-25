@@ -33,7 +33,7 @@ function NavBar({isLogged, logout, userInfo}) {
   // Debounce search query
   useEffect(() => {
 
-    // Basically, delays the query until results done
+    // Basically, delays the query until results done. Otherwise, results will be behind 
     const handler = setTimeout(() => {
       setDebouncedQuery(searchQuery);
     }, 100); // Adjust the delay as needed
@@ -78,7 +78,7 @@ function NavBar({isLogged, logout, userInfo}) {
 
             {/* Show today's encounters if HCP, user's encounters if regular user */}
           <NavItem>
-            <NavLink to="/jobs">{userInfo.isHCP ? "Today's encounters" : 'Your encounters'}</NavLink>
+            <NavLink to="/encounters">{userInfo.isHCP ? "Today's encounters" : 'Your encounters'}</NavLink>
           </NavItem>
 
           <NavItem>

@@ -1,14 +1,14 @@
-import "./AppointmentsList.css";
+
 import { Link } from 'react-router-dom';
 
 
-function AppointmentsList({appointments}) {
+function EncountersList({encounters}) {
 
     return (<>
-      <div className="appointments-list">
-      {appointments && appointments.length > 0 ? (
+      <div className="encounters-list">
+      {encounters && encounters.length > 0 ? (
           <ul>
-           {appointments.map((appointment) => {
+           {encounters.map((appointment) => {
               const { date, time } = formatDateTime(appointment.datetime);
               return (
                 <div key={appointment.id}>
@@ -20,7 +20,7 @@ function AppointmentsList({appointments}) {
             })}
           </ul>
         ) : (
-          <p>No appointments today</p>
+          <p>No encounters today</p>
         )}
       </div>
       </>
@@ -29,4 +29,4 @@ function AppointmentsList({appointments}) {
 
   
   
-  export default AppointmentsList
+  export default EncountersList

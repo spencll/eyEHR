@@ -3,6 +3,7 @@ import JoblyApi from './api';
 import { useState, useEffect} from 'react';
 import { useNavigate } from "react-router-dom";
 import "./Profile.css"
+import EHRApi from './api';
 
 function Profile({isLogged}) {
 
@@ -15,8 +16,7 @@ function Profile({isLogged}) {
     const fetchUserData = async () => {
         try {
             const { username } = jwtDecode(isLogged);
-            JoblyApi.token = isLogged;
-            const userInfo = await JoblyApi.getUser(username);
+            const userInfo = await EHRApi.getUser(username);
             setFormData(userInfo)
         } catch (error) {
             console.error('Error fetching user data:', error);
@@ -40,7 +40,7 @@ const handleChange = (event) => {
             password: formData.password,
           };
 
-  await JoblyApi.updateProfile(formData.username, data);
+  await EHRApi.updateProfile(formData.username, data);
           setFormData(INITIAL_STATE)
           navigate("..", { relative: "path" })
 

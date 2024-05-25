@@ -53,6 +53,23 @@ class Encounter {
     return result.rows;
   }
 
+  
+  static async findTodaysEncounters(username) {
+    try {
+        const result = await db.query(`
+            SELECT e.id, e.datetime, p.first_name AS "patientFirstName",
+            p.last_name AS "patientLastName"
+            FROM encounters AS e 
+            JOIN users AS u ON e.user_id=u.id
+            JOIN patients AS p ON e.patient_id = p.id
+            WHERE DATE(datetime) = CURRENT_DATE AND u.username = $1
+        `,[username]);
+        return result.rows;
+    } catch (error) {
+        throw new Error(`Error retrieving today's appointments: ${error.message}`);
+    }
+}
+
 
 // Access single encounter
   static async get(eid) {
@@ -123,29 +140,6 @@ class Encounter {
    **/
 
 
-
-  static async applyToJob(username, jobId) {
-    const preCheck = await db.query(
-          `SELECT id
-           FROM jobs
-           WHERE id = $1`, [jobId]);
-    const job = preCheck.rows[0];
-
-    if (!job) throw new NotFoundError(`No job: ${jobId}`);
-
-    const preCheck2 = await db.query(
-          `SELECT username
-           FROM users
-           WHERE username = $1`, [username]);
-    const user = preCheck2.rows[0];
-
-    if (!user) throw new NotFoundError(`No username: ${username}`);
-
-    await db.query(
-          `INSERT INTO applications (job_id, username)
-           VALUES ($1, $2)`,
-        [jobId, username]);
-  }
 }
 
 
