@@ -2,19 +2,19 @@
 import { Link } from 'react-router-dom';
 
 
-function EncountersList({encounters}) {
+function EncountersList({encounters, formatDateTime}) {
 
     return (<>
       <div className="encounters-list">
       {encounters && encounters.length > 0 ? (
           <ul>
-           {encounters.map((appointment) => {
-              const { date, time } = formatDateTime(appointment.datetime);
+           {encounters.map((encounter) => {
+              const { date, time } = formatDateTime(encounter.datetime);
               return (
-                <div key={appointment.id}>
+                <div key={encounter.id}>
                   <p>Date: {date}</p>
                   <p>Time: {time}</p>
-                  <p>Doctor: {appointment.drLastName}, {appointment.drFirstName}</p>
+                  <p>Doctor: {encounter.drLastName}, {encounter.drFirstName}</p>
                 </div>
               );
             })}

@@ -55,6 +55,7 @@ function App() {
           // Setting states 
 
           setAppointments(appointments)
+          setEncounters(encounters)
           setUserInfo(user)
           }
 
@@ -83,6 +84,13 @@ function App() {
     localStorage.removeItem('token');
   }
 
+  const formatDateTime = (datetime) => {
+    const dateObj = new Date(datetime);
+    const date = dateObj.toLocaleDateString(); // Extract date
+    const time = dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); // Extract time
+    return { date, time };
+  };
+
 
 
 
@@ -94,13 +102,55 @@ function App() {
       <Route exact path="/" element={<Home userInfo={userInfo} isLogged={isLogged} />} />
       {/* Protecting companies/jobs routes */}
 
+      {/* Don't need protection */}
       <Route exact path="/signup" element={<SignUpForm setIsLogged={setIsLogged}/>} />
       <Route exact path="/login" element={<LoginForm setIsLogged={setIsLogged}/>} />
-      <Route exact path="/profile" element={<Profile isLogged={isLogged}/> }  />  
-      <Route exact path="/patients/:pid" element={<PatientProfile isLogged={isLogged} /> }  />  
-      <Route exact path="/appointments" element={isLogged? <AppointmentsList appointments={appointments} />: <Navigate to="/login"/>}/>
-      <Route exact path="/patients/:pid/appointments/new" element={isLogged? <AppointmentForm appointments={appointments} />: <Navigate to="/login"/>}/>
-      <Route exact path="/encounters" element={isLogged? <EncountersList encounters={encounters} />: <Navigate to="/login"/>}/>
+
+      {/* Users routes */}
+      <Route exact path="/profile" 
+      element={isLogged? 
+      <Profile isLogged={isLogged}/>
+      :<Navigate to="/login"/> }  /> 
+
+      <Route exact path="/appointments" 
+      element={isLogged? 
+      <AppointmentsList appointments={appointments}/>
+      :<Navigate to="/login"/> }  /> 
+
+      <Route exact path="/encounters" 
+      element={isLogged? 
+      <EncountersList encounters={encounters}/>
+      :<Navigate to="/login"/> }  /> 
+
+      <Route exact path="/patients/:pid" 
+      element={isLogged? 
+      <PatientProfile isLogged={isLogged} userInfo={userInfo} />
+      :<Navigate to="/login"/>}/>  
+
+      <Route exact path="/patients/:pid/appointments" 
+      element={isLogged? 
+      <AppointmentsList appointments={appointments} formatDateTime={formatDateTime}/>
+      : <Navigate to="/login"/>}/>
+     
+      <Route exact path="/patients/:pid/appointments/new" 
+      element={isLogged? 
+      <AppointmentForm userInfo={userInfo}/>
+      : <Navigate to="/login"/>}/>
+      
+      <Route exact path="/patients/:pid/encounters" 
+      element={isLogged? 
+      <EncountersList encounters={encounters} formatDateTime={formatDateTime} />
+      : <Navigate to="/login"/>}/>
+
+      <Route exact path="/patients/:pid/encounters/new" 
+      element={isLogged? 
+      <EncounterForm userInfo={userInfo}/>
+      : <Navigate to="/login"/>}/>
+
+      <Route exact path="/patients/:pid/encounters/:eid/edit" 
+      element={isLogged? 
+      <EncounterForm userInfo={userInfo}/>
+      : <Navigate to="/login"/>}/>
 
       
 

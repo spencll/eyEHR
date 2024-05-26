@@ -24,7 +24,7 @@ class Appointment {
    **/
 
   //Making appointment 
-  static async makeAppointment(userId, patientId) {
+  static async makeAppointment(datetime, userId, patientId) {
     const result = await db.query(
         `INSERT INTO appointments (datetime, user_id, patient_id)
         VALUES ($1, $2, $3) RETURNING datetime`,

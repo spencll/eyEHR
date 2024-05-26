@@ -140,9 +140,9 @@ static async queryPatients(q){
     }
 
     // Make appointment 
-    static async makeAppointment(pid) {
+    static async makeAppointment(pid,data) {
       try{
-      let res = await this.request(`patients/${pid}/appointments`)
+      let res = await this.request(`patients/${pid}/appointments/add`,data, "post")
       return res.appointments
       }
       catch(err) {
@@ -151,6 +151,25 @@ static async queryPatients(q){
           throw Array.isArray(message) ? message : [message];
       }
     }
+
+     // Make encounter
+     static async makeEncounter(pid,data) {
+      try{
+      let res = await this.request(`patients/${pid}/encounters/add`,data, "post")
+      return res.encounters
+      }
+      catch(err) {
+          console.error("API Error:", err.response);
+          let message = err.response.data.error.message;
+          throw Array.isArray(message) ? message : [message];
+      }
+    }
+
+    // Update encounter TODO
+  static async updateEncounter(username, data) {
+    let res = await this.request(`users/${username}`, data, "patch");
+    return res.user;
+  }
 
     // Getting encounters for a patient
     static async getPatientEncounters(pid) {

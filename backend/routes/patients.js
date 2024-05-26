@@ -137,10 +137,9 @@ router.post("/:pid/appointments/add", async function (req,res,next){
     //   throw new BadRequestError(errs);
     // }
     // Extract needed info to make appointment 
-    const { datetime, firstName, lastName } = req.body;
-    const user = await User.getHCPByName(firstName, lastName);
+    const { datetime, userId } = req.body;
     // Fix date time insertion
-    const appointment = await Appointment.makeAppointment(datetime, user.id, req.params.pid)
+    const appointment = await Appointment.makeAppointment(datetime, userId, req.params.pid)
     return res.json({appointment });
   } catch (err) {
     return next(err);

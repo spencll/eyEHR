@@ -3,7 +3,7 @@ import { useParams,NavLink } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 
 
-function PatientProfile() {
+function PatientProfile({userInfo}) {
 
     // Parem extraction
     const {pid} = useParams()
@@ -59,10 +59,7 @@ const formatDateTime = (datetime) => {
           <p>No appointments found</p>
         )}
       </div>
-      <NavLink to={{
-        pathname: `/patients/${pid}/appointments/new`,
-        state: { patient }
-      }}>Make appointment </NavLink>
+      <NavLink to={`/patients/${pid}/appointments/new`}>Make appointment </NavLink>
 
       <div className="patient-encounters">
         <h3>Encounters</h3>
@@ -83,7 +80,9 @@ const formatDateTime = (datetime) => {
           <p>No encounters found</p>
         )}
       </div>
-      <NavLink>Make encounter </NavLink>
+      {userInfo.isHCP?  <>
+        <NavLink to={`/patients/${pid}/encounters/new`}>Make encounter </NavLink>
+          </> : null}
             </div>
           </div>
           

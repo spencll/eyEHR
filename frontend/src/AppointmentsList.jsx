@@ -2,7 +2,7 @@ import "./AppointmentsList.css";
 import { Link } from 'react-router-dom';
 
 
-function AppointmentsList({appointments}) {
+function AppointmentsList({appointments, formatDateTime}) {
 
     return (<>
       <div className="appointments-list">
