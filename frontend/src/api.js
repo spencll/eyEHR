@@ -156,7 +156,7 @@ static async queryPatients(q){
      static async makeEncounter(pid,data) {
       try{
       let res = await this.request(`patients/${pid}/encounters/add`,data, "post")
-      return res.encounters
+      return res.encounter
       }
       catch(err) {
           console.error("API Error:", err.response);
@@ -166,9 +166,9 @@ static async queryPatients(q){
     }
 
     // Update encounter TODO
-  static async updateEncounter(username, data) {
-    let res = await this.request(`users/${username}`, data, "patch");
-    return res.user;
+  static async updateEncounter(pid, eid, data) {
+    let res = await this.request(`patients/${pid}/encounters/${eid}`, data, "patch");
+    return res.encounter;
   }
 
     // Getting encounters for a patient
@@ -183,6 +183,18 @@ static async queryPatients(q){
           throw Array.isArray(message) ? message : [message];
       }
     }
+        // Getting encounter for a patient
+        static async getPatientEncounter(pid, eid) {
+          try{
+          let res = await this.request(`patients/${pid}/encounters/${eid}`)
+          return res.encounter
+          }
+          catch(err) {
+              console.error("API Error:", err.response);
+              let message = err.response.data.error.message;
+              throw Array.isArray(message) ? message : [message];
+          }
+        }
     // Getting user appointments
     static async getAppointments(username) {
       try{

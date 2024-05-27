@@ -68,11 +68,13 @@ const formatDateTime = (datetime) => {
          {patient.encounters.map((encounter) => {
               const { date, time } = formatDateTime(encounter.datetime);
               return (
+                <NavLink key={encounter.id} to={`/patients/${pid}/encounters/${encounter.id}/edit`}>
                 <div key={encounter.id}>
                   <p>Date: {date}</p>
                   <p>Time: {time}</p>
                   <p>Doctor: {encounter.drLastName}, {encounter.drFirstName}</p>
                 </div>
+                </NavLink>
               );
             })}
           </ul>

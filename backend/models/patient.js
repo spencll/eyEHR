@@ -131,7 +131,9 @@ class Patient {
         u.last_name AS "drLastName"
            FROM encounters AS e
            LEFT JOIN users AS u ON e.user_id = u.id
-           WHERE e.patient_id = $1`, [pid]);
+           WHERE e.patient_id = $1
+           ORDER BY e.datetime`
+           , [pid]);
         
     // Adding encounters property to patient
     patient.encounters = encountersRes.rows

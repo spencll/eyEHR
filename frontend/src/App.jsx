@@ -15,10 +15,11 @@ import EncounterForm from './EncounterForm';
 
 
 import PatientProfile from './PatientProfile';
-// import CompanyDetails from './CompanyDetails';
+
 import Profile from './Profile';
-// import JobDetails from './JobDetails';
+
 import { Navigate } from 'react-router-dom';
+import CreateEncounter from './CreateEncounter';
 
 function App() {
 
@@ -114,12 +115,12 @@ function App() {
 
       <Route exact path="/appointments" 
       element={isLogged? 
-      <AppointmentsList appointments={appointments}/>
+      <AppointmentsList appointments={appointments} formatDateTime={formatDateTime}/>
       :<Navigate to="/login"/> }  /> 
 
       <Route exact path="/encounters" 
       element={isLogged? 
-      <EncountersList encounters={encounters}/>
+      <EncountersList encounters={encounters} formatDateTime={formatDateTime}/>
       :<Navigate to="/login"/> }  /> 
 
       <Route exact path="/patients/:pid" 
@@ -144,7 +145,7 @@ function App() {
 
       <Route exact path="/patients/:pid/encounters/new" 
       element={isLogged? 
-      <EncounterForm userInfo={userInfo}/>
+      <CreateEncounter userInfo={userInfo}/>
       : <Navigate to="/login"/>}/>
 
       <Route exact path="/patients/:pid/encounters/:eid/edit" 

@@ -3,48 +3,48 @@ import { useNavigate, useParams} from "react-router-dom";
 import EHRApi from "./api";
 
 // Bringing down functions for changing state as props
-function EncounterForm({userInfo}) {
+function EncounterForm() {
 
   const navigate = useNavigate();
 
       // Parem extraction
-      const {pid} = useParams()
+      const {eid, pid} = useParams()
 
-
-  // Used for clearing form 
-  const INITIAL_STATE =  { datetime: "", userId: userInfo.id, patientId: pid};
-
-     // state for form input
+     const INITIAL_STATE =  {results:""};
      const [formData, setFormData] = useState(INITIAL_STATE);
 
-    //  Initialize encounter 
-  useEffect(() => {
-    const createEncounter = async () => {
+    //  Getting encounter upon arriving to encouter form. 
+    // Populate form with existing data
 
-      try {
-        // Making encounter directs you to editing form 
-        const encounter = await EHRApi.makeEncounter(pid, formData);
-        // After creating the encounter, can edit 
-        
-      } catch (err) {
-        console.error('Failed to create encounter:', err);
-        setError('Failed to create encounter. Please try again.');
-      }
-    };   createEncounter();
-}, []);
+     useEffect(() => {
+        const loadEncounter = async () => {
+          try {
+            const encounter = await EHRApi.getPatientEncounter(pid, eid)  
+            const initialResults = encounter.results ? encounter.results.results : "";
+            setFormData({ results: initialResults})
+          } catch (err) {
+            console.error('Encounter not found:', err);
+            // Handle error appropriately
+          }
+        };
+    
+        loadEncounter();
+      }, []);
+
 
 
     // matches input value to what was typed
-    const handleChange = (event) => {
+    const handleChange = async (event) => {
       const { name, value } = event.target;
       setFormData({ ...formData, [name]: value})
+      await EHRApi.updateEncounter(pid, eid, formData)
     };
 
     // Prevents empty submission/category. Adds item to appropriate state array. Clears input and redirect to changed menu.
     const handleSubmit = async (event) => {
       event.preventDefault();
         try {
-            const token = await EHRApi.signup(formData);
+            await EHRApi.updateEncounter(formData);
     
             navigate("..", { relative: "path" })
 
@@ -56,18 +56,16 @@ function EncounterForm({userInfo}) {
   
     return (
       <form onSubmit={handleSubmit} >
-        <h1>Sign up!</h1>
+        <h1>Exam results</h1>
 
-        <label htmlFor="username" >Username</label>
+        <label htmlFor="results" >Results</label>
         <input
+        type="text"
         id="results"
         name="results"
-        placeholder="results"
-        value={formData.username}
+        value={formData.results}
         onChange={handleChange}
       />
-
-    
 
         <button type="submit">Sign up!</button>
       </form>

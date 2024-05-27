@@ -240,8 +240,10 @@ router.patch("/:pid/encounters/:eid", async function (req,res,next){
     //   throw new BadRequestError(errs);
     // }
     // Extract needed info to make appointment 
- 
-    const encounter = await Encounter.update(req.body.results)
+
+    // Convert results to json
+
+    const encounter = await Encounter.update(req.params.eid, req.body)
     return res.json({encounter});
   } catch (err) {
     return next(err);

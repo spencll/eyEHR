@@ -30,14 +30,14 @@ class Encounter {
            (datetime,
             user_id,
             patient_id)
-           VALUES (NOW(), $1, $2) RETURNING datetime`,
+           VALUES (NOW(), $1, $2) RETURNING *`,
         [userId, patientId]
     );
 
-    const patient = result.rows[0];
-    patient.message= "Successfully created encounter"
+    const encounter = result.rows[0];
+    encounter.message= "Successfully created encounter"
 
-    return patient;
+    return encounter;
   }
 
 
@@ -105,12 +105,14 @@ class Encounter {
    */
 
 //The only thing you can change in encounter is the exam data (results).
-  static async update(results) {
+  static async update(eid, results) {
 
     const result = await db.query(
         `UPDATE encounters
-        SET results = $1 RETURNING *`,
-      [results]
+        SET results = $1
+        WHERE id = $2
+        RETURNING *`,
+      [results,eid]
   );
 
   const encounter= result.rows[0];
