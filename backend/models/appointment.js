@@ -60,7 +60,9 @@ static async findTodaysAppointments(username) {
     try {
         const result = await db.query(`
             SELECT a.id, a.datetime, p.first_name AS "patientFirstName",
-            p.last_name AS "patientLastName"
+            p.last_name AS "patientLastName", 
+            u.first_name AS "drFirstName",
+            u.last_name AS "drLastName"
             FROM appointments AS a
             JOIN users AS u ON a.user_id=u.id
             JOIN patients AS p ON a.patient_id = p.id

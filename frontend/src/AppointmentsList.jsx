@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 
 
 function AppointmentsList({appointments, formatDateTime}) {
-
     return (<>
       <div className="appointments-list">
       {appointments && appointments.length > 0 ? (
@@ -14,6 +13,7 @@ function AppointmentsList({appointments, formatDateTime}) {
                 <div key={appointment.id}>
                   <p>Date: {date}</p>
                   <p>Time: {time}</p>
+                  <p>Patient: {appointment.patientLastName}, {appointment.patientFirstName}</p>
                   <p>Doctor: {appointment.drLastName}, {appointment.drFirstName}</p>
                 </div>
               );

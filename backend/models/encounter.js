@@ -58,7 +58,9 @@ class Encounter {
     try {
         const result = await db.query(`
             SELECT e.id, e.datetime, p.first_name AS "patientFirstName",
-            p.last_name AS "patientLastName"
+            p.last_name AS "patientLastName",
+            u.first_name AS "drFirstName",
+            u.last_name AS "drLastName"
             FROM encounters AS e 
             JOIN users AS u ON e.user_id=u.id
             JOIN patients AS p ON e.patient_id = p.id
@@ -66,7 +68,7 @@ class Encounter {
         `,[username]);
         return result.rows;
     } catch (error) {
-        throw new Error(`Error retrieving today's appointments: ${error.message}`);
+        throw new Error(`Error retrieving today's encounters: ${error.message}`);
     }
 }
 

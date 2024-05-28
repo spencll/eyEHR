@@ -15,6 +15,7 @@ function EncountersList({encounters, formatDateTime}) {
                 <div key={encounter.id}>
                   <p>Date: {date}</p>
                   <p>Time: {time}</p>
+                  <p>Patient: {encounter.patientLastName}, {encounter.patientFirstName}</p>
                   <p>Doctor: {encounter.drLastName}, {encounter.drFirstName}</p>
                 </div>
               );
