@@ -124,26 +124,17 @@ class Encounter {
 
   /** Delete given user from database; returns undefined. */
 
-  static async remove(username) {
+  static async remove(eid) {
     let result = await db.query(
           `DELETE
-           FROM users
-           WHERE username = $1
-           RETURNING username`,
-        [username],
+           FROM encounters
+           WHERE id = $1`,
+        [eid],
     );
-    const user = result.rows[0];
-
-    if (!user) throw new NotFoundError(`No user: ${username}`);
+    return {message: "encounter removed"};
   }
 
-  /** Apply for job: update db, returns undefined.
-   *
-   * - username: username applying for job
-   * - jobId: job id
-   **/
-
-
+ 
 }
 
 

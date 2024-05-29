@@ -250,5 +250,14 @@ router.patch("/:pid/encounters/:eid", async function (req,res,next){
   }
 })
 
+// DELETE patient appointment 
+router.delete("/:pid/encounters/:eid", async function (req, res, next) {
+  try {
+    await Encounter.remove(req.params.eid);
+  } catch (err) {
+    return next(err);
+  }
+});
+
 
 module.exports = router;

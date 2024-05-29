@@ -1,15 +1,14 @@
 import EHRApi from './api';
 import { useParams,NavLink } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-
+import "./PatientProfile.css"
 
 function PatientProfile({userInfo}) {
 
     // Parem extraction
     const {pid} = useParams()
     // patient state 
-    const [patient, setPatient] = useState([]);
-    const [doctor, setDoctor] = useState([]);
+    const [patient, setPatient] = useState({});
 
 
     //Extracting date and time from datetime 
@@ -19,21 +18,28 @@ const formatDateTime = (datetime) => {
   const time = dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); // Extract time
   return { date, time };
 };
+const fetchPatientDetails = async () => {
+  try {
+    const patientData = await EHRApi.getPatient(pid);
+    setPatient(patientData);
+    console.log(patientData)
+  } catch (error) {
+    console.error('Error fetching patient details:', error);
+  }
+};
 
   useEffect(() => {
-    const fetchPatientDetails = async () => {
-      try {
-        const patientData = await EHRApi.getPatient(pid);
-
-        setPatient(patientData);
-
-      } catch (error) {
-        console.error('Error fetching patient details:', error);
-      }
-    };
-
-    fetchPatientDetails();
+    fetchPatientDetails();  
   }, [pid]);
+
+ 
+  const handleDelete = async (eid) =>{
+    await EHRApi.deleteEncounter(pid, eid)
+    setPatient((prevPatient) => ({
+      ...prevPatient,
+      encounters: prevPatient.encounters.filter((encounter) => encounter.id !== eid),
+    }));
+  }
 
     return (
           <div className="patient-card">
@@ -62,25 +68,28 @@ const formatDateTime = (datetime) => {
       <NavLink to={`/patients/${pid}/appointments/new`}>Make appointment </NavLink>
 
       <div className="patient-encounters">
-        <h3>Encounters</h3>
-        {patient.encounters && patient.encounters.length > 0 ? (
-          <ul>
-         {patient.encounters.map((encounter) => {
-              const { date, time } = formatDateTime(encounter.datetime);
-              return (
-                <NavLink key={encounter.id} to={`/patients/${pid}/encounters/${encounter.id}/edit`}>
-                <div key={encounter.id}>
-                  <p>Date: {date}</p>
-                  <p>Time: {time}</p>
-                  <p>Doctor: {encounter.drLastName}, {encounter.drFirstName}</p>
-                </div>
+      <h3>Encounters</h3>
+      {patient.encounters && patient.encounters.length > 0 ? (
+        <ul>
+          {patient.encounters.map((encounter) => {
+            const { date, time } = formatDateTime(encounter.datetime);
+            return (
+              <li key={encounter.id} className="encounter-card">
+                <NavLink to={`/patients/${pid}/encounters/${encounter.id}/edit`}>
+                  <div>
+                    <p><strong>Date:</strong> {date}</p>
+                    <p><strong>Time:</strong> {time}</p>
+                    <p><strong>Doctor:</strong> {encounter.drLastName}, {encounter.drFirstName}</p>
+                  </div>
                 </NavLink>
-              );
-            })}
-          </ul>
-        ) : (
-          <p>No encounters found</p>
-        )}
+                <button onClick={() => handleDelete(encounter.id)}>Delete</button>
+              </li>
+            );
+          })}
+        </ul>
+      ) : (
+        <p>No encounters found</p>
+      )}
       </div>
       {userInfo.isHCP?  <>
         <NavLink to={`/patients/${pid}/encounters/new`}>Make encounter </NavLink>

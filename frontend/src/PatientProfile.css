@@ -1,0 +1,58 @@
+.patient-encounters {
+    padding: 20px;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  
+  .patient-encounters h3 {
+    text-align: center;
+  }
+  
+  .patient-encounters ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .encounter-card {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    margin-bottom: 16px;
+    padding: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: box-shadow 0.3s ease-in-out;
+  }
+  
+  .encounter-card:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .encounter-card a {
+    text-decoration: none;
+    color: inherit;
+  }
+  
+  .encounter-card div {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .encounter-card p {
+    margin: 4px 0;
+  }
+  
+  .encounter-card button {
+    background-color: #ff4d4d;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 8px 12px;
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out;
+  }
+  
+  .encounter-card button:hover {
+    background-color: #ff1a1a;
+  }
+  

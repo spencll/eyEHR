@@ -15,7 +15,6 @@ class EHRApi {
 
   //API request function, takes endpoit, data, method. Has default of empty data and get 
   static async request(endpoint, data = {}, method = "get") {
-
     
     console.debug("API Call:", endpoint, data, method);
     const url = `${BASE_URL}/${endpoint}`;
@@ -139,6 +138,19 @@ static async queryPatients(q){
       }
     }
 
+       // Getting user appointments for today
+       static async getAppointments(username) {
+        try{
+        let res = await this.request(`users/${username}/appointments`)
+        return res.appointments
+        }
+        catch(err) {
+            console.error("API Error:", err.response);
+            let message = err.response.data.error.message;
+            throw Array.isArray(message) ? message : [message];
+        }
+      }
+
     // Make appointment 
     static async makeAppointment(pid,data) {
       try{
@@ -195,20 +207,9 @@ static async queryPatients(q){
               throw Array.isArray(message) ? message : [message];
           }
         }
-    // Getting user appointments
-    static async getAppointments(username) {
-      try{
-      let res = await this.request(`users/${username}/appointments`)
-      return res.appointments
-      }
-      catch(err) {
-          console.error("API Error:", err.response);
-          let message = err.response.data.error.message;
-          throw Array.isArray(message) ? message : [message];
-      }
-    }
+ 
     
-     // Getting user encounters
+     // Getting user encounters (today)
      static async getEncounters(username) {
       try{
       let res = await this.request(`users/${username}/encounters`)
@@ -220,6 +221,20 @@ static async queryPatients(q){
           throw Array.isArray(message) ? message : [message];
       }
     }
+
+     //Delete encounter
+     static async deleteEncounter(pid, eid) {
+      try{
+      let res = await this.request(`patients/${pid}/encounters/${eid}`,  {}, "delete")
+      return res
+      }
+      catch(err) {
+          console.error("API Error:", err.response);
+          let message = err.response.data.error.message;
+          throw Array.isArray(message) ? message : [message];
+      }
+    }
+
 
 
 }
