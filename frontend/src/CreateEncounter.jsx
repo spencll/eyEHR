@@ -1,15 +1,21 @@
-import React, { useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import React, { useEffect, useRef} from 'react';
+import { useNavigate, useParams} from 'react-router-dom';
 import EHRApi from './api'; 
 
 const CreateEncounter = ({ userInfo }) => {
   const { pid } = useParams();
   const navigate = useNavigate();
 
-  useEffect(() => {
+  // Tracks component mounted. Workaround for react strict mode double renders. 
+  const isMountedRef = useRef(false);
+
+useEffect(() => {
+// Not mounted yet, mount and create encounter. 
+  if (!isMountedRef.current) {
+    isMountedRef.current = true;
     const createEncounter = async () => {
       try {
-        const newEncounter = await EHRApi.makeEncounter(pid, {userId: userInfo.id, patientId: pid});
+        const newEncounter = await EHRApi.makeEncounter(pid, { userId: userInfo.id, patientId: pid });
         navigate(`/patients/${pid}/encounters/${newEncounter.id}/edit`);
       } catch (err) {
         console.error('Failed to create encounter:', err);
@@ -18,7 +24,8 @@ const CreateEncounter = ({ userInfo }) => {
     };
 
     createEncounter();
-  }, []);
+  }
+}, []);
 
   return <div>Creating Encounter...</div>; // Optionally show a loading state
 };

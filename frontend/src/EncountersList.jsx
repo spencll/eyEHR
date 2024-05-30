@@ -1,5 +1,5 @@
-
-import { Link } from 'react-router-dom';
+import "./PatientProfile.css"
+import {NavLink} from 'react-router-dom';
 
 
 function EncountersList({encounters, formatDateTime}) {
@@ -12,12 +12,26 @@ function EncountersList({encounters, formatDateTime}) {
            {encounters.map((encounter) => {
               const { date, time } = formatDateTime(encounter.datetime);
               return (
-                <div key={encounter.id}>
+                <li key={encounter.id} className="encounter-card">
+                   <NavLink to={`/patients/${encounter.patient_id}/encounters/${encounter.id}/edit`}>
+                    <div>
                   <p>Date: {date}</p>
                   <p>Time: {time}</p>
                   <p>Patient: {encounter.patientLastName}, {encounter.patientFirstName}</p>
                   <p>Doctor: {encounter.drLastName}, {encounter.drFirstName}</p>
-                </div>
+                  </div>
+                  </NavLink>
+                </li>
+              //    <li key={encounter.id} className="encounter-card">
+              //    <NavLink to={`/patients/${pid}/encounters/${encounter.id}/edit`}>
+              //      <div>
+              //        <p><strong>Date:</strong> {date}</p>
+              //        <p><strong>Time:</strong> {time}</p>
+              //        <p><strong>Doctor:</strong> {encounter.drLastName}, {encounter.drFirstName}</p>
+              //      </div>
+              //    </NavLink>
+              //    <button onClick={() => handleDelete(encounter.id)}>Delete</button>
+              //  </li>
               );
             })}
           </ul>

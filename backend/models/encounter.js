@@ -125,13 +125,12 @@ class Encounter {
   /** Delete given user from database; returns undefined. */
 
   static async remove(eid) {
-    let result = await db.query(
+    await db.query(
           `DELETE
            FROM encounters
            WHERE id = $1`,
         [eid],
     );
-    return {message: "encounter removed"};
   }
 
  

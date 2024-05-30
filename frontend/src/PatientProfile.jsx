@@ -1,5 +1,5 @@
 import EHRApi from './api';
-import { useParams,NavLink } from 'react-router-dom';
+import { useParams,NavLink} from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import "./PatientProfile.css"
 
@@ -7,8 +7,11 @@ function PatientProfile({userInfo}) {
 
     // Parem extraction
     const {pid} = useParams()
+
     // patient state 
     const [patient, setPatient] = useState({});
+    // refresh state, used for encounter/appointment changes 
+    const [refresh, setRefresh] = useState(false); 
 
 
     //Extracting date and time from datetime 
@@ -22,23 +25,20 @@ const fetchPatientDetails = async () => {
   try {
     const patientData = await EHRApi.getPatient(pid);
     setPatient(patientData);
-    console.log(patientData)
   } catch (error) {
     console.error('Error fetching patient details:', error);
   }
 };
 
+  // When page loads, fetch details 
   useEffect(() => {
     fetchPatientDetails();  
-  }, [pid]);
+  }, [pid,refresh]);
 
  
   const handleDelete = async (eid) =>{
     await EHRApi.deleteEncounter(pid, eid)
-    setPatient((prevPatient) => ({
-      ...prevPatient,
-      encounters: prevPatient.encounters.filter((encounter) => encounter.id !== eid),
-    }));
+    setRefresh(!refresh)
   }
 
     return (

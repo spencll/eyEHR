@@ -254,6 +254,7 @@ router.patch("/:pid/encounters/:eid", async function (req,res,next){
 router.delete("/:pid/encounters/:eid", async function (req, res, next) {
   try {
     await Encounter.remove(req.params.eid);
+    return res.json({ message: "encounter deleted" })
   } catch (err) {
     return next(err);
   }
