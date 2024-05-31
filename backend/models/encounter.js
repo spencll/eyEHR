@@ -23,7 +23,7 @@ class Encounter {
    **/
 
   //Making encounter
-  static async makeEncounter(userId, patientId) {
+  static async makeEncounter({userId}, patientId) {
 
     const result = await db.query(
           `INSERT INTO encounters
@@ -133,7 +133,24 @@ class Encounter {
     );
   }
 
- 
+  //Signing encounter 
+  static async signEncounter(eid, {signedBy}) {
+
+    const result = await db.query(
+          `INSERT INTO encounters_signatures
+           (encounter_id, signed_by, signed_at)
+           VALUES ($1, $2, NOW()) 
+           RETURNING *`,
+        [eid, signedBy]
+    );
+
+    const signedEncounter = result.rows[0];
+    signedEncounter.message= "Successfully signed encounter"
+
+    return signedEncounter;
+  }
+
+
 }
 
 

@@ -43,6 +43,7 @@ class EHRApi {
   /** Signup for site. */
   static async signup(data) {
     let res = await this.request(`auth/register`, data, "post");
+    localStorage.setItem('token', res.token);
     return res.token;
   }
       
@@ -177,9 +178,15 @@ static async queryPatients(q){
       }
     }
 
-    // Update encounter TODO
+    // Update encounter 
   static async updateEncounter(pid, eid, data) {
     let res = await this.request(`patients/${pid}/encounters/${eid}`, data, "patch");
+    return res.encounter;
+  }
+
+  // Adds encounter to signed encounter table 
+  static async signEncounter(pid, eid, data) {
+    let res = await this.request(`patients/${pid}/encounters/${eid}/sign`, data, "post");
     return res.encounter;
   }
 

@@ -75,8 +75,6 @@ router.post("/register", async function (req, res, next) {
         newUser = await User.register({ ...req.body, isHCP: false });
         }
 
-    
-
       // Create token and store to session 
     const token = createToken(newUser);
     req.session.token= token

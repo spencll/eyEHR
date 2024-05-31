@@ -3,7 +3,7 @@ import { useNavigate, useParams} from "react-router-dom";
 import EHRApi from "./api";
 
 // Bringing down functions for changing state as props
-function EncounterForm() {
+function EncounterForm({userInfo}) {
 
   const navigate = useNavigate();
 
@@ -51,12 +51,12 @@ function EncounterForm() {
     const handleSubmit = async (event) => {
       event.preventDefault();
         try {
-            await EHRApi.updateEncounter(formData);
+            await EHRApi.signEncounter(pid, eid, {signedBy: `${userInfo.lastName}, ${userInfo.firstName}`});
     
             navigate("..", { relative: "path" })
 
           } catch (error) {
-            console.error('Error registering:', error);
+            console.error('Error signing:', error);
           }
       setFormData({})
     };
@@ -84,6 +84,9 @@ function EncounterForm() {
       />
 
         <button type="submit">Sign chart!</button>
+   
+
+
       </form>
     );
   }

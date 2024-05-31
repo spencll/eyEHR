@@ -4,7 +4,7 @@ import EHRApi from './api';
 import { useNavigate, useParams} from "react-router-dom";
 
 // Only for PCP
-function AppointmentForm({userInfo}) {
+function AppointmentForm({setAppointments, userInfo}) {
 
        // Parem extraction
        const {pid} = useParams()
@@ -38,11 +38,13 @@ function AppointmentForm({userInfo}) {
       setFormData({ ...formData, [name]: value})
     };
 
-    // Prevents empty submission/category. Adds item to appropriate state array. Clears input and redirect to changed menu.
+    // Make appointment and change appointment state 
     const handleSubmit = async (event) => {
       event.preventDefault();
         try {
             await EHRApi.makeAppointment(pid, formData);
+            const appointments = await EHRApi.getAppointments(username)
+            setAppointments(appointments)
             navigate("../..", { relative: "path" })
 
           } catch (error) {

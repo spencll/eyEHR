@@ -135,7 +135,7 @@ function App() {
      
       <Route exact path="/patients/:pid/appointments/new" 
       element={isLogged? 
-      <AppointmentForm userInfo={userInfo}/>
+      <AppointmentForm userInfo={userInfo} setAppointments={setAppointments}/>
       : <Navigate to="/login"/>}/>
       
       <Route exact path="/patients/:pid/encounters" 
@@ -145,7 +145,7 @@ function App() {
 
       <Route exact path="/patients/:pid/encounters/new" 
       element={isLogged? 
-      <CreateEncounter userInfo={userInfo}/>
+      <CreateEncounter userInfo={userInfo} setEncounters={setEncounters}/>
       : <Navigate to="/login"/>}/>
 
       <Route exact path="/patients/:pid/encounters/:eid/edit" 

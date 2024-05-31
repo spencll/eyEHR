@@ -14,6 +14,12 @@ psql
 
 Backend: Use fake_patients to generate a 50 patient seed 
 
+## Features 
+
+Dynamic listener on encounter form inputs. Every change is logged into the server rather than have to wait for page change for submission like in 
+real life EHR I'm using. 
+
+
 
 
 ## Guidelines

@@ -64,11 +64,11 @@ function NavBar({isLogged, logout, userInfo}) {
   return (
 <div>
       <Navbar expand="md" >
+       
+        <Nav className="ml-auto" navbar>
         <NavLink to="/" className="navbar-brand">
           Home
         </NavLink>
-
-        <Nav className="ml-auto" navbar>
           {isLogged ? <>
           
           <NavItem>
