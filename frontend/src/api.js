@@ -154,9 +154,10 @@ static async queryPatients(q){
 
     // Make appointment 
     static async makeAppointment(pid,data) {
+  
       try{
       let res = await this.request(`patients/${pid}/appointments/add`,data, "post")
-      return res.appointments
+      return res.appointment
       }
       catch(err) {
           console.error("API Error:", err.response);
@@ -184,9 +185,15 @@ static async queryPatients(q){
     return res.encounter;
   }
 
-  // Adds encounter to signed encounter table 
+  // Sign encounter 
   static async signEncounter(pid, eid, data) {
-    let res = await this.request(`patients/${pid}/encounters/${eid}/sign`, data, "post");
+    let res = await this.request(`patients/${pid}/encounters/${eid}/sign`, data, "patch");
+    return res.encounter;
+  }
+
+  // Unsign encounter
+  static async unsignEncounter(pid, eid) {
+    let res = await this.request(`patients/${pid}/encounters/${eid}/unsign`, {}, "patch");
     return res.encounter;
   }
 

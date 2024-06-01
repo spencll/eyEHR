@@ -15,6 +15,7 @@ import EncounterForm from './EncounterForm';
 
 
 import PatientProfile from './PatientProfile';
+import EncounterDetails from './EncounterDetails';
 
 import Profile from './Profile';
 
@@ -152,6 +153,11 @@ function App() {
       element={isLogged? 
       <EncounterForm userInfo={userInfo}/>
       : <Navigate to="/login"/>}/>
+
+      <Route exact path="/patients/:pid/encounters/:eid" 
+      element={isLogged? 
+      <EncounterDetails userInfo={userInfo}/>
+      : <Navigate to="/login"/>}/>  
 
       
 

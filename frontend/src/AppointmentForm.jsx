@@ -5,7 +5,6 @@ import { useNavigate, useParams} from "react-router-dom";
 
 // Only for PCP
 function AppointmentForm({setAppointments, userInfo}) {
-
        // Parem extraction
        const {pid} = useParams()
        const [patient, setPatient] = useState({});
@@ -43,9 +42,7 @@ function AppointmentForm({setAppointments, userInfo}) {
       event.preventDefault();
         try {
             await EHRApi.makeAppointment(pid, formData);
-            const appointments = await EHRApi.getAppointments(username)
-            setAppointments(appointments)
-            navigate("../..", { relative: "path" })
+            navigate("/..", { relative: "path" })
 
           } catch (error) {
             console.error('Error making appointment:', error);

@@ -1,8 +1,11 @@
 import "./AppointmentsList.css";
-import { Link } from 'react-router-dom';
-
+import { NavLink,useParams } from 'react-router-dom';
 
 function AppointmentsList({appointments, formatDateTime}) {
+
+     // Parem extraction
+     const {pid} = useParams()
+     
     return (<>
       <div className="appointments-list">
       {appointments && appointments.length > 0 ? (
@@ -15,7 +18,9 @@ function AppointmentsList({appointments, formatDateTime}) {
                   <p>Time: {time}</p>
                   <p>Patient: {appointment.patientLastName}, {appointment.patientFirstName}</p>
                   <p>Doctor: {appointment.drLastName}, {appointment.drFirstName}</p>
+                  <NavLink to={`/patients/${pid}/encounters/new`}>Make encounter </NavLink>
                 </div>
+                
               );
             })}
           </ul>

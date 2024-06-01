@@ -76,9 +76,20 @@ class Encounter {
 // Access single encounter
   static async get(eid) {
     const encounterRes = await db.query(
-          `SELECT *
-           FROM encounters
-           WHERE id = $1`,
+          `SELECT e.id, e.datetime, 
+          e.user_id AS "uid",
+          e.signed,
+          e.signed_at AS "signedAt",
+          e.signed_by AS "signedBy",
+          p.first_name AS "patientFirstName",
+          p.last_name AS "patientLastName",
+          u.first_name AS "drFirstName",
+          u.last_name AS "drLastName",
+          e.results
+          FROM encounters AS e 
+          JOIN users AS u ON e.user_id=u.id
+          JOIN patients AS p ON e.patient_id = p.id
+           WHERE e.id = $1`,
         [eid],
     );
 
@@ -136,19 +147,56 @@ class Encounter {
   //Signing encounter 
   static async signEncounter(eid, {signedBy}) {
 
-    const result = await db.query(
-          `INSERT INTO encounters_signatures
-           (encounter_id, signed_by, signed_at)
-           VALUES ($1, $2, NOW()) 
-           RETURNING *`,
-        [eid, signedBy]
-    );
+    try {
+      const result = await db.query(
+        `UPDATE encounters
+        SET signed = $1, signed_by = $2, signed_at = NOW()
+        WHERE id = $3
+        RETURNING *`,
+        [true, signedBy, eid]
+      );
 
-    const signedEncounter = result.rows[0];
-    signedEncounter.message= "Successfully signed encounter"
+      if (result.rows.length === 0) {
+        throw NotFoundError;
+      }
 
-    return signedEncounter;
+      const signedEncounter = result.rows[0];
+      signedEncounter.message = "Successfully signed encounter";
+
+      return signedEncounter;
+
+    } catch (error) {
+      console.error('Error signing encounter:', error.message);
+      throw BadRequestError(error);  
+    }
   }
+
+    //Signing encounter 
+    static async unsignEncounter(eid) {
+
+      try {
+        const result = await db.query(
+          `UPDATE encounters
+          SET signed = $1, signed_by = $2, signed_at = $3
+          WHERE id = $4
+          RETURNING *`,
+          [false, null, null, eid]
+        );
+  
+        if (result.rows.length === 0) {
+          throw NotFoundError;
+        }
+  
+        const unsignedEncounter = result.rows[0];
+        unsignedEncounter.message = "Unsigned encounter";
+  
+        return unsignedEncounter;
+  
+      } catch (error) {
+        console.error('Error unsigning encounter:', error.message);
+        throw BadRequestError(error);  
+      }
+    }
 
 
 }

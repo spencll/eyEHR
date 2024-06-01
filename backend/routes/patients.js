@@ -250,8 +250,8 @@ router.patch("/:pid/encounters/:eid", async function (req,res,next){
 })
 
 
-//Sign patient encounter (add into signed encounters)
-router.post("/:pid/encounters/:eid/sign", async function (req,res,next){
+//Sign patient encounter 
+router.patch("/:pid/encounters/:eid/sign", async function (req,res,next){
 
   try {
     // Validate appointment making schema
@@ -270,6 +270,28 @@ router.post("/:pid/encounters/:eid/sign", async function (req,res,next){
     return next(err);
   }
 })
+
+//Unsign patient encounter 
+router.patch("/:pid/encounters/:eid/unsign", async function (req,res,next){
+
+  try {
+    // Validate appointment making schema
+    // const validator = jsonschema.validate(req.body, userAuthSchema);
+    // if (!validator.valid) {
+    //   const errs = validator.errors.map(e => e.stack);
+    //   throw new BadRequestError(errs);
+    // }
+    // Extract needed info to make appointment 
+
+    // Convert results to json
+
+    const encounter = await Encounter.unsignEncounter(req.params.eid)
+    return res.json({encounter});
+  } catch (err) {
+    return next(err);
+  }
+})
+
 // DELETE patient appointment 
 router.delete("/:pid/encounters/:eid", async function (req, res, next) {
   try {

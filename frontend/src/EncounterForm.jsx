@@ -6,6 +6,7 @@ import EHRApi from "./api";
 function EncounterForm({userInfo}) {
 
   const navigate = useNavigate();
+  const [isEditable, setEditable] = useState(false)
 
       // Parem extraction
       const {eid, pid} = useParams()
@@ -23,10 +24,17 @@ function EncounterForm({userInfo}) {
      useEffect(() => {
         const loadEncounter = async () => {
           try {
-            const encounter = await EHRApi.getPatientEncounter(pid, eid)  
+            const encounter = await EHRApi.getPatientEncounter(pid, eid)
+            console.log(encounter)
+
             // If results not populated yet, use initial state as results 
             const initialResults = encounter.results ? encounter.results : INITIAL_STATE;
             setFormData(initialResults)
+
+            // Updates editable state if is correct user id and not signed
+            if (encounter.uid === userInfo.id && !encounter.signed) setEditable(true)
+
+
           } catch (err) {
             console.error('Encounter not found:', err);
             // Handle error appropriately
@@ -39,12 +47,14 @@ function EncounterForm({userInfo}) {
 
     // matches input value to what was typed 
     const handleChange = async (event) => {
+        if (isEditable){
       const { name, value } = event.target;
     //   carrying over formdata and updating values to form values
       let newFormData= { ...formData, [name]: value}
       await EHRApi.updateEncounter(pid, eid, {...newFormData})
     //   Update formData state
       setFormData(newFormData)
+    }
     };
 
     // Prevents empty submission/category. Adds item to appropriate state array. Clears input and redirect to changed menu.
@@ -60,9 +70,23 @@ function EncounterForm({userInfo}) {
           }
       setFormData({})
     };
+
+    const handleUnsign = async (event) => {
+        event.preventDefault();
+          try {
+              await EHRApi.unsignEncounter(pid, eid);
+      
+              navigate("..", { relative: "path" })
+  
+            } catch (error) {
+              console.error('Error signing:', error);
+            }
+        setFormData({})
+      };
   
     return (
       <form onSubmit={handleSubmit} >
+
         <h1>Exam results</h1>
 
         <label htmlFor="mood" >Mood</label>
@@ -72,6 +96,7 @@ function EncounterForm({userInfo}) {
         name="mood"
         value={formData.mood}
         onChange={handleChange}
+        disabled={!isEditable}
       />
 
         <label htmlFor="vision" >Vision</label>
@@ -81,9 +106,14 @@ function EncounterForm({userInfo}) {
         name="vision"
         value={formData.vision}
         onChange={handleChange}
+        disabled={!isEditable}
       />
 
+    {isEditable ? (
         <button type="submit">Sign chart!</button>
+      ) : (
+        <button type="button" onClick={handleUnsign}>Unsign</button>
+      )}    
    
 
 

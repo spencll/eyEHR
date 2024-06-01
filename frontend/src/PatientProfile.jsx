@@ -1,9 +1,11 @@
 import EHRApi from './api';
-import { useParams,NavLink} from 'react-router-dom';
+import { useParams,NavLink, useNavigate} from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import "./PatientProfile.css"
 
 function PatientProfile({userInfo}) {
+
+  const navigate = useNavigate();
 
     // Parem extraction
     const {pid} = useParams()
@@ -75,7 +77,7 @@ const fetchPatientDetails = async () => {
             const { date, time } = formatDateTime(encounter.datetime);
             return (
               <li key={encounter.id} className="encounter-card">
-                <NavLink to={`/patients/${pid}/encounters/${encounter.id}/edit`}>
+                <NavLink to={`/patients/${pid}/encounters/${encounter.id}/`}>
                   <div>
                     <p><strong>Date:</strong> {date}</p>
                     <p><strong>Time:</strong> {time}</p>
@@ -83,6 +85,7 @@ const fetchPatientDetails = async () => {
                   </div>
                 </NavLink>
                 <button onClick={() => handleDelete(encounter.id)}>Delete</button>
+                <button onClick={() => navigate(`/patients/${pid}/encounters/${encounter.id}/edit`)}>Edit</button>
               </li>
             );
           })}

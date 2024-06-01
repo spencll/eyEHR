@@ -30,15 +30,11 @@ CREATE TABLE encounters(
     user_id INT NOT NULL,
     patient_id INT NOT NULL,
     results JSONB,
-    
+    signed BOOLEAN DEFAULT FALSE,
+    signed_by VARCHAR(255) DEFAULT NULL,
+    signed_at TIMESTAMP DEFAULT NULL,
+
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
     FOREIGN KEY (patient_id) REFERENCES patients(id) ON DELETE CASCADE
 );
 
-CREATE TABLE encounter_signatures (
-    id SERIAL PRIMARY KEY,
-    encounter_id INT NOT NULL,
-    signed_by VARCHAR(255) NOT NULL,
-    signed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (encounter_id) REFERENCES encounters(id)
-);
