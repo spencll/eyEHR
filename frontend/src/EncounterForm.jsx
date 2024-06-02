@@ -15,8 +15,13 @@ function EncounterForm({userInfo}) {
    const INITIAL_STATE= {  
     mood: "",
  vision: ""}
+
     //  Formdata is object be nested in results 
      const [formData, setFormData] = useState(INITIAL_STATE);
+    // Encounter state for checking signed status
+     const [encounter,setEncounter] =useState({})
+    // loading placeholder
+     const [loading, setLoading] = useState(true);
 
     //  Getting encounter upon arriving to encouter form. 
     // Populate form with existing data
@@ -25,11 +30,12 @@ function EncounterForm({userInfo}) {
         const loadEncounter = async () => {
           try {
             const encounter = await EHRApi.getPatientEncounter(pid, eid)
-            console.log(encounter)
+            setEncounter(encounter)
 
             // If results not populated yet, use initial state as results 
             const initialResults = encounter.results ? encounter.results : INITIAL_STATE;
             setFormData(initialResults)
+            setLoading(false)
 
             // Updates editable state if is correct user id and not signed
             if (encounter.uid === userInfo.id && !encounter.signed) setEditable(true)
@@ -51,9 +57,10 @@ function EncounterForm({userInfo}) {
       const { name, value } = event.target;
     //   carrying over formdata and updating values to form values
       let newFormData= { ...formData, [name]: value}
-      await EHRApi.updateEncounter(pid, eid, {...newFormData})
+       await EHRApi.updateEncounter(pid, eid, {...newFormData})
     //   Update formData state
       setFormData(newFormData)
+      setEncounter(encounter)
     }
     };
 
@@ -61,29 +68,32 @@ function EncounterForm({userInfo}) {
     const handleSubmit = async (event) => {
       event.preventDefault();
         try {
-            await EHRApi.signEncounter(pid, eid, {signedBy: `${userInfo.lastName}, ${userInfo.firstName}`});
-    
-            navigate("..", { relative: "path" })
+            const encounter= await EHRApi.signEncounter(pid, eid, {signedBy: `${userInfo.lastName}, ${userInfo.firstName}`});
+            setEditable(false)
+            setEncounter(encounter)
 
           } catch (error) {
             console.error('Error signing:', error);
           }
-      setFormData({})
     };
 
     const handleUnsign = async (event) => {
         event.preventDefault();
           try {
-              await EHRApi.unsignEncounter(pid, eid);
-      
-              navigate("..", { relative: "path" })
-  
+              const encounter = await EHRApi.unsignEncounter(pid, eid);
+              setEditable(true)  
+              setEncounter(encounter)
             } catch (error) {
               console.error('Error signing:', error);
             }
-        setFormData({})
       };
+
+//loading state 
+if (loading) {
+    return <div>Loading...</div>;
+  }
   
+
     return (
       <form onSubmit={handleSubmit} >
 
@@ -114,6 +124,17 @@ function EncounterForm({userInfo}) {
       ) : (
         <button type="button" onClick={handleUnsign}>Unsign</button>
       )}    
+      {/* Signed area*/}
+
+      {encounter.signed? (
+             <div>
+             <p>Signed by: {encounter.signedBy}  </p>
+             <p>Signed at: {encounter.signedAt}  </p>
+     
+           </div>
+
+      ): null}
+ 
    
 
 

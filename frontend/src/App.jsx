@@ -150,7 +150,7 @@ function App() {
       : <Navigate to="/login"/>}/>
 
       <Route exact path="/patients/:pid/encounters/:eid/edit" 
-      element={isLogged? 
+      element={userInfo.isHCP? 
       <EncounterForm userInfo={userInfo}/>
       : <Navigate to="/login"/>}/>
 

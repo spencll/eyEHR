@@ -152,7 +152,9 @@ class Encounter {
         `UPDATE encounters
         SET signed = $1, signed_by = $2, signed_at = NOW()
         WHERE id = $3
-        RETURNING *`,
+        RETURNING results, signed, 
+        signed_by AS "signedBy",
+        signed_at AS "signedAt"`,
         [true, signedBy, eid]
       );
 
@@ -179,7 +181,9 @@ class Encounter {
           `UPDATE encounters
           SET signed = $1, signed_by = $2, signed_at = $3
           WHERE id = $4
-          RETURNING *`,
+          RETURNING results, signed, 
+          signed_by AS "signedBy",
+          signed_at AS "signedAt"`,
           [false, null, null, eid]
         );
   
