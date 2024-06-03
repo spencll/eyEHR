@@ -53,6 +53,40 @@ class Encounter {
     return result.rows;
   }
 
+ //Get all unsigned encounters for HCP
+ static async getUnsignedEncounters(username) {
+  const result = await db.query(
+        `SELECT e.id, e.datetime, p.first_name AS "patientFirstName",
+        p.last_name AS "patientLastName",
+        u.first_name AS "drFirstName",
+        u.last_name AS "drLastName"
+         FROM encounters AS e 
+         JOIN users AS u ON e.user_id=u.id
+         JOIN patients AS p ON e.patient_id = p.id
+         WHERE u.username = $1 AND e.signed = $2
+         ORDER BY datetime`,[username,false],
+  );
+
+  return result.rows;
+}
+
+  //Get all encounters for user (non HCP)
+  static async getUserEncounters(username) {
+    const result = await db.query(
+          `SELECT e.id, e.datetime, p.first_name AS "patientFirstName",
+          p.last_name AS "patientLastName",
+          u.first_name AS "drFirstName",
+          u.last_name AS "drLastName"
+           FROM encounters AS e 
+           JOIN users AS u ON e.user_id=u.id
+           WHERE u.username = $1
+           ORDER BY datetime`,[username],
+    );
+
+    return result.rows;
+  }
+  
+
   
   static async findTodaysEncounters(username) {
     try {

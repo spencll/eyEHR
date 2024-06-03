@@ -30,7 +30,7 @@ function App() {
     // States /////////////////////////////////////////////////////////
     const [isLoading, setIsLoading] = useState(true);
 
-    // Stores existing token into isLogged
+    // Stores existing token into isLogged, maintains logged in state 
     const [isLogged, setIsLogged] = useState(token)
     
     // The actual user info 
@@ -59,6 +59,8 @@ function App() {
           setAppointments(appointments)
           setEncounters(encounters)
           setUserInfo(user)
+          // Helps deal with page refreshes 
+          localStorage.setItem('user', JSON.stringify(user))
           }
 
       } catch (error) {
@@ -68,8 +70,8 @@ function App() {
 
     useEffect(() => {
       async function pullfromDB() {
-        setIsLoading(false);
         fetchUserData()
+        setIsLoading(false);
       }
     
       pullfromDB();
@@ -83,7 +85,7 @@ function App() {
   function logout() {
     setIsLogged(null);
     setUserInfo({})
-    localStorage.removeItem('token');
+    localStorage.clear()
   }
 
   const formatDateTime = (datetime) => {
@@ -93,15 +95,21 @@ function App() {
     return { date, time };
   };
 
+//loading state 
+if (isLoading) {
+  return <div>Loading...</div>;
+}
 
-
+// Protecting routes with local storage 
+const username= JSON.parse(localStorage.getItem("user"))["username"]
+const isHCP= JSON.parse(localStorage.getItem("user"))["isHCP"]
 
   return (
     <>
    <Router>
    <NavBar isLogged={isLogged} logout={logout} userInfo={userInfo}/>
       <Routes>
-      <Route exact path="/" element={<Home userInfo={userInfo} isLogged={isLogged} />} />
+      <Route exact path="/" element={<Home userInfo={userInfo} isLogged={isLogged} formatDateTime={formatDateTime} />} />
       {/* Protecting companies/jobs routes */}
 
       {/* Don't need protection */}
@@ -150,7 +158,7 @@ function App() {
       : <Navigate to="/login"/>}/>
 
       <Route exact path="/patients/:pid/encounters/:eid/edit" 
-      element={userInfo.isHCP? 
+      element={isHCP? 
       <EncounterForm userInfo={userInfo}/>
       : <Navigate to="/login"/>}/>
 

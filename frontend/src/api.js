@@ -223,7 +223,7 @@ static async queryPatients(q){
         }
  
     
-     // Getting user encounters (today)
+     // Getting user encounters (today for HCP/all for regular)
      static async getEncounters(username) {
       try{
       let res = await this.request(`users/${username}/encounters`)
@@ -235,6 +235,19 @@ static async queryPatients(q){
           throw Array.isArray(message) ? message : [message];
       }
     }
+
+      // Getting user encounters (today for HCP/all for regular)
+      static async getUnsignedEncounters(username) {
+        try{
+        let res = await this.request(`users/${username}/encounters/unsigned`)
+        return res.encounters
+        }
+        catch(err) {
+            console.error("API Error:", err.response);
+            let message = err.response.data.error.message;
+            throw Array.isArray(message) ? message : [message];
+        }
+      }
 
      //Delete encounter
      static async deleteEncounter(pid, eid) {

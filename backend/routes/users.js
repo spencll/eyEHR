@@ -72,7 +72,19 @@ router.get("/:username/encounters", async function (req,res,next){
     let encounters;
     const user = await User.get(req.params.username);
     // today's appointment if HCP, all appointments if regular user 
-    user.isHCP? encounters= await Encounters.findTodaysEncounters(user.username):  await Encounters.getEncounters(user.username)
+    user.isHCP? encounters= await Encounters.findTodaysEncounters(user.username):  await Encounters.getUserEncounters(user.username)
+    return res.json({encounters});
+  } catch (err) {
+    return next(err);
+  }
+})
+
+//GET all unsigned encounters 
+router.get("/:username/encounters/unsigned", async function (req,res,next){
+  try {
+    let encounters;
+    const user = await User.get(req.params.username);
+    encounters= await Encounters.getUnsignedEncounters(user.username)
     return res.json({encounters});
   } catch (err) {
     return next(err);
