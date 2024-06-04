@@ -81,6 +81,7 @@ function NavBar({isLogged, logout, userInfo}) {
             <NavLink to="/encounters">{userInfo.isHCP ? "Today's encounters" : 'Your encounters'}</NavLink>
           </NavItem>
 
+
           <NavItem>
             <NavLink to="/profile" >Profile </NavLink>
           </NavItem>
@@ -97,6 +98,10 @@ function NavBar({isLogged, logout, userInfo}) {
            {/*Search bar if HCP  */}
           {isLogged && userInfo.isHCP?  <>
           
+            <NavItem>
+            <NavLink to="/patients/add">Add patient</NavLink>
+          </NavItem>
+
             <NavItem>
             <input
               type="text"

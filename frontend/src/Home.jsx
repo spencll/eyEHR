@@ -8,8 +8,9 @@ function Home({userInfo, isLogged, formatDateTime}) {
 
   useEffect(() => {
     const loadEncounter = async () => {
+      if (isLogged && userInfo.isHCP) {
       try {
-        const encounters = await EHRApi.getUnsignedEncounters(username)
+        const encounters = await EHRApi.getUnsignedEncounters(userInfo.username)
         setNotSignedEncounters(encounters)
 
 
@@ -17,16 +18,16 @@ function Home({userInfo, isLogged, formatDateTime}) {
         console.error('Encounters not found:', err);
         // Handle error appropriately
       }
+    }
     };
 
     loadEncounter();
   }, []);
   // Helps handle page refreshes 
-  const username= JSON.parse(localStorage.getItem("user"))["username"]
+  // const username= JSON.parse(localStorage.getItem("user"))["username"]
 
   return (<>
-    {isLogged ? ( <h1>Welcome back {username}!  </h1>): <h1>Welcome to EyeHR!</h1>}
-
+    {isLogged ? (<> <h1>Welcome back {userInfo.username}!  </h1>
     <div className="encounters-list">
       <h3>Unsigned encounters</h3>
       {userInfo.isHCP && notSignedEncounters && notSignedEncounters.length > 0 ? (
@@ -58,12 +59,15 @@ function Home({userInfo, isLogged, formatDateTime}) {
             })}
           </ul>
         ) : (
-          <p>You are caught up! No unsigned encounters.</p>
+          <p>You are caught up! </p>
         )}
       </div>
+  
+  </>
 
+  ): <h1>Welcome to EyeHR!</h1>}
 
-
+ 
     </>
     
 )

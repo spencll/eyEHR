@@ -72,8 +72,8 @@ router.post("/", isHCP, async function (req, res, next) {
       throw new BadRequestError(errs);
     }
 
-    const user = await Patient.register(req.body);
-    return res.status(201).json({ user});
+    const patient = await Patient.register(req.body);
+    return res.status(201).json({patient});
   } catch (err) {
     return next(err);
   }

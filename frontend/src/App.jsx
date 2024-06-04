@@ -12,6 +12,7 @@ import SignUpForm from './SignupForm';
 import LoginForm from './LoginForm';
 import AppointmentForm from './AppointmentForm';
 import EncounterForm from './EncounterForm';
+import PatientForm from './PatientForm';
 
 
 import PatientProfile from './PatientProfile';
@@ -26,6 +27,7 @@ function App() {
 
   // Checks local storage for existing token 
   let token = localStorage.getItem('token')
+
 
     // States /////////////////////////////////////////////////////////
     const [isLoading, setIsLoading] = useState(true);
@@ -42,6 +44,14 @@ function App() {
     // Encounter state, unassigned encounters for HCP, all encounters for regular user. Can then query via front end
     const [encounters, setEncounters] = useState([])  
 
+    // Helps reload pages for changes
+    const [refresh, setRefresh] = useState(false); 
+
+    // Pulling stuff from local storage if exists
+//     if (localStorage.getItem("user")) {
+// const username= JSON.parse(localStorage.getItem("user"))["username"] || null
+// const isHCP= JSON.parse(localStorage.getItem("user"))["isHCP"] || false
+// }
 
   
     const fetchUserData = async () => {
@@ -59,7 +69,7 @@ function App() {
           setAppointments(appointments)
           setEncounters(encounters)
           setUserInfo(user)
-          // Helps deal with page refreshes 
+          // Helps deal with page refreshes
           localStorage.setItem('user', JSON.stringify(user))
           }
 
@@ -75,7 +85,7 @@ function App() {
       }
     
       pullfromDB();
-    }, [isLogged]);
+    }, [isLogged,refresh]);
 
     if (isLoading) {
       return <p>Loading &hellip;</p>;
@@ -100,9 +110,7 @@ if (isLoading) {
   return <div>Loading...</div>;
 }
 
-// Protecting routes with local storage 
-const username= JSON.parse(localStorage.getItem("user"))["username"]
-const isHCP= JSON.parse(localStorage.getItem("user"))["isHCP"]
+
 
   return (
     <>
@@ -132,9 +140,14 @@ const isHCP= JSON.parse(localStorage.getItem("user"))["isHCP"]
       <EncountersList encounters={encounters} formatDateTime={formatDateTime}/>
       :<Navigate to="/login"/> }  /> 
 
+      <Route exact path="/patients/add" 
+      element={userInfo.isHCP? 
+      <PatientForm isLogged={isLogged} userInfo={userInfo} refresh={refresh} setRefresh={setRefresh}/>
+      :<Navigate to="/login"/>}/>  
+
       <Route exact path="/patients/:pid" 
       element={isLogged? 
-      <PatientProfile isLogged={isLogged} userInfo={userInfo} />
+      <PatientProfile isLogged={isLogged} userInfo={userInfo} refresh={refresh} setRefresh={setRefresh}/>
       :<Navigate to="/login"/>}/>  
 
       <Route exact path="/patients/:pid/appointments" 
@@ -144,7 +157,7 @@ const isHCP= JSON.parse(localStorage.getItem("user"))["isHCP"]
      
       <Route exact path="/patients/:pid/appointments/new" 
       element={isLogged? 
-      <AppointmentForm userInfo={userInfo} setAppointments={setAppointments}/>
+      <AppointmentForm userInfo={userInfo} setAppointments={setAppointments} refresh={refresh} setRefresh={setRefresh}/>
       : <Navigate to="/login"/>}/>
       
       <Route exact path="/patients/:pid/encounters" 
@@ -158,7 +171,7 @@ const isHCP= JSON.parse(localStorage.getItem("user"))["isHCP"]
       : <Navigate to="/login"/>}/>
 
       <Route exact path="/patients/:pid/encounters/:eid/edit" 
-      element={isHCP? 
+      element={userInfo.isHCP? 
       <EncounterForm userInfo={userInfo}/>
       : <Navigate to="/login"/>}/>
 

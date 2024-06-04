@@ -79,6 +79,7 @@ class Encounter {
           u.last_name AS "drLastName"
            FROM encounters AS e 
            JOIN users AS u ON e.user_id=u.id
+           JOIN patients AS p ON e.patient_id = p.id
            WHERE u.username = $1
            ORDER BY datetime`,[username],
     );

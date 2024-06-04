@@ -3,7 +3,7 @@ import { useParams,NavLink, useNavigate} from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import "./PatientProfile.css"
 
-function PatientProfile({userInfo}) {
+function PatientProfile({userInfo,setRefresh,refresh}) {
 
   const navigate = useNavigate();
 
@@ -12,8 +12,6 @@ function PatientProfile({userInfo}) {
 
     // patient state 
     const [patient, setPatient] = useState({});
-    // refresh state, used for encounter/appointment changes 
-    const [refresh, setRefresh] = useState(false); 
 
 
     //Extracting date and time from datetime 
@@ -38,15 +36,17 @@ const fetchPatientDetails = async () => {
   }, [pid,refresh]);
 
  
-  const handleDelete = async (eid) =>{
-    await EHRApi.deleteEncounter(pid, eid)
+  const handleDelete = async (id, type) =>{
+    if (type ==="encounter") await EHRApi.deleteEncounter(pid, id)
+    else await EHRApi.deleteAppointment(pid,id)
     setRefresh(!refresh)
   }
 
-    return (
+    return (<>
           <div className="patient-card">
             <h2 className="patient-name">{patient.firstName} {patient.lastName}</h2>
             <div className="patient-details">
+
             <div className="patient-appointments">
         <h3>Appointments</h3>
 
@@ -55,18 +55,26 @@ const fetchPatientDetails = async () => {
            {patient.appointments.map((appointment) => {
               const { date, time } = formatDateTime(appointment.datetime);
               return (
-                <div key={appointment.id}>
-                  <p>Date: {date}</p>
-                  <p>Time: {time}</p>
-                  <p>Doctor: {appointment.drLastName}, {appointment.drFirstName}</p>
+                <li key={appointment.id} className="appointment-card">
+                <NavLink to={`/patients/${patient.id}/appointments/${appointment.id}/`}>
+                  <div className="content">
+                    <p><strong>Date:</strong> {date}</p>
+                    <p><strong>Time:</strong> {time}</p>
+                    <p><strong>Doctor:</strong> {appointment.drLastName}, {appointment.drFirstName}</p>
+                  </div>
+                </NavLink>
+                <div className="actions">
+                  <button onClick={() => handleDelete(appointment.id, "appointment")}>Delete</button>
                 </div>
-              );
+              </li>
+            );
             })}
           </ul>
         ) : (
           <p>No appointments found</p>
         )}
       </div>
+
       <NavLink to={`/patients/${pid}/appointments/new`}>Make appointment </NavLink>
 
       <div className="patient-encounters">
@@ -84,8 +92,10 @@ const fetchPatientDetails = async () => {
                     <p><strong>Doctor:</strong> {encounter.drLastName}, {encounter.drFirstName}</p>
                   </div>
                 </NavLink>
-                <button onClick={() => handleDelete(encounter.id)}>Delete</button>
+                <div className="actions">
                 <button onClick={() => navigate(`/patients/${pid}/encounters/${encounter.id}/edit`)}>Edit</button>
+                <button onClick={() => handleDelete(encounter.id, "encounter")}>Delete</button>
+                </div>
               </li>
             );
           })}
@@ -99,7 +109,8 @@ const fetchPatientDetails = async () => {
           </> : null}
             </div>
           </div>
-          
+
+          </>
         )
   }
 

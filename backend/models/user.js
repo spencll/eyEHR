@@ -145,9 +145,12 @@ class User {
 
      // Appending encounter/appointment arrays 
      const encountersRes = await db.query(
-      `SELECT * 
+      `SELECT e.*, p.id AS "patientId" 
        FROM encounters AS e
-       WHERE e.user_id = $1`, [user.id]);
+       JOIN patients AS p ON e.patient_id = p.id
+       WHERE e.user_id = $1`
+       
+       , [user.id]);
     
 
 // Adding encounters property to patient

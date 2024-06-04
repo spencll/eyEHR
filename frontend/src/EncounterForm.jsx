@@ -6,6 +6,7 @@ import "./EncounterForm.css"
 // Bringing down functions for changing state as props
 function EncounterForm({userInfo}) {
 
+    // Editable state initialized by local storage
     const [isEditable, setEditable] = useState(() => {
         const savedEditable = localStorage.getItem('isEditable');
         return savedEditable !== null ? JSON.parse(savedEditable) : false;

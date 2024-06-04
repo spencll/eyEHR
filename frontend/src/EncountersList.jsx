@@ -3,7 +3,7 @@ import {NavLink} from 'react-router-dom';
 
 
 function EncountersList({encounters, formatDateTime}) {
-  
+  console.log(encounters)
     return (<>
       <div className="encounters-list">
       {encounters && encounters.length > 0 ? (

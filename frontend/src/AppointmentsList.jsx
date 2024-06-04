@@ -1,11 +1,11 @@
+import { useEffect } from "react";
 import "./AppointmentsList.css";
 import { NavLink,useParams } from 'react-router-dom';
 
 function AppointmentsList({appointments, formatDateTime}) {
-
      // Parem extraction
      const {pid} = useParams()
-     
+
     return (<>
       <div className="appointments-list">
       {appointments && appointments.length > 0 ? (
