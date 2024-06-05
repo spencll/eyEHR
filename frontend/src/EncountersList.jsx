@@ -3,7 +3,7 @@ import {NavLink} from 'react-router-dom';
 
 
 function EncountersList({encounters, formatDateTime}) {
-  console.log(encounters)
+
     return (<>
       <div className="encounters-list">
       {encounters && encounters.length > 0 ? (
@@ -12,7 +12,7 @@ function EncountersList({encounters, formatDateTime}) {
               const { date, time } = formatDateTime(encounter.datetime);
               return (
                 <li key={encounter.id} className="encounter-card">
-                   <NavLink to={`/patients/${encounter.patient_id}/encounters/${encounter.id}/edit`}>
+                   <NavLink to={`/patients/${encounter.pid}/encounters/${encounter.id}/edit`}>
                     <div>
                   <p>Date: {date}</p>
                   <p>Time: {time}</p>

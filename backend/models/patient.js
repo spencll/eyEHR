@@ -62,7 +62,7 @@ class Patient {
             last_name,
             email)
            VALUES ($1, $2, $3)
-           RETURNING first_name AS "firstName", last_name AS "lastName", email`,
+           RETURNING id,first_name AS "firstName", last_name AS "lastName", email`,
         [
           firstName,
           lastName,

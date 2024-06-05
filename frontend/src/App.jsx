@@ -111,7 +111,6 @@ if (isLoading) {
 }
 
 
-
   return (
     <>
    <Router>
@@ -171,7 +170,7 @@ if (isLoading) {
       : <Navigate to="/login"/>}/>
 
       <Route exact path="/patients/:pid/encounters/:eid/edit" 
-      element={userInfo.isHCP? 
+      element={isLogged? 
       <EncounterForm userInfo={userInfo}/>
       : <Navigate to="/login"/>}/>
 

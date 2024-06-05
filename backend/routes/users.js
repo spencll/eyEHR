@@ -58,8 +58,9 @@ router.get("/:username/appointments", async function (req,res,next){
   try {
     let appointments;
     const user = await User.get(req.params.username);
+    
     // today's appointment if HCP, all appointments if regular user 
-    user.isHCP? appointments= await Appointment.findTodaysAppointments(user.username):  await Appointment.findAllAppointments(req.params.username)
+    user.isHCP? appointments= await Appointment.findTodaysAppointments(user.username):  appointments= await Appointment.findAllAppointments(user.email)
     return res.json({appointments});
   } catch (err) {
     return next(err);
@@ -72,7 +73,7 @@ router.get("/:username/encounters", async function (req,res,next){
     let encounters;
     const user = await User.get(req.params.username);
     // today's appointment if HCP, all appointments if regular user 
-    user.isHCP? encounters= await Encounters.findTodaysEncounters(user.username):  await Encounters.getUserEncounters(user.username)
+    user.isHCP? encounters= await Encounters.findTodaysEncounters(user.username): encounters= await Encounters.getUserEncounters(user.email)
     return res.json({encounters});
   } catch (err) {
     return next(err);

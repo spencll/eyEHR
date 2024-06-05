@@ -28,7 +28,7 @@ useEffect(() => {
   if (loading) {
     return <div>Loading...</div>;
   }
-  
+
 
 return (
 <li key={encounter.id} className="encounter-card">
@@ -37,11 +37,12 @@ return (
                   <p>Doctor: {encounter.drLastName}, {encounter.drFirstName}
                   </p>
                   <ul>
-          {Object.entries(encounter.results).map(([key, value]) => (
+                    
+          {encounter.results ? Object.entries(encounter.results).map(([key, value]) => (
             <li key={key}>
               <strong>{key}:</strong> {value}
             </li>
-          ))}
+          )): null}
         </ul>
                   </div>
                 </li>

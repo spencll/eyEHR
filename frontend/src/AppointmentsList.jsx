@@ -1,10 +1,13 @@
 import { useEffect } from "react";
-import "./AppointmentsList.css";
+import "./PatientProfile.css"
 import { NavLink,useParams } from 'react-router-dom';
 
 function AppointmentsList({appointments, formatDateTime}) {
      // Parem extraction
      const {pid} = useParams()
+
+     // Pulling from local storage
+    const isHCP= JSON.parse(localStorage.getItem("user"))["isHCP"] 
 
     return (<>
       <div className="appointments-list">
@@ -13,13 +16,18 @@ function AppointmentsList({appointments, formatDateTime}) {
            {appointments.map((appointment) => {
               const { date, time } = formatDateTime(appointment.datetime);
               return (
-                <div key={appointment.id}>
-                  <p>Date: {date}</p>
-                  <p>Time: {time}</p>
-                  <p>Patient: {appointment.patientLastName}, {appointment.patientFirstName}</p>
-                  <p>Doctor: {appointment.drLastName}, {appointment.drFirstName}</p>
-                  <NavLink to={`/patients/${pid}/encounters/new`}>Make encounter </NavLink>
-                </div>
+                <li key={appointment.id} className="appointment-card">
+             
+                  <div className="content">
+                    <p><strong>Date:</strong> {date}</p>
+                    <p><strong>Time:</strong> {time}</p>
+                    <p><strong>Patient:</strong> {appointment.patientLastName}, {appointment.patientFirstName}</p>
+                    <p><strong>Doctor:</strong> {appointment.drLastName}, {appointment.drFirstName}</p>
+                  </div>
+              
+                
+                {isHCP? (<NavLink to={`/patients/${pid}/encounters/new`}>Make encounter </NavLink>):null}
+              </li>
                 
               );
             })}

@@ -28,7 +28,7 @@ function PatientForm({setRefresh, refresh, userInfo}) {
             const patient= await EHRApi.addPatient(formData);
             setPatient(patient)
             setRefresh(!refresh)
-            navigate("../..", { relative: "path" })
+            navigate(`../${patient.id}`, { relative: "path" })
 
           } catch (error) {
             console.error('Error making appointment:', error);

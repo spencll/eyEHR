@@ -66,6 +66,7 @@ const fetchPatientDetails = async () => {
                 <div className="actions">
                   <button onClick={() => handleDelete(appointment.id, "appointment")}>Delete</button>
                 </div>
+                
               </li>
             );
             })}

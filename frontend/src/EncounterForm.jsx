@@ -1,10 +1,13 @@
 import React, {useState, useEffect} from "react";
-import {useParams} from "react-router-dom";
+import {useParams, useNavigate} from "react-router-dom";
 import EHRApi from "./api";
 import "./EncounterForm.css"
 
 // Bringing down functions for changing state as props
 function EncounterForm({userInfo}) {
+
+    // Pulling from local storage
+    const isHCP= JSON.parse(localStorage.getItem("user"))["isHCP"] 
 
     // Editable state initialized by local storage
     const [isEditable, setEditable] = useState(() => {
@@ -14,6 +17,8 @@ function EncounterForm({userInfo}) {
 
       // Parem extraction
       const {eid, pid} = useParams()
+
+      let navigate = useNavigate()
 
     //   Can add more categories into result
    const INITIAL_STATE= {
@@ -34,6 +39,9 @@ ap:""}
 
      useEffect(() => {
         const loadEncounter = async () => {
+            // Redirect to 
+            if (!isHCP) navigate(`/patients/${pid}/encounters/${eid}`)
+
           try {
             const encounter = await EHRApi.getPatientEncounter(pid, eid)
             setEncounter(encounter)
