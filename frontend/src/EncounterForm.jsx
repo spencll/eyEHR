@@ -22,10 +22,9 @@ function EncounterForm({userInfo}) {
 
     //   Can add more categories into result
    const INITIAL_STATE= {
-    reason: "",  
-    mood: "",
- vision: "",
-ap:""}
+    reason: "",
+ rvision: 20,  lvision: 20, findings: "",
+ap:"",rpressure: 0, lpressure: 0}
 
     //  Formdata is object be nested in results 
      const [formData, setFormData] = useState(INITIAL_STATE);
@@ -39,7 +38,7 @@ ap:""}
 
      useEffect(() => {
         const loadEncounter = async () => {
-            // Redirect to 
+            // Redirect to encounter details if not HCP
             if (!isHCP) navigate(`/patients/${pid}/encounters/${eid}`)
 
           try {
@@ -54,7 +53,6 @@ ap:""}
             // Updates editable state if is correct user id and not signed
             if (encounter.uid === userInfo.id && !encounter.signed) {
                 setEditable(true)
-                localStorage.setItem('isEditable', true);
             }
 
 
@@ -81,13 +79,13 @@ ap:""}
     }
     };
 
-    // Prevents empty submission/category. Adds item to appropriate state array. Clears input and redirect to changed menu.
+    // Signs encounter
     const handleSubmit = async (event) => {
       event.preventDefault();
         try {
             const encounter= await EHRApi.signEncounter(pid, eid, {signedBy: `${userInfo.lastName}, ${userInfo.firstName}`});
             setEditable(false)
-            localStorage.setItem('isEditable', false);
+            localStorage.removeItem('isEditable'); //gets rid of local state
             setEncounter(encounter)
 
           } catch (error) {
@@ -100,6 +98,7 @@ ap:""}
           try {
               const encounter = await EHRApi.unsignEncounter(pid, eid);
               setEditable(true)  
+              localStorage.setItem('isEditable', true);
               setEncounter(encounter)
             } catch (error) {
               console.error('Error signing:', error);
@@ -129,25 +128,40 @@ if (loading) {
             cols={50}
           ></textarea>
         </div>
-      
-        <div className="form-group">
-          <label htmlFor="mood">Mood</label>
+        
+        <div className="form-group pressure-group">
+        <label>Eye pressure</label>
+          <label htmlFor="rpressure">OD: </label>
           <input
-            type="text"
-            id="mood"
-            name="mood"
-            value={formData.mood}
+            type="number"
+            id="rpressure"
+            name="rpressure"
+            value={formData.rpressure}
+            onChange={handleChange}
+            disabled={!isEditable}
+          />
+           <label htmlFor="lpressure">OS: </label>
+          <input
+            type="number"
+            id="lpressure"
+            name="lpressure"
+            value={formData.lpressure}
             onChange={handleChange}
             disabled={!isEditable}
           />
         </div>
       
-        <div className="form-group vision-group">
-    <label htmlFor="vision">Vision: 20/</label>
+
+        <div className="form-group">
+
+        <label>Vision</label>
+
+        <div className="vision-group">
+    <label htmlFor="rvision" >OD: 20/</label>
     <select
-      id="vision"
-      name="vision"
-      value={formData.vision}
+      id="rvision"
+      name="rvision"
+      value={formData.rvision ||20 }
       onChange={handleChange}
       disabled={!isEditable}
     >
@@ -159,7 +173,39 @@ if (loading) {
       <option key={100} value={100}>100</option>
       <option key={200} value={200}>200</option>
     </select>
+        <br/>
+    <label htmlFor="lvision" >OS: 20/</label>
+    <select
+      id="lvision"
+      name="lvision"
+      value={formData.lvision ||20 }
+      onChange={handleChange}
+      disabled={!isEditable}
+    >
+      <option key={20} value={20}>20</option>
+      <option key={25} value={25}>25</option>
+      <option key={30} value={30}>30</option>
+      <option key={40} value={40}>40</option>
+      <option key={50} value={50}>50</option>
+      <option key={100} value={100}>100</option>
+      <option key={200} value={200}>200</option>
+    </select>
+    </div>
+
   </div>
+
+  <div className="form-group">
+          <label htmlFor="findings">Findings</label>
+          <textarea
+            id="findings"
+            name="findings"
+            value={formData.findings}
+            onChange={handleChange}
+            disabled={!isEditable}
+            rows={4}
+            cols={50}
+          ></textarea>
+        </div>
       
         <div className="form-group">
           <label htmlFor="ap">Assessment and plan</label>

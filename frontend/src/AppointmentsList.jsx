@@ -1,10 +1,7 @@
-import { useEffect } from "react";
 import "./PatientProfile.css"
 import { NavLink,useParams } from 'react-router-dom';
 
 function AppointmentsList({appointments, formatDateTime}) {
-     // Parem extraction
-     const {pid} = useParams()
 
      // Pulling from local storage
     const isHCP= JSON.parse(localStorage.getItem("user"))["isHCP"] 
@@ -26,7 +23,7 @@ function AppointmentsList({appointments, formatDateTime}) {
                   </div>
               
                 
-                {isHCP? (<NavLink to={`/patients/${pid}/encounters/new`}>Make encounter </NavLink>):null}
+                {isHCP? (<NavLink to={`/patients/${appointment.pid}/encounters/new`}>Make encounter </NavLink>):null}
               </li>
                 
               );

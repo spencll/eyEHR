@@ -69,7 +69,7 @@ function App() {
           setAppointments(appointments)
           setEncounters(encounters)
           setUserInfo(user)
-          // Helps deal with page refreshes
+          // Helps deal with page refreshes, easy access from components 
           localStorage.setItem('user', JSON.stringify(user))
           }
 
@@ -87,6 +87,7 @@ function App() {
       pullfromDB();
     }, [isLogged,refresh]);
 
+    // Wait until states are ready to render components
     if (isLoading) {
       return <p>Loading &hellip;</p>;
     }
@@ -104,12 +105,6 @@ function App() {
     const time = dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); // Extract time
     return { date, time };
   };
-
-//loading state 
-if (isLoading) {
-  return <div>Loading...</div>;
-}
-
 
   return (
     <>
@@ -169,6 +164,7 @@ if (isLoading) {
       <CreateEncounter userInfo={userInfo} setEncounters={setEncounters}/>
       : <Navigate to="/login"/>}/>
 
+{/* Protected in the component, redirects to encounter detail if not HCP */}
       <Route exact path="/patients/:pid/encounters/:eid/edit" 
       element={isLogged? 
       <EncounterForm userInfo={userInfo}/>

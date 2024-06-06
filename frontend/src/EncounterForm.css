@@ -22,14 +22,12 @@
     width: 100%;
   }
   
-  .vision-group {
-    flex-direction: row;
-    align-items: center;
-  }
+.form-group .vision-group {
+    display: flexbox;
+}
+
   
-  .vision-group label {
-    margin-right: 0.1rem;
-  }
+
   
   label {
     margin-bottom: 0.5rem;

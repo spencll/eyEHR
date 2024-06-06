@@ -26,51 +26,44 @@ function Home({userInfo, isLogged, formatDateTime}) {
   // Helps handle page refreshes 
   // const username= JSON.parse(localStorage.getItem("user"))["username"]
 
-  return (<>
-    {isLogged ? (<> <h1>Welcome back {userInfo.username}!  </h1>
-    <div className="encounters-list">
-      <h3>Unsigned encounters</h3>
-      {userInfo.isHCP && notSignedEncounters && notSignedEncounters.length > 0 ? (
-          <ul>
-           {notSignedEncounters.map((encounter) => {
-              const { date, time } = formatDateTime(encounter.datetime);
-              return (
-                <li key={encounter.id} className="encounter-card">
-                   <NavLink to={`/patients/${encounter.patient_id}/encounters/${encounter.id}/edit`}>
-                    <div>
-                  <p>Date: {date}</p>
-                  <p>Time: {time}</p>
-                  <p>Patient: {encounter.patientLastName}, {encounter.patientFirstName}</p>
-                  <p>Doctor: {encounter.drLastName}, {encounter.drFirstName}</p>
-                  </div>
-                  </NavLink>
-                </li>
-              //    <li key={encounter.id} className="encounter-card">
-              //    <NavLink to={`/patients/${pid}/encounters/${encounter.id}/edit`}>
-              //      <div>
-              //        <p><strong>Date:</strong> {date}</p>
-              //        <p><strong>Time:</strong> {time}</p>
-              //        <p><strong>Doctor:</strong> {encounter.drLastName}, {encounter.drFirstName}</p>
-              //      </div>
-              //    </NavLink>
-              //    <button onClick={() => handleDelete(encounter.id)}>Delete</button>
-              //  </li>
-              );
-            })}
-          </ul>
-        ) : (
-          <p>You are caught up! </p>
-        )}
-      </div>
-  
-  </>
-
-  ): <h1>Welcome to EyeHR!</h1>}
-
- 
+  return (
+    <>
+      {isLogged ? (
+        <>
+          <h1>Welcome back, {userInfo.username}!</h1>
+          {userInfo.isHCP && (
+            <div className="encounters-list">
+              {notSignedEncounters && notSignedEncounters.length > 0 ? (
+                <ul>
+                  <h3>Unsigned encounters</h3>
+                  {notSignedEncounters.map((encounter) => {
+                    const { date, time } = formatDateTime(encounter.datetime);
+                    return (
+                      <li key={encounter.id} className="encounter-card">
+                        <NavLink to={`/patients/${encounter.patient_id}/encounters/${encounter.id}/edit`}>
+                          <div>
+                            <p>Date: {date}</p>
+                            <p>Time: {time}</p>
+                            <p>Patient: {encounter.patientLastName}, {encounter.patientFirstName}</p>
+                            <p>Doctor: {encounter.drLastName}, {encounter.drFirstName}</p>
+                          </div>
+                        </NavLink>
+                      </li>
+                    );
+                  })}
+                </ul>
+              ) : (
+                <p>You are caught up!</p>
+              )}
+            </div>
+          )}
+        </>
+      ) : (
+        <h1>Welcome to EyeHR!</h1>
+      )}
     </>
-    
-)
+  );
+
 }
 
 export default Home;

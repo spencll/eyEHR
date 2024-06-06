@@ -59,7 +59,7 @@ class Appointment {
 static async findTodaysAppointments(username) {
     try {
         const result = await db.query(`
-            SELECT a.id, a.datetime, p.first_name AS "patientFirstName",
+            SELECT a.id, a.datetime, p.first_name AS "patientFirstName", p.id AS "pid",
             p.last_name AS "patientLastName", 
             u.first_name AS "drFirstName",
             u.last_name AS "drLastName"
@@ -78,7 +78,7 @@ static async findTodaysAppointments(username) {
 static async findAllAppointments(email) {
   try {
       const result = await db.query(`
-      SELECT a.id, a.datetime, p.first_name AS "patientFirstName",
+      SELECT a.id, a.datetime, p.first_name AS "patientFirstName", p.id AS "pid",
       p.last_name AS "patientLastName", 
       u.first_name AS "drFirstName",
       u.last_name AS "drLastName"
