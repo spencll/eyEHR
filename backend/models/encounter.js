@@ -94,6 +94,7 @@ class Encounter {
         const result = await db.query(`
             SELECT e.id, e.datetime, p.first_name AS "patientFirstName",
             p.last_name AS "patientLastName",
+            p.id AS "pid",
             u.first_name AS "drFirstName",
             u.last_name AS "drLastName"
             FROM encounters AS e 

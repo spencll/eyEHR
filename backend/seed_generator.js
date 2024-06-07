@@ -11,7 +11,7 @@ if (fs.existsSync(seedFilePath)) {
 }
 
 // API request
-let API_URL= 'https://randomuser.me/api/?nat=us&results=10&inc=name,email,cell,dob'
+let API_URL= 'https://randomuser.me/api/?nat=us&results=50&inc=name,email,cell,dob'
 
 axios.get(API_URL)
   .then(response => {
@@ -22,11 +22,18 @@ axios.get(API_URL)
 // Define the table name
 const tableName = 'patients';
 
+    //Extracting just date from datetime 
+    const formatDateTime = (datetime) => {
+      const dateObj = new Date(datetime);
+      const date = dateObj.toLocaleDateString(); 
+      return date;
+    };
+
 // Stuff to insert 
-const insertValues = resp.map(({ name, email }) => `('${name.first}', '${name.last}', '${email}')`).join(', ');
+const insertValues = resp.map(({ name, email, dob, cell }) => `('${name.first}', '${name.last}', '${email}', '${formatDateTime(dob.date)}', '${dob.age}', '${cell}')`).join(', ');
 
 // The actual statement 
-const insertStatement = `INSERT INTO ${tableName} (firstname, lastname, email) VALUES ${insertValues};`;
+const insertStatement = `INSERT INTO ${tableName} (first_name, last_name, email, dob, age, cell) VALUES ${insertValues};`;
 
 // Write SQL content to a file
 fs.writeFileSync('ehr-seed.sql', insertStatement);

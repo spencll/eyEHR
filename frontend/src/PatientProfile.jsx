@@ -44,9 +44,11 @@ const fetchPatientDetails = async () => {
 
     return (<>
           <div className="patient-card">
-            <h2 className="patient-name">{patient.firstName} {patient.lastName}</h2>
+            <h2 className="patient-name">{patient.firstName} {patient.lastName} ({patient.age})</h2>
             <div className="patient-details">
-
+            <p><strong>Date of birth:</strong> {patient.dob}</p>
+            <p><strong>Email:</strong>  {patient.email}</p>
+            <p><strong>Phone number: </strong> {patient.cell}</p>
             <div className="patient-appointments">
         <h3>Appointments</h3>
 

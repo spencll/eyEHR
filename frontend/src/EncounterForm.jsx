@@ -6,14 +6,8 @@ import "./EncounterForm.css"
 // Bringing down functions for changing state as props
 function EncounterForm({userInfo}) {
 
-    // Pulling from local storage
-    const isHCP= JSON.parse(localStorage.getItem("user"))["isHCP"] 
-
-    // Editable state initialized by local storage
-    const [isEditable, setEditable] = useState(() => {
-        const savedEditable = localStorage.getItem('isEditable');
-        return savedEditable !== null ? JSON.parse(savedEditable) : false;
-      });
+ 
+    const [isEditable, setEditable] = useState(false);
 
       // Parem extraction
       const {eid, pid} = useParams()
@@ -39,7 +33,7 @@ ap:"",rpressure: 0, lpressure: 0}
      useEffect(() => {
         const loadEncounter = async () => {
             // Redirect to encounter details if not HCP
-            if (!isHCP) navigate(`/patients/${pid}/encounters/${eid}`)
+            if (!userInfo.isHCP) navigate(`/patients/${pid}/encounters/${eid}`)
 
           try {
             const encounter = await EHRApi.getPatientEncounter(pid, eid)
@@ -52,7 +46,9 @@ ap:"",rpressure: 0, lpressure: 0}
 
             // Updates editable state if is correct user id and not signed
             if (encounter.uid === userInfo.id && !encounter.signed) {
-                setEditable(true)
+                setEditable(true);
+            } else {
+                setEditable(false);
             }
 
 
@@ -63,7 +59,7 @@ ap:"",rpressure: 0, lpressure: 0}
         };
     
         loadEncounter();
-      }, []);
+      }, [pid, eid, navigate, userInfo.id]);
 
 
     // matches input value to what was typed 
@@ -85,7 +81,6 @@ ap:"",rpressure: 0, lpressure: 0}
         try {
             const encounter= await EHRApi.signEncounter(pid, eid, {signedBy: `${userInfo.lastName}, ${userInfo.firstName}`});
             setEditable(false)
-            localStorage.removeItem('isEditable'); //gets rid of local state
             setEncounter(encounter)
 
           } catch (error) {
@@ -98,7 +93,6 @@ ap:"",rpressure: 0, lpressure: 0}
           try {
               const encounter = await EHRApi.unsignEncounter(pid, eid);
               setEditable(true)  
-              localStorage.setItem('isEditable', true);
               setEncounter(encounter)
             } catch (error) {
               console.error('Error signing:', error);

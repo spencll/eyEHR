@@ -35,8 +35,11 @@ function App() {
     // Stores existing token into isLogged, maintains logged in state 
     const [isLogged, setIsLogged] = useState(token)
     
-    // The actual user info 
-    const [userInfo, setUserInfo] = useState({})
+    // The actual user info, pulled from local storage. 
+    const [userInfo, setUserInfo] = useState(() => {
+      const savedUserInfo = localStorage.getItem("user");
+      return savedUserInfo ? JSON.parse(savedUserInfo) : {};
+  });
 
     // Appointment state, today's apppointments for HCP, all apointments for regular user. Can then query via front end
     const [appointments, setAppointments] = useState([])  
@@ -69,7 +72,7 @@ function App() {
           setAppointments(appointments)
           setEncounters(encounters)
           setUserInfo(user)
-          // Helps deal with page refreshes, easy access from components 
+          // Helps deal with page refreshes, userinfo stays active 
           localStorage.setItem('user', JSON.stringify(user))
           }
 
@@ -126,7 +129,7 @@ function App() {
 
       <Route exact path="/appointments" 
       element={isLogged? 
-      <AppointmentsList appointments={appointments} formatDateTime={formatDateTime}/>
+      <AppointmentsList appointments={appointments} userInfo={userInfo} formatDateTime={formatDateTime}/>
       :<Navigate to="/login"/> }  /> 
 
       <Route exact path="/encounters" 

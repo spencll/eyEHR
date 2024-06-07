@@ -112,10 +112,13 @@ function NavBar({isLogged, logout, userInfo}) {
             />
 
 {searchResults.length > 0 && (
-  <div className="search-results">
+  <div className="search-results-container">
     {searchResults.map((patient) => (
       <NavLink key={patient.id} to={`/patients/${patient.id}`} className="search-result-item" onClick={handleNavLinkClick}>
-        {patient.firstName} {patient.lastName}
+         {patient.lastName}, {patient.firstName}
+         <br/>
+         <small>{patient.dob}</small>
+         <small>  {patient.cell}</small>
       </NavLink>
     ))}
   </div>
@@ -125,7 +128,6 @@ function NavBar({isLogged, logout, userInfo}) {
       
         </Nav>
       </Navbar>
-      <hr></hr>
       </div>
   );
 }

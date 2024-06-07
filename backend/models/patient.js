@@ -96,9 +96,11 @@ class Patient {
           `SELECT id,
                   first_name AS "firstName",
                   last_name AS "lastName",
-                  email
+                  email, dob, cell
            FROM patients
-            WHERE last_name ILIKE $1
+           WHERE CONCAT(first_name, ' ', last_name) ILIKE $1
+           OR CONCAT(last_name, ' ', first_name) ILIKE $1
+           OR dob ILIKE $1
        ORDER BY last_name`,
       [`%${query}%`],
     );
@@ -113,7 +115,7 @@ class Patient {
           `SELECT 
                   first_name AS "firstName",
                   last_name AS "lastName",
-                  email
+                  email, dob, age, cell
            FROM patients
            WHERE id = $1`,
         [pid],

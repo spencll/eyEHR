@@ -1,5 +1,4 @@
 import {jwtDecode} from 'jwt-decode';
-import JoblyApi from './api';
 import { useState, useEffect} from 'react';
 import { useNavigate } from "react-router-dom";
 import "./Profile.css"

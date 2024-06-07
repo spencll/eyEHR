@@ -52,7 +52,7 @@
 }
 
 .encounter-card button, .appointment-card button {
-  background-color: #ff4d4d;
+  background-color: blue;
   color: white;
   border: none;
   border-radius: 4px;
@@ -62,5 +62,5 @@
 }
 
 .encounter-card button:hover, .appointment-card button:hover {
-  background-color: #ff1a1a;
+  background-color: lightblue;
 }

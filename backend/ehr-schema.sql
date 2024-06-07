@@ -12,7 +12,10 @@ CREATE TABLE patients (
   id SERIAL PRIMARY KEY,
   first_name TEXT NOT NULL,
   last_name TEXT NOT NULL,
-  email TEXT NOT NULL UNIQUE CHECK (position('@' IN email) > 1)
+  email TEXT NOT NULL UNIQUE CHECK (position('@' IN email) > 1),
+  dob VARCHAR NOT NULL,
+  age INT NOT NULL,
+  cell VARCHAR NOT NULL
 );
 
 CREATE TABLE appointments (

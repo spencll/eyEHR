@@ -1,6 +1,35 @@
+.navbar {
+ z-index: 1000;
+ position: relative;
+ max-height: 30px; /* Prevents nav bar from changing height */
+}
+
 .navbar-nav {
     list-style-type: none; /* Removes bullet points */
     display: flex;
-    justify-content: space-evenly
-    
+    justify-content: space-evenly;
   }
+
+/* SearchResults.css */
+
+.search-results-container {
+  background-color: black;
+  display: flex;
+  flex-direction: column;
+  width: 100%; /* Ensure the container takes full width */
+}
+
+.search-result-item {
+  padding: 10px;
+  text-decoration: none;
+  color: white; /* Adjust colors as needed */
+  border: 1px solid #ccc; /* Optional: add a border */
+  border-radius: 5px; /* Optional: round the corners */
+  transition: background-color 0.3s; /* Optional: add a transition effect */
+  width: 100%; /* Ensure items take full width */
+  box-sizing: border-box; /* Ensure padding and border are included in the width */
+}
+
+.search-result-item:hover {
+  background-color: #f0f0f0; /* Optional: change background on hover */
+}
