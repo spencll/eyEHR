@@ -115,7 +115,7 @@ if (loading) {
           <textarea
             id="reason"
             name="reason"
-            value={formData.reason}
+            value={formData.reason ||""}
             onChange={handleChange}
             disabled={!isEditable}
             rows={4}
@@ -193,7 +193,7 @@ if (loading) {
           <textarea
             id="findings"
             name="findings"
-            value={formData.findings}
+            value={formData.findings ||""}
             onChange={handleChange}
             disabled={!isEditable}
             rows={4}
@@ -206,7 +206,7 @@ if (loading) {
           <textarea
             id="ap"
             name="ap"
-            value={formData.ap}
+            value={formData.ap ||""}
             onChange={handleChange}
             disabled={!isEditable}
             rows={4}

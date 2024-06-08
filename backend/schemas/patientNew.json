@@ -19,12 +19,36 @@
       "minLength": 6,
       "maxLength": 60,
       "format": "email"
+    },
+    "dob": {
+      "type": "string",
+      "minLength": 10,
+      "maxLength": 10,
+      "pattern": "^(0[1-9]|1[0-2])/(0[1-9]|[12][0-9]|3[01])/\\d{4}$",
+      "description": "Date of birth in MM/DD/YYYY format"
+    },
+    "age": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 120,
+      "description": "Age derived from date of birth"
+    },
+    "cell": {
+      "type": "string",
+      "minLength": 10,
+      "maxLength": 15,
+      "pattern": "^[+]?[(]?[0-9]{1,4}[)]?[-\\s\\.]?[(]?[0-9]{1,4}[)]?[-\\s\\.]?[0-9]{1,9}$",
+      "description": "Cell number, allowing optional '+' at the start and 10-15 digits"
     }
+    
   },
   "additionalProperties": false,
   "required": [
     "firstName",
     "lastName",
-    "email"
+    "email",
+    "dob",
+    "age",
+    "cell"
   ]
 }

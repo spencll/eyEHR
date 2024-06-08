@@ -2,6 +2,7 @@
  z-index: 1000;
  position: relative;
  max-height: 30px; /* Prevents nav bar from changing height */
+ margin-bottom: 10px;
 }
 
 .navbar-nav {

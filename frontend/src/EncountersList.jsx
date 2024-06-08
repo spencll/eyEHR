@@ -4,7 +4,7 @@ import {NavLink} from 'react-router-dom';
 
 function EncountersList({encounters, formatDateTime}) {
     return (<>
-      <div className="encounters-list">
+      <div className="patient-encounters">
       {encounters && encounters.length > 0 ? (
           <ul>
            {encounters.map((encounter) => {

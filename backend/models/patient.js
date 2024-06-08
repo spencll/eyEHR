@@ -43,7 +43,7 @@ class Patient {
 
   //Registering patient 
   static async register(
-      {firstName, lastName, email}) {
+      {firstName, lastName, email, dob, age, cell}) {
 
     const duplicateCheck = await db.query(
           `SELECT email
@@ -60,13 +60,13 @@ class Patient {
           `INSERT INTO patients
            (first_name,
             last_name,
-            email)
-           VALUES ($1, $2, $3)
+            email, dob, age, cell)
+           VALUES ($1, $2, $3, $4, $5, $6)
            RETURNING id,first_name AS "firstName", last_name AS "lastName", email`,
         [
           firstName,
           lastName,
-          email
+          email, dob, age, cell
         ]
     );
 
@@ -98,8 +98,8 @@ class Patient {
                   last_name AS "lastName",
                   email, dob, cell
            FROM patients
-           WHERE CONCAT(first_name, ' ', last_name) ILIKE $1
-           OR CONCAT(last_name, ' ', first_name) ILIKE $1
+           WHERE CONCAT(first_name, ', ', last_name) ILIKE $1
+           OR CONCAT(last_name, ', ', first_name) ILIKE $1
            OR dob ILIKE $1
        ORDER BY last_name`,
       [`%${query}%`],

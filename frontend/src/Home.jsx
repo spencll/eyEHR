@@ -53,7 +53,7 @@ function Home({userInfo, isLogged, formatDateTime}) {
                   })}
                 </ul>
               ) : (
-                <p>You are caught up!</p>
+                <p>You are caught up! No unsigned encounters.</p>
               )}
             </div>
           )}

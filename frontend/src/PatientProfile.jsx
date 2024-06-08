@@ -58,13 +58,13 @@ const fetchPatientDetails = async () => {
               const { date, time } = formatDateTime(appointment.datetime);
               return (
                 <li key={appointment.id} className="appointment-card">
-                <NavLink to={`/patients/${patient.id}/appointments/${appointment.id}/`}>
-                  <div className="content">
+              
+                  <div>
                     <p><strong>Date:</strong> {date}</p>
                     <p><strong>Time:</strong> {time}</p>
                     <p><strong>Doctor:</strong> {appointment.drLastName}, {appointment.drFirstName}</p>
                   </div>
-                </NavLink>
+            
                 <div className="actions">
                   <button onClick={() => handleDelete(appointment.id, "appointment")}>Delete</button>
                 </div>
@@ -78,7 +78,7 @@ const fetchPatientDetails = async () => {
         )}
       </div>
 
-      <NavLink to={`/patients/${pid}/appointments/new`}>Make appointment </NavLink>
+      <NavLink to={`/patients/${pid}/appointments/new`}><button>Make appointment</button> </NavLink>
 
       <div className="patient-encounters">
       <h3>Encounters</h3>
@@ -108,7 +108,7 @@ const fetchPatientDetails = async () => {
       )}
       </div>
       {userInfo.isHCP?  <>
-        <NavLink to={`/patients/${pid}/encounters/new`}>Make encounter </NavLink>
+        <NavLink to={`/patients/${pid}/encounters/new`}><button>Make encounter </button> </NavLink>
           </> : null}
             </div>
           </div>
