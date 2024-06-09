@@ -1,8 +1,8 @@
 .navbar {
- z-index: 1000;
  position: relative;
  max-height: 30px; /* Prevents nav bar from changing height */
  margin-bottom: 10px;
+ flex-wrap: wrap; /* Allow flex items to wrap */
 }
 
 .navbar-nav {
@@ -33,4 +33,26 @@
 
 .search-result-item:hover {
   background-color: #f0f0f0; /* Optional: change background on hover */
+}
+
+/* Mobile styles */
+@media (max-width: 768px) {
+  .navbar-nav {
+      flex-direction: column; /* Stack items vertically */
+      align-items: center;
+  }
+
+  .navbar-nav li {
+      margin: 10px 0; /* Adjust margin for better spacing */
+  }
+
+  .navbar {
+    align-items: center;
+      justify-content: center;
+      margin-bottom: auto;
+      padding-bottom: 250px;
+      height: 100px;
+
+    
+  }
 }

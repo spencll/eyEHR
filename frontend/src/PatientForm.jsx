@@ -63,8 +63,8 @@ function PatientForm({setRefresh, refresh}) {
     };
   
     return (
-      <form onSubmit={handleSubmit} >
-        <h1>Register patient !</h1>
+      <form className="form-container" onSubmit={handleSubmit} >
+        <h1>Register patient!</h1>
 
 
 <div className="form-group">

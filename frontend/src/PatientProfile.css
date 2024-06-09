@@ -64,3 +64,23 @@
 .encounter-card button:hover, .appointment-card button:hover {
   background-color: lightblue;
 }
+
+/* For patient form  */
+.form-container {
+  max-width: 400px;
+  margin: auto;
+}
+.form-container .form-group {
+  margin-bottom: 20px;
+}
+.form-container .form-label {
+  display: block;
+  margin-bottom: 5px;
+}
+.form-container .form-input {
+  width: 100%;
+  padding: 8px;
+  box-sizing: border-box;
+}
+
+
