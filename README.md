@@ -2,9 +2,14 @@
 
 We have broken down the Capstone Project into easy-to-follow steps. Each step of the capstone contains a link with instructions for that step. You may notice this secondCapstone follows a similar pattern to your first Capstone, however, there are key differences. 
 
+## Introduction
+
+Welcome to EyeHR, an electronic health record for eye care practioners but accessible by patients only to their own records. 
+
 ## How to run
 
 Setting up back end:
+
 Run seed generator: node seed_generator.js
 
 Creating/seeding db:
@@ -12,15 +17,19 @@ psql
 \i ehr.sql
 
 
-Backend: Use fake_patients to generate a 50 patient seed 
 
 ## Features 
 
 Dynamic listener on encounter form inputs. Every change is logged into the server rather than have to wait for page change for submission like in 
 real life EHR I'm using. 
-See all unsigned encoutners at once. 
+See all unsigned encounters at once. 
 
+## Schemas
 
+Users
+Patients
+Appointments
+Encounters  
 
 
 ## Guidelines

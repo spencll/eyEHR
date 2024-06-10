@@ -7,6 +7,7 @@ import Home from './Home';
 import EHRApi from './api';
 import AppointmentsList from './AppointmentsList';
 import EncountersList from './EncountersList';
+
 // Forms
 import SignUpForm from './SignupForm';
 import LoginForm from './LoginForm';
@@ -81,6 +82,7 @@ function App() {
       }
   };
 
+  // If logged in status or refresh status changes, rerender 
     useEffect(() => {
       async function pullfromDB() {
         fetchUserData()
@@ -124,7 +126,7 @@ function App() {
       {/* Users routes */}
       <Route exact path="/profile" 
       element={isLogged? 
-      <Profile isLogged={isLogged}/>
+      <Profile isLogged={isLogged} refresh={refresh} setRefresh={setRefresh}/>
       :<Navigate to="/login"/> }  /> 
 
       <Route exact path="/appointments" 
@@ -134,7 +136,7 @@ function App() {
 
       <Route exact path="/encounters" 
       element={isLogged? 
-      <EncountersList encounters={encounters} formatDateTime={formatDateTime}/>
+      <EncountersList encounters={encounters} formatDateTime={formatDateTime} refresh={refresh} setRefresh={setRefresh}/>
       :<Navigate to="/login"/> }  /> 
 
       <Route exact path="/patients/add" 
@@ -146,22 +148,12 @@ function App() {
       element={isLogged? 
       <PatientProfile isLogged={isLogged} userInfo={userInfo} refresh={refresh} setRefresh={setRefresh}/>
       :<Navigate to="/login"/>}/>  
-
-      <Route exact path="/patients/:pid/appointments" 
-      element={isLogged? 
-      <AppointmentsList appointments={appointments} formatDateTime={formatDateTime}/>
-      : <Navigate to="/login"/>}/>
      
       <Route exact path="/patients/:pid/appointments/new" 
       element={isLogged? 
       <AppointmentForm userInfo={userInfo} setAppointments={setAppointments} refresh={refresh} setRefresh={setRefresh}/>
       : <Navigate to="/login"/>}/>
       
-      <Route exact path="/patients/:pid/encounters" 
-      element={isLogged? 
-      <EncountersList encounters={encounters} formatDateTime={formatDateTime} />
-      : <Navigate to="/login"/>}/>
-
       <Route exact path="/patients/:pid/encounters/new" 
       element={isLogged? 
       <CreateEncounter userInfo={userInfo} setEncounters={setEncounters}/>
@@ -179,12 +171,6 @@ function App() {
       : <Navigate to="/login"/>}/>  
 
       
-
-        {/* <Route exact path="/companies" element={isLogged? <CompaniesList companies={companies} setCompanies={setCompanies}/>: <Navigate to="/login"/>}/>
-        <Route exact path="/jobs" element={isLogged?<JobsList jobs={jobs} setJobs={setJobs} setUserInfo={setUserInfo} userInfo={userInfo}/>:<Navigate to="/login"/>} />
-
-        <Route path="/companies/:handle" element={<CompanyDetails/>} />
-        <Route path="/jobs/:title" element={<JobDetails/>} />  */}
       </Routes>
     </Router>
     </>

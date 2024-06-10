@@ -30,9 +30,9 @@ function Home({userInfo, isLogged, formatDateTime}) {
     <>
       {isLogged ? (
         <>
-          <h1>Welcome back, {userInfo.username}!</h1>
+          <h1>Welcome back, {userInfo.firstName}!</h1>
           {userInfo.isHCP && (
-            <div className="encounters-list">
+            <div className="patient-encounters">
               {notSignedEncounters && notSignedEncounters.length > 0 ? (
                 <ul>
                   <h3>Unsigned encounters</h3>
@@ -58,8 +58,12 @@ function Home({userInfo, isLogged, formatDateTime}) {
             </div>
           )}
         </>
-      ) : (
-        <h1>Welcome to EyeHR!</h1>
+      ) : (<>
+        <div className="welcome-container">
+          <h1>Welcome to EyeHR!</h1>
+          <p><strong>For patient users:</strong> Login to access your health records and appointments or sign up to get started.</p>
+        </div>
+      </>
       )}
     </>
   );

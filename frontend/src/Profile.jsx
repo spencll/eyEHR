@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import "./Profile.css"
 import EHRApi from './api';
 
-function Profile({isLogged}) {
+function Profile({isLogged, refresh, setRefresh}) {
 
     const INITIAL_STATE= {username: "", firstName: "", lastName: "", email: ""}
     const [formData, setFormData] = useState(INITIAL_STATE);
@@ -42,6 +42,7 @@ const handleChange = (event) => {
   await EHRApi.updateProfile(formData.username, data);
           setFormData(INITIAL_STATE)
           navigate("..", { relative: "path" })
+          setRefresh(!refresh)
 
         } catch (error) {
           console.error('Error updating profile:', error);

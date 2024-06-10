@@ -1,5 +1,4 @@
 import React, {useState} from "react";
-import EHRapi from './api';
 import { useNavigate } from "react-router-dom";
 import EHRApi from "./api";
 
@@ -13,6 +12,11 @@ function SignUpForm({setIsLogged}) {
 
     // state for form input
     const [formData, setFormData] = useState(INITIAL_STATE);
+
+      // State for error messages
+  const [errors, setError] = useState([]);
+
+  const [showPassword, setShowPassword] = useState(false);
 
     // matches input value to what was typed
     const handleChange = (event) => {
@@ -31,31 +35,50 @@ function SignUpForm({setIsLogged}) {
 
           } catch (error) {
             console.error('Error registering:', error);
+            setError([...error])
           }
       setFormData(INITIAL_STATE)
     };
-  
+
+    const toggleShowPassword = () => {
+      setShowPassword(!showPassword);
+    };
+
     return (
-      <form onSubmit={handleSubmit} >
+      <form onSubmit={handleSubmit} className="form-container" >
         <h1>Sign up!</h1>
+        {errors && errors.map((error, index) => (
+            <div className="alert" key={index}>{error}</div>
+
+          ))} {/* Display error message */}
 
         <label htmlFor="username" >Username</label>
         <input
         id="username"
         name="username"
-        placeholder="username"
+        placeholder="Username"
         value={formData.username}
         onChange={handleChange}
       />
 
         <label htmlFor="password" >Password</label>
-        <input
+        <input type={showPassword ? "text" : "password"}
         id="password"
         name="password"
-        placeholder="password"
+        placeholder="Password"
         value={formData.password}
         onChange={handleChange}
       />
+
+      <div>
+      <label htmlFor="showPassword">Show Password</label>
+        <input
+          type="checkbox"
+          id="showPassword"
+          checked={showPassword}
+          onChange={toggleShowPassword}
+        />
+      </div>
 
 <label htmlFor="firstName" >First name</label>
         <input
@@ -84,11 +107,11 @@ function SignUpForm({setIsLogged}) {
         onChange={handleChange}
       />
 
-<label htmlFor="invitationCode" >HCP code</label>
+<label htmlFor="invitationCode" >Healthcare provider code</label>
         <input
         id="invitationCode"
         name="invitationCode"
-        placeholder="Code"
+        placeholder="Leave blank if you are a patient"
         value={formData.invitationCode}
         onChange={handleChange}
       />

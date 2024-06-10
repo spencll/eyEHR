@@ -1,8 +1,28 @@
 import "./PatientProfile.css"
-import {NavLink} from 'react-router-dom';
+import {NavLink, useNavigate, useParams} from 'react-router-dom';
+import { useEffect } from "react";
+import EHRApi from './api';
 
+function EncountersList({encounters, formatDateTime,setRefresh,refresh}) {
 
-function EncountersList({encounters, formatDateTime}) {
+  const navigate = useNavigate();
+
+   // Parem extraction
+   const {pid} = useParams()
+
+   useEffect(() => {
+  }, [refresh]);
+
+  const handleDelete = async (id) =>{
+    try {
+      await EHRApi.deleteEncounter(pid, id);
+      setRefresh(!refresh);
+    } catch (error) {
+      console.error('Error deleting encounter:', error);
+      // Handle the error, e.g., display an error message to the user
+    }
+  }
+
     return (<>
       <div className="patient-encounters">
       {encounters && encounters.length > 0 ? (
@@ -11,25 +31,22 @@ function EncountersList({encounters, formatDateTime}) {
               const { date, time } = formatDateTime(encounter.datetime);
               return (
                 <li key={encounter.id} className="encounter-card">
-                   <NavLink to={`/patients/${encounter.pid}/encounters/${encounter.id}/edit`}>
+                   <NavLink to={`/patients/${encounter.pid}/encounters/${encounter.id}/`}>
+
                     <div>
-                  <p>Date: {date}</p>
-                  <p>Time: {time}</p>
-                  <p>Patient: {encounter.patientLastName}, {encounter.patientFirstName}</p>
-                  <p>Doctor: {encounter.drLastName}, {encounter.drFirstName}</p>
+                  <p><strong>Date: </strong>{date}</p>
+                  <p><strong>Time: </strong> {time}</p>
+                  <p><strong>Patient: </strong> {encounter.patientLastName}, {encounter.patientFirstName}</p>
+                  <p><strong>Doctor: </strong> {encounter.drLastName}, {encounter.drFirstName}</p>
+                  
                   </div>
                   </NavLink>
+                  <div className="actions">
+                <button onClick={() => navigate(`/patients/${pid}/encounters/${encounter.id}/edit`)}>Edit</button>
+                <button onClick={() => handleDelete(encounter.id)}>Delete</button>
+                </div>
                 </li>
-              //    <li key={encounter.id} className="encounter-card">
-              //    <NavLink to={`/patients/${pid}/encounters/${encounter.id}/edit`}>
-              //      <div>
-              //        <p><strong>Date:</strong> {date}</p>
-              //        <p><strong>Time:</strong> {time}</p>
-              //        <p><strong>Doctor:</strong> {encounter.drLastName}, {encounter.drFirstName}</p>
-              //      </div>
-              //    </NavLink>
-              //    <button onClick={() => handleDelete(encounter.id)}>Delete</button>
-              //  </li>
+    
               );
             })}
           </ul>

@@ -29,7 +29,7 @@ function EncounterDetails() {
   return (
     
     <div className="patient-encounters">
-    <li key={encounter.id} className="encounter-card">
+    <li key={encounter.id} className="encounter-card" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
       <div>
         <p>
           <strong>Patient: </strong>{encounter.patientLastName}, {encounter.patientFirstName}
@@ -59,6 +59,12 @@ function EncounterDetails() {
       <li>
         <strong>Assessment and plan: </strong> {encounter.results.ap|| "None"}
       </li>
+      {encounter.signed && (
+      <div className="signature">
+        <p><strong>Signed by: </strong>{encounter.signedBy}</p>
+        <p><strong>Signed at: </strong> {encounter.signedAt}</p>
+      </div>
+    )}
         </ul>
       </div>
     </li>

@@ -113,13 +113,11 @@ router.patch("/:username", async function (req, res, next) {
 
     // Update user 
     const user = await User.update(req.params.username, req.body);
+    const newEmail= req.body.email || user.email
 
-    // Get patient by email
-    const patient = await Patient.getByEmail(user.email)
-    
-     // patching patient user's email if changed as well 
-     const newEmail= req.body.email || user.email
-     patient = await User.update(patient.id,{email: newEmail})
+     //Updates patient email too if user is a patient 
+     const patient = await Patient.getByEmail(user.email) 
+     if (patient) await Patient.update(patient.id,{email: newEmail})
 
     return res.json({ user });
   } catch (err) {

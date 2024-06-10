@@ -29,7 +29,6 @@ class Patient {
 
     const patient = patientRes.rows[0];
 
-    if (!patient) throw new NotFoundError(`No patient with email: ${email}`);
 
     return patient;
   }
@@ -96,7 +95,7 @@ class Patient {
           `SELECT id,
                   first_name AS "firstName",
                   last_name AS "lastName",
-                  email, dob, cell
+                  email, dob, age, cell
            FROM patients
            WHERE CONCAT(first_name, ', ', last_name) ILIKE $1
            OR CONCAT(last_name, ', ', first_name) ILIKE $1
@@ -215,12 +214,6 @@ patient.appointments = appointmentRes.rows
 
     if (!user) throw new NotFoundError(`No user: ${username}`);
   }
-
-  /** Apply for job: update db, returns undefined.
-   *
-   * - username: username applying for job
-   * - jobId: job id
-   **/
 
 
 }

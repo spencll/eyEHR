@@ -115,9 +115,9 @@ function NavBar({isLogged, logout, userInfo}) {
   <div className="search-results-container">
     {searchResults.map((patient) => (
       <NavLink key={patient.id} to={`/patients/${patient.id}`} className="search-result-item" onClick={handleNavLinkClick}>
-         {patient.lastName}, {patient.firstName}
+         {patient.lastName}, {patient.firstName} ({patient.age})
          <br/>
-         <small>{patient.dob}</small>
+         <small>{patient.dob} |</small>
          <small>  {patient.cell}</small>
       </NavLink>
     ))}

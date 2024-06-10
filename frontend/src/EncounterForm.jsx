@@ -39,10 +39,12 @@ ap:"",rpressure: 0, lpressure: 0}
             const encounter = await EHRApi.getPatientEncounter(pid, eid)
             setEncounter(encounter)
 
-            // If results not populated yet, use initial state as results 
+            // If results not populated yet, use initial state as results.
             const initialResults = encounter.results ? encounter.results : INITIAL_STATE;
             setFormData(initialResults)
             setLoading(false)
+             // Also initialize encounter data
+            if (!encounter.results) await EHRApi.updateEncounter(pid, eid, {formData})
 
             // Updates editable state if is correct user id and not signed
             if (encounter.uid === userInfo.id && !encounter.signed) {
