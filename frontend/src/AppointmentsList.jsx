@@ -4,6 +4,7 @@ import { NavLink} from 'react-router-dom';
 function AppointmentsList({userInfo, appointments, formatDateTime}) {
 
     return (<>
+    <h1>Today's appointments</h1>
       <div className="patient-appointments">
       {appointments && appointments.length > 0 ? (
           <ul>
@@ -13,8 +14,8 @@ function AppointmentsList({userInfo, appointments, formatDateTime}) {
                 <li key={appointment.id} className="appointment-card">
              
                   <div >
-                    <p><strong>Date:</strong> {date}</p>
-                    <p><strong>Time:</strong> {time}</p>
+                    <p><strong>Appointment Date:</strong> {date}</p>
+                    <p><strong>Appointment Time:</strong> {time}</p>
                     <p><strong>Patient:</strong> {appointment.patientLastName}, {appointment.patientFirstName}</p>
                     <p><strong>Doctor:</strong> {appointment.drLastName}, {appointment.drFirstName}</p>
                   </div>

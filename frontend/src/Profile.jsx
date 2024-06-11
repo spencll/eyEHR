@@ -58,7 +58,7 @@ const handleChange = (event) => {
       <h1>Edit Profile</h1>
   
       <div className="form-group">
-        <label htmlFor="username" className="form-label">Username:</label>
+        <label htmlFor="username" className="form-label">Username (read only):  </label>
         <input
           id="username"
           name="username"

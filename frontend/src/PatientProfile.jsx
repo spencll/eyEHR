@@ -61,13 +61,14 @@ const fetchPatientDetails = async () => {
                 <li key={appointment.id} className="appointment-card">
               
                   <div>
-                    <p><strong>Date:</strong> {date}</p>
-                    <p><strong>Time:</strong> {time}</p>
+                    <p><strong>Appointment Date:</strong> {date}</p>
+                    <p><strong>Appointment Time:</strong> {time}</p>
                     <p><strong>Doctor:</strong> {appointment.drLastName}, {appointment.drFirstName}</p>
                   </div>
             
                 <div className="actions">
-                  <button onClick={() => handleDelete(appointment.id, "appointment")}>Delete</button>
+                  <button onClick={() => navigate(`/patients/${pid}/appointments/${appointment.id}/edit`)}>Edit</button>
+                  <button className="delete" onClick={() => handleDelete(appointment.id, "appointment")}>Delete</button>
                 </div>
                 
               </li>
@@ -92,13 +93,13 @@ const fetchPatientDetails = async () => {
                 <NavLink to={`/patients/${pid}/encounters/${encounter.id}/`}>
                   <div>
                     <p><strong>Date:</strong> {date}</p>
-                    <p><strong>Time:</strong> {time}</p>
+                    <p><strong>Created at:</strong> {time}</p>
                     <p><strong>Doctor:</strong> {encounter.drLastName}, {encounter.drFirstName}</p>
                   </div>
                 </NavLink>
                 <div className="actions">
                 <button onClick={() => navigate(`/patients/${pid}/encounters/${encounter.id}/edit`)}>Edit</button>
-                <button onClick={() => handleDelete(encounter.id, "encounter")}>Delete</button>
+                <button className="delete" onClick={() => handleDelete(encounter.id, "encounter")}>Delete</button>
                 </div>
               </li>
             );

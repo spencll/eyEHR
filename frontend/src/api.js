@@ -179,6 +179,18 @@ static async queryPatients(q){
           throw Array.isArray(message) ? message : [message];
       }
     }
+        // Edit appointment 
+        static async updateAppointment(pid,aid,data) {
+          try{
+          let res = await this.request(`patients/${pid}/appointments/${aid}/edit`,data, "patch")
+          return res.appointment
+          }
+          catch(err) {
+              console.error("API Error:", err.response);
+              let message = err.response.data.error.message;
+              throw Array.isArray(message) ? message : [message];
+          }
+        }
 
       // Delete appointment 
       static async deleteAppointment(pid, aid) {

@@ -9,7 +9,6 @@ const {
   UnauthorizedError,
 } = require("../expressError");
 
-const { BCRYPT_WORK_FACTOR } = require("../config.js");
 
 /** Related functions for users. */
 
@@ -25,6 +24,7 @@ class Appointment {
 
   //Making appointment 
   static async makeAppointment(datetime, userId, patientId) {
+    try{
     const result = await db.query(
         `INSERT INTO appointments (datetime, user_id, patient_id)
         VALUES ($1, $2, $3) RETURNING datetime`,
@@ -52,7 +52,10 @@ class Appointment {
     appointment.message= 'Appointment scheduled!'        
     appointment.patient = patientRes.rows[0]
     appointment.doctor = hcpRes.rows[0]
-    return appointment
+    return appointment}
+    catch (error) {
+      throw new BadRequestError(`Error making appointment: ${error.message}`);
+  }
   }
 
 //   Find today's appointments (useful for HCP)
@@ -166,12 +169,13 @@ static async findAllAppointments(email) {
     let result = await db.query(
           `DELETE
            FROM appointments
-           WHERE id = $1`,
+           WHERE id = $1
+           RETURNING id`,
         [apptId],
     );
+    const appointment = result.rows[0];
 
-
-    if (!result) throw new NotFoundError(`Appointment not found`);
+    if (!appointment) throw new NotFoundError(`Appointment not found`);
   }
 
 }

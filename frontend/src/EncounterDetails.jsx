@@ -59,12 +59,12 @@ function EncounterDetails() {
       <li>
         <strong>Assessment and plan: </strong> {encounter.results.ap|| "None"}
       </li>
-      {encounter.signed && (
+      {encounter.signed ? (
       <div className="signature">
         <p><strong>Signed by: </strong>{encounter.signedBy}</p>
         <p><strong>Signed at: </strong> {encounter.signedAt}</p>
       </div>
-    )}
+    ): <h3><strong>Not yet finalized by provider</strong></h3>}
         </ul>
       </div>
     </li>

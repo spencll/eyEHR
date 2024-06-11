@@ -147,13 +147,12 @@ router.post("/:pid/appointments/add", async function (req,res,next){
 })
 
 // EDIT patient appointment
-router.patch("/:pid/appointments/:aid", async function (req, res, next) {
+router.patch("/:pid/appointments/:aid/edit", async function (req, res, next) {
   try {
-    // const validator = jsonschema.validate(req.body, userUpdateSchema);
-    // if (!validator.valid) {
-    //   const errs = validator.errors.map(e => e.stack);
-    //   throw new BadRequestError(errs);
-    // }
+    // No date specified 
+    if (!req.body) {
+      throw new BadRequestError();
+    }
 
     // Update appointment
     const appointment = await Appointment.update(req.params.aid, req.body);

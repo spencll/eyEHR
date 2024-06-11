@@ -67,7 +67,7 @@ function NavBar({isLogged, logout, userInfo}) {
        
         <Nav className="ml-auto" navbar>
         <NavLink to="/" className="navbar-brand">
-          Home
+          Home 
         </NavLink>
           {isLogged ? <>
           

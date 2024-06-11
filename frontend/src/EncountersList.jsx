@@ -24,6 +24,7 @@ function EncountersList({encounters, formatDateTime,setRefresh,refresh}) {
   }
 
     return (<>
+    <h1>Today's encounters</h1>
       <div className="patient-encounters">
       {encounters && encounters.length > 0 ? (
           <ul>
@@ -35,7 +36,7 @@ function EncountersList({encounters, formatDateTime,setRefresh,refresh}) {
 
                     <div>
                   <p><strong>Date: </strong>{date}</p>
-                  <p><strong>Time: </strong> {time}</p>
+                  <p><strong>Created at: </strong> {time}</p>
                   <p><strong>Patient: </strong> {encounter.patientLastName}, {encounter.patientFirstName}</p>
                   <p><strong>Doctor: </strong> {encounter.drLastName}, {encounter.drFirstName}</p>
                   
@@ -43,7 +44,7 @@ function EncountersList({encounters, formatDateTime,setRefresh,refresh}) {
                   </NavLink>
                   <div className="actions">
                 <button onClick={() => navigate(`/patients/${pid}/encounters/${encounter.id}/edit`)}>Edit</button>
-                <button onClick={() => handleDelete(encounter.id)}>Delete</button>
+                <button className="delete" onClick={() => handleDelete(encounter.id)}>Delete</button>
                 </div>
                 </li>
     

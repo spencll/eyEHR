@@ -23,6 +23,7 @@ import Profile from './Profile';
 
 import { Navigate } from 'react-router-dom';
 import CreateEncounter from './CreateEncounter';
+import EditAppointment from './EditAppointment';
 
 function App() {
 
@@ -152,6 +153,11 @@ function App() {
       <Route exact path="/patients/:pid/appointments/new" 
       element={isLogged? 
       <AppointmentForm userInfo={userInfo} setAppointments={setAppointments} refresh={refresh} setRefresh={setRefresh}/>
+      : <Navigate to="/login"/>}/>
+
+      <Route exact path="/patients/:pid/appointments/:aid/edit" 
+      element={isLogged? 
+      <EditAppointment userInfo={userInfo} setAppointments={setAppointments} refresh={refresh} setRefresh={setRefresh}/>
       : <Navigate to="/login"/>}/>
       
       <Route exact path="/patients/:pid/encounters/new" 
