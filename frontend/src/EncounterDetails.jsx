@@ -29,6 +29,7 @@ function EncounterDetails() {
   return (
     
     <div className="patient-encounters">
+        <h2>Exam report</h2>
     <li key={encounter.id} className="encounter-card" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
       <div>
         <p>

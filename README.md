@@ -26,10 +26,10 @@ See all unsigned encounters at once.
 
 ## Schemas
 
-Users
-Patients
-Appointments
-Encounters  
+Users (CRU)
+Patients (CR)
+Appointments (CRUD)
+Encounters (CRUD)
 
 
 ## Guidelines
