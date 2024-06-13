@@ -5,14 +5,13 @@
 const jsonschema = require("jsonschema");
 
 const express = require("express");
-const {ensureCorrectUserOrHCP, isHCP, authenticateJWT} = require("../middleware/auth");
+const {ensureCorrectUserOrHCP, isHCP} = require("../middleware/auth");
 const { BadRequestError } = require("../expressError");
 const Patient = require("../models/patient");
 const Appointment = require("../models/appointment");
 const Encounter = require("../models/encounter")
-const { createToken } = require("../helpers/tokens");
+
 const patientNewSchema = require("../schemas/patientNew.json");
-const userUpdateSchema = require("../schemas/userUpdate.json");
 const patientUpdateSchema = require("../schemas/patientUpdate.json");
 const User = require("../models/user")
 

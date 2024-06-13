@@ -1,5 +1,5 @@
 "use strict";
-/** Database setup for jobly. */
+/** Database setup for eyEHR. */
 const { Client } = require("pg");
 const { getDatabaseUri } = require("./config");
 
@@ -17,6 +17,7 @@ if (process.env.NODE_ENV === "production") {
     connectionString: getDatabaseUri()
   });
 }
+
 
 db.connect();
 

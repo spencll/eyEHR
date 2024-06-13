@@ -11,7 +11,7 @@ if (fs.existsSync(seedFilePath)) {
 }
 
 // API request
-let API_URL= 'https://randomuser.me/api/?nat=us&results=50&inc=name,email,cell,dob'
+let API_URL= 'https://randomuser.me/api/?nat=us&results=100&inc=name,email,cell,dob'
 
 axios.get(API_URL)
   .then(response => {

@@ -1,77 +1,100 @@
 "use strict";
 
 const db = require("../db.js");
+
 const User = require("../models/user");
-const Company = require("../models/company");
-const Job = require("../models/job");
+const Appointment = require("../models/appointment.js")
+const Encounter = require("../models/encounter.js")
+const Patient = require("../models/patient.js")
 const { createToken } = require("../helpers/tokens");
 
-const testJobIds = [];
+let testPatientIds = []
+let testUserIds = []
+let testEncountersIds = []
+let testAppointmentIds = []
 
 async function commonBeforeAll() {
-  // noinspection SqlWithoutWhere
-  await db.query("DELETE FROM users");
-  // noinspection SqlWithoutWhere
-  await db.query("DELETE FROM companies");
 
-  await Company.create(
-      {
-        handle: "c1",
-        name: "C1",
-        numEmployees: 1,
-        description: "Desc1",
-        logoUrl: "http://c1.img",
-      });
-  await Company.create(
-      {
-        handle: "c2",
-        name: "C2",
-        numEmployees: 2,
-        description: "Desc2",
-        logoUrl: "http://c2.img",
-      });
-  await Company.create(
-      {
-        handle: "c3",
-        name: "C3",
-        numEmployees: 3,
-        description: "Desc3",
-        logoUrl: "http://c3.img",
-      });
+   // noinspection SqlWithoutWhere
+   await db.query("DELETE FROM users");
+   await db.query("DELETE FROM patients");
+   await db.query("DELETE FROM appointments");
+   await db.query("DELETE FROM encounters");
 
-  testJobIds[0] = (await Job.create(
-      { title: "J1", salary: 1, equity: "0.1", companyHandle: "c1" })).id;
-  testJobIds[1] = (await Job.create(
-      { title: "J2", salary: 2, equity: "0.2", companyHandle: "c1" })).id;
-  testJobIds[2] = (await Job.create(
-      { title: "J3", salary: 3, /* equity null */ companyHandle: "c1" })).id;
+  // Test patients 
+  const patient1 = await Patient.register(
+      {
+        firstName: "P1F",
+        lastName: "P1L",
+        email: "patient1@patient.com",
+        dob: "01/01/1111",
+        age: 1,
+        cell: "(111) 111-1111"
+      });
+  const patient2 = await Patient.register(
+        {
+          firstName: "P2F",
+          lastName: "P2L",
+          email: "patient2@patient.com",
+          dob: "02/02/2222",
+          age: 2,
+          cell: "(222) 222-2222"
+        });
 
-  await User.register({
+    const patient3 = await Patient.register(
+          {
+            firstName: "P3F",
+            lastName: "P3L",
+            email: "patient3@patient.com",
+            dob: "03/03/3333",
+            age: 3,
+            cell: "(333) 333-3333"
+          });
+
+  testPatientIds = [patient1.id,patient2.id,patient3.id]
+
+           // Test users
+   const user1 = await User.register({
     username: "u1",
     firstName: "U1F",
     lastName: "U1L",
     email: "user1@user.com",
     password: "password1",
-    isAdmin: false,
+    isHCP: true,
   });
-  await User.register({
+  const user2 = await User.register({
     username: "u2",
     firstName: "U2F",
     lastName: "U2L",
     email: "user2@user.com",
     password: "password2",
-    isAdmin: false,
+    isHCP: false,
   });
-  await User.register({
+
+  // User is patient3, hence email is the same 
+  const user3= await User.register({
     username: "u3",
     firstName: "U3F",
     lastName: "U3L",
-    email: "user3@user.com",
+    email: "patient3@patient.com",
     password: "password3",
-    isAdmin: false,
+    isHCP: false,
   });
 
-  await User.applyToJob("u1", testJobIds[0]);
+ testUserIds = [user1.id, user2.id, user3.id]
+  const encounter1 = await Encounter.makeEncounter({userId: user1.id},patient1.id)
+  const encounter2 = await Encounter.makeEncounter({userId: user2.id},patient2.id)
+  const encounter3 = await Encounter.makeEncounter({userId: user3.id},patient3.id)
+
+  testEncountersIds = [encounter1.id,encounter2.id,encounter3.id]
+
+  const appointment1= await Appointment.makeAppointment(new Date("2023-12-01T10:00:00Z"),user1.id,patient1.id)
+  const appointment2= await Appointment.makeAppointment(new Date("2023-12-01T10:00:00Z"),user1.id,patient2.id)
+  const appointment3= await Appointment.makeAppointment(new Date("2023-12-01T10:00:00Z"),user1.id,patient3.id)
+
+ testAppointmentIds = [appointment1.id,appointment2.id,appointment3.id]
+
+
 }
 
 async function commonBeforeEach() {
@@ -87,9 +110,17 @@ async function commonAfterAll() {
 }
 
 
-const u1Token = createToken({ username: "u1", isAdmin: false });
-const u2Token = createToken({ username: "u2", isAdmin: false });
-const adminToken = createToken({ username: "admin", isAdmin: true });
+const u1Token = createToken({username: "u1",
+  isHCP: true,
+  email: "user1@user.com",
+  id: testUserIds[0]});
+
+// Regular user token 
+const u2Token = createToken({username: "u2",
+  isHCP: false,
+  email: "user2@user.com",
+  id: testUserIds[1]});
+
 
 
 module.exports = {
@@ -97,8 +128,10 @@ module.exports = {
   commonBeforeEach,
   commonAfterEach,
   commonAfterAll,
-  testJobIds,
+  testPatientIds,
+  testUserIds,
+  testEncountersIds,
+  testAppointmentIds,
   u1Token,
-  u2Token,
-  adminToken,
+  u2Token
 };

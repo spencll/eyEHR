@@ -86,7 +86,7 @@ class User {
             email,
             is_HCP)
            VALUES ($1, $2, $3, $4, $5, $6)
-           RETURNING username, first_name AS "firstName", last_name AS "lastName", email, is_HCP AS "isHCP"`,
+           RETURNING username, first_name AS "firstName", last_name AS "lastName", email, is_HCP AS "isHCP", id`,
         [
           username,
           hashedPassword,
@@ -166,6 +166,7 @@ user.appointments = appointmentRes.rows
     return user;
   }
 
+  // Get user by email 
   static async getByEmail(email) {
     const userRes = await db.query(
           `SELECT username,
@@ -232,7 +233,7 @@ user.appointments = appointmentRes.rows
         {
           firstName: "first_name",
           lastName: "last_name",
-          isHCP: "is_HCP",
+          isHCP: "is_hcp",
         });
     const usernameVarIdx = "$" + (values.length + 1);
 
@@ -253,49 +254,8 @@ user.appointments = appointmentRes.rows
     return user;
   }
 
-  /** Delete given user from database; returns undefined. */
 
-  static async remove(username) {
-    let result = await db.query(
-          `DELETE
-           FROM users
-           WHERE username = $1
-           RETURNING username`,
-        [username],
-    );
-    const user = result.rows[0];
 
-    if (!user) throw new NotFoundError(`No user: ${username}`);
-  }
-
-  /** Apply for job: update db, returns undefined.
-   *
-   * - username: username applying for job
-   * - jobId: job id
-   **/
-
-  static async applyToJob(username, jobId) {
-    const preCheck = await db.query(
-          `SELECT id
-           FROM jobs
-           WHERE id = $1`, [jobId]);
-    const job = preCheck.rows[0];
-
-    if (!job) throw new NotFoundError(`No job: ${jobId}`);
-
-    const preCheck2 = await db.query(
-          `SELECT username
-           FROM users
-           WHERE username = $1`, [username]);
-    const user = preCheck2.rows[0];
-
-    if (!user) throw new NotFoundError(`No username: ${username}`);
-
-    await db.query(
-          `INSERT INTO applications (job_id, username)
-           VALUES ($1, $2)`,
-        [jobId, username]);
-  }
 }
 
 

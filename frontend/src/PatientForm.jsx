@@ -90,7 +90,7 @@ function PatientForm({setRefresh, refresh}) {
         </div>
 
         <div className="form-group">
-          <label htmlFor="email">Email </label>
+          <label htmlFor="email">Email</label>
           <input
             type="text"
             id="email"

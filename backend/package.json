@@ -6,7 +6,7 @@
   "scripts": {
     "start": "concurrently \"npm run start-backend\" \"npm run start-frontend\"",
     "dev": "nodemon --ignore sessions/ server.js",
-    "test": "jest -i",
+    "test": "jest -i --detectOpenHandles",
     "start-backend": "nodemon --ignore sessions/ server.js",
     "start-frontend": "cd ../frontend && npm run dev"
   },

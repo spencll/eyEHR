@@ -102,7 +102,7 @@ function SignUpForm({setIsLogged}) {
         <input
         id="email"
         name="email"
-        placeholder="Email"
+        placeholder="Use same patient email if you are a patient"
         value={formData.email}
         onChange={handleChange}
       />

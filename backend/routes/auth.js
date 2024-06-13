@@ -32,7 +32,6 @@ router.post("/token", async function (req, res, next) {
     const token = createToken(user);
 
     // Letting back end handle token and sessions
-  
     req.session.token= token; 
 
     return res.json({ token });

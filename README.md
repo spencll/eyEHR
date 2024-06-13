@@ -4,7 +4,7 @@ We have broken down the Capstone Project into easy-to-follow steps. Each step of
 
 ## Introduction
 
-Welcome to EyeHR, an electronic health record for eye care practioners but accessible by patients only to their own records. 
+Welcome to eyEHR, an electronic health record for eye care practioners but accessible by patients only to their own records. 
 
 ## How to run
 

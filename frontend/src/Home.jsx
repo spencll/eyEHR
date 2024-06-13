@@ -16,15 +16,13 @@ function Home({userInfo, isLogged, formatDateTime}) {
 
       } catch (err) {
         console.error('Encounters not found:', err);
-        // Handle error appropriately
       }
     }
     };
+    loadEncounter()
+  }, [isLogged, userInfo]);
 
-    loadEncounter();
-  }, []);
-  // Helps handle page refreshes 
-  // const username= JSON.parse(localStorage.getItem("user"))["username"]
+
 
   return (
     <>
@@ -60,8 +58,9 @@ function Home({userInfo, isLogged, formatDateTime}) {
         </>
       ) : (<>
         <div className="welcome-container">
-          <h1>Welcome to EyeHR!</h1>
-          <p><strong>For patient users:</strong> Login to access your health records and appointments or sign up to get started.</p>
+          <h1>Welcome to eyEHR!</h1>
+          <p><strong>For patients:</strong> Login to access your health records or sign up to get started.</p>
+          <p><strong>For healthcare providers:</strong> Login to access patient health records or sign up to get started. Must have provider code. </p>
         </div>
       </>
       )}

@@ -1,7 +1,6 @@
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 import EHRApi from './api';
 import { useNavigate } from "react-router-dom";
-import Alert from 'react-bootstrap/Alert';
 
 
 // Bringing down functions for changing state as props
@@ -18,6 +17,7 @@ function LoginForm({setIsLogged}) {
   const [error, setError] = useState("");
 
   const [showPassword, setShowPassword] = useState(false);
+
 
     // matches input value to what was typed
     const handleChange = (event) => {

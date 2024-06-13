@@ -1,36 +1,50 @@
 const jwt = require("jsonwebtoken");
-const { createToken } = require("./tokens");
 const { SECRET_KEY } = require("../config");
+const { createToken } = require("../helpers/tokens");
 
 describe("createToken", function () {
-  test("works: not admin", function () {
-    const token = createToken({ username: "test", is_admin: false });
+  test("returns a token with the correct payload", function () {
+    const user = {
+      username: "testuser",
+      isHCP: true,
+      email: "testuser@test.com",
+      id: 1
+    };
+
+    const token = createToken(user);
     const payload = jwt.verify(token, SECRET_KEY);
+
     expect(payload).toEqual({
-      iat: expect.any(Number),
-      username: "test",
-      isAdmin: false,
+      username: "testuser",
+      isHCP: true,
+      email: "testuser@test.com",
+      id: 1,
+      iat: expect.any(Number) // `iat` is the issued at timestamp
     });
   });
 
-  test("works: admin", function () {
-    const token = createToken({ username: "test", isAdmin: true });
+  test("returns a valid JWT", function () {
+    const user = {
+      username: "testuser",
+      isHCP: false,
+      email: "testuser2@test.com",
+      id: 2
+    };
+
+    const token = createToken(user);
     const payload = jwt.verify(token, SECRET_KEY);
-    expect(payload).toEqual({
-      iat: expect.any(Number),
-      username: "test",
-      isAdmin: true,
+
+    expect(payload).toMatchObject({
+      username: "testuser",
+      isHCP: false,
+      email: "testuser2@test.com",
+      id: 2
     });
   });
 
-  test("works: default no admin", function () {
-    // given the security risk if this didn't work, checking this specifically
-    const token = createToken({ username: "test" });
-    const payload = jwt.verify(token, SECRET_KEY);
-    expect(payload).toEqual({
-      iat: expect.any(Number),
-      username: "test",
-      isAdmin: false,
-    });
+  test("throws an error with an invalid token", function () {
+    const invalidToken = "invalid.token.here";
+
+    expect(() => jwt.verify(invalidToken, SECRET_KEY)).toThrow();
   });
 });

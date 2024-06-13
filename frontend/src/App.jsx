@@ -121,8 +121,8 @@ function App() {
       {/* Protecting companies/jobs routes */}
 
       {/* Don't need protection */}
-      <Route exact path="/signup" element={<SignUpForm setIsLogged={setIsLogged}/>} />
-      <Route exact path="/login" element={<LoginForm setIsLogged={setIsLogged}/>} />
+      <Route exact path="/signup" element={<SignUpForm setIsLogged={setIsLogged} refresh={refresh} setRefresh={setRefresh}/>} />
+      <Route exact path="/login" element={<LoginForm setIsLogged={setIsLogged} isLogged={isLogged} refresh={refresh} setRefresh={setRefresh}/>} />
 
       {/* Users routes */}
       <Route exact path="/profile" 
