@@ -27,7 +27,7 @@ class Appointment {
     try{
     const result = await db.query(
         `INSERT INTO appointments (datetime, user_id, patient_id)
-        VALUES ($1, $2, $3) RETURNING datetime`,
+        VALUES ($1, $2, $3) RETURNING datetime, id`,
         [
           datetime,
           userId,

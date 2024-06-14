@@ -8,6 +8,7 @@ const Encounter = require("../models/encounter.js")
 const Patient = require("../models/patient.js")
 const { createToken } = require("../helpers/tokens");
 
+let testUserUsernames = []
 let testPatientIds = []
 let testUserIds = []
 let testEncountersIds = []
@@ -51,7 +52,7 @@ async function commonBeforeAll() {
             cell: "(333) 333-3333"
           });
 
-  testPatientIds = [patient1.id,patient2.id,patient3.id]
+    testPatientIds.push(patient1.id, patient2.id, patient3.id);
 
            // Test users
    const user1 = await User.register({
@@ -81,18 +82,20 @@ async function commonBeforeAll() {
     isHCP: false,
   });
 
- testUserIds = [user1.id, user2.id, user3.id]
+ testUserIds.push(user1.id, user2.id, user3.id)
+ testUserUsernames.push(user1.username, user2.username, user3.username)
+
   const encounter1 = await Encounter.makeEncounter({userId: user1.id},patient1.id)
   const encounter2 = await Encounter.makeEncounter({userId: user2.id},patient2.id)
   const encounter3 = await Encounter.makeEncounter({userId: user3.id},patient3.id)
 
-  testEncountersIds = [encounter1.id,encounter2.id,encounter3.id]
+  testEncountersIds.push(encounter1.id,encounter2.id,encounter3.id)
 
   const appointment1= await Appointment.makeAppointment(new Date("2023-12-01T10:00:00Z"),user1.id,patient1.id)
   const appointment2= await Appointment.makeAppointment(new Date("2023-12-01T10:00:00Z"),user1.id,patient2.id)
   const appointment3= await Appointment.makeAppointment(new Date("2023-12-01T10:00:00Z"),user1.id,patient3.id)
 
- testAppointmentIds = [appointment1.id,appointment2.id,appointment3.id]
+ testAppointmentIds.push(appointment1.id,appointment2.id,appointment3.id)
 
 
 }
@@ -132,6 +135,7 @@ module.exports = {
   testUserIds,
   testEncountersIds,
   testAppointmentIds,
+  testUserUsernames,
   u1Token,
   u2Token
 };

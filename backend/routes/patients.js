@@ -18,7 +18,7 @@ const User = require("../models/user")
 const router = express.Router();
 
 // List of all patients, only accessible as HCP
-router.get("/", async function (req, res, next) {
+router.get("/", isHCP, async function (req, res, next) {
   try {
     const { query } = req.query;
     let patients;
@@ -98,15 +98,21 @@ router.patch("/:pid", ensureCorrectUserOrHCP,  async function (req, res, next) {
       const errs = validator.errors.map(e => e.stack);
       throw new BadRequestError(errs);
     }
-    // getting patient/user info
+    // Updating patient
     let patient = await Patient.get(req.params.pid)
-    let user = await User.getByEmail(patient.email)
-    // patching patient info
+    let email = patient.email
     patient = await Patient.update(req.params.pid, req.body);
+
+    // See if patient email is associated with user
+    let user;
+    try {
+      user = await User.getByEmail(email);
+    } catch (err) {
+    }
 
     // patching patient user's email if changed 
     const newEmail= req.body.email || patient.email
-    user = await User.update(user.username,{email: newEmail})
+    if (user) await User.update(user.username,{email: newEmail})
 
     return res.json({ patient });
   } catch (err) {
@@ -126,7 +132,7 @@ router.get("/:pid/appointments", async function (req,res,next){
 })
 
 // POST patient appointment 
-router.post("/:pid/appointments/add", async function (req,res,next){
+router.post("/:pid/appointments/add", isHCP, async function (req,res,next){
 
   try {
     // Validate appointment making schema
@@ -146,7 +152,7 @@ router.post("/:pid/appointments/add", async function (req,res,next){
 })
 
 // EDIT patient appointment
-router.patch("/:pid/appointments/:aid/edit", async function (req, res, next) {
+router.patch("/:pid/appointments/:aid/edit", isHCP, async function (req, res, next) {
   try {
     // No date specified 
     if (!req.body) {
@@ -163,7 +169,7 @@ router.patch("/:pid/appointments/:aid/edit", async function (req, res, next) {
 });
 
 // DELETE patient appointment 
-router.delete("/:pid/appointments/:aid", async function (req, res, next) {
+router.delete("/:pid/appointments/:aid", isHCP, async function (req, res, next) {
   try {
     await Appointment.remove(req.params.aid);
     return res.json({message: "appointment removed"});
@@ -173,7 +179,7 @@ router.delete("/:pid/appointments/:aid", async function (req, res, next) {
 });
 
 // POST patient encounter
-router.post("/:pid/encounters/add", async function (req,res,next){
+router.post("/:pid/encounters/add", isHCP, async function (req,res,next){
 
   try {
     // Validate appointment making schema
@@ -227,7 +233,7 @@ router.get("/:pid/encounters/:eid", async function (req,res,next){
 })
 
 //PATCH patient encounter
-router.patch("/:pid/encounters/:eid", async function (req,res,next){
+router.patch("/:pid/encounters/:eid", isHCP, async function (req,res,next){
 
   try {
     // Validate appointment making schema
@@ -291,7 +297,7 @@ router.patch("/:pid/encounters/:eid/unsign", async function (req,res,next){
 })
 
 // DELETE patient appointment 
-router.delete("/:pid/encounters/:eid", async function (req, res, next) {
+router.delete("/:pid/encounters/:eid", isHCP, async function (req, res, next) {
   try {
     await Encounter.remove(req.params.eid);
     return res.json({ message: "encounter deleted" })

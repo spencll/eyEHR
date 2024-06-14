@@ -79,8 +79,10 @@ const fetchPatientDetails = async () => {
           <p>No appointments found</p>
         )}
       </div>
-
-      <NavLink to={`/patients/${pid}/appointments/new`}><button>Make appointment</button> </NavLink>
+      {userInfo.isHCP?  <>
+        <NavLink to={`/patients/${pid}/appointments/new`}><button>Make appointment</button> </NavLink>
+          </> : null}
+  
 
       <div className="patient-encounters">
       <h3>Encounters</h3>
@@ -109,10 +111,12 @@ const fetchPatientDetails = async () => {
         <p>No encounters found</p>
       )}
       </div>
+
       {userInfo.isHCP?  <>
         <NavLink to={`/patients/${pid}/encounters/new`}><button>Make encounter </button> </NavLink>
           </> : null}
             </div>
+            
           </div>
 
           </>

@@ -61,7 +61,7 @@ class Patient {
             last_name,
             email, dob, age, cell)
            VALUES ($1, $2, $3, $4, $5, $6)
-           RETURNING id,first_name AS "firstName", last_name AS "lastName", email`,
+           RETURNING id,first_name AS "firstName", last_name AS "lastName", email, age, cell, dob`,
         [
           firstName,
           lastName,
@@ -81,7 +81,7 @@ class Patient {
           `SELECT 
                   first_name AS "firstName",
                   last_name AS "lastName",
-                  email
+                  email, age, dob, cell, id
            FROM patients
            ORDER BY last_name`,
     );
@@ -189,7 +189,7 @@ patient.appointments = appointmentRes.rows
                       RETURNING 
                                 first_name AS "firstName",
                                 last_name AS "lastName",
-                                email`;
+                                email, age, cell, dob, id`;
 
     // The actual query
     const result = await db.query(querySql, [...values, pid]);
