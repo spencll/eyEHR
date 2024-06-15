@@ -1,10 +1,11 @@
-import "./PatientProfile.css"
+import "../PatientProfile.css"
 import { NavLink} from 'react-router-dom';
 
 function AppointmentsList({userInfo, appointments, formatDateTime}) {
 
     return (<>
-    <h1>Today's appointments</h1>
+    {userInfo.isHCP? (<h1>Today's appointments</h1>):<h1>Your appointments</h1>}
+    
       <div className="patient-appointments">
       {appointments && appointments.length > 0 ? (
           <ul>
@@ -28,8 +29,10 @@ function AppointmentsList({userInfo, appointments, formatDateTime}) {
             })}
           </ul>
         ) : (
-          <p>No appointments today</p>
-        )}
+          
+          <p>{userInfo.isHCP ? "No appointments today" : "No appointments found"}</p>
+        )
+        }
       </div>
       </>
     );

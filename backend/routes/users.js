@@ -5,28 +5,18 @@
 const jsonschema = require("jsonschema");
 
 const express = require("express");
-const { ensureCorrectUserOrAdmin, ensureAdmin,ensureLoggedIn} = require("../middleware/auth");
+const {ensureLoggedIn, ensureCorrectUserOrHCP, isHCP, ensureCorrectUser} = require("../middleware/auth");
 const { BadRequestError } = require("../expressError");
 const User = require("../models/user");
 const Patient = require("../models/patient")
 const Appointment = require("../models/appointment")
 const Encounters = require("../models/encounter")
-const { createToken } = require("../helpers/tokens");
-const userNewSchema = require("../schemas/patientNew.json");
 const userUpdateSchema = require("../schemas/userUpdate.json");
 
 const router = express.Router();
 
-
-
-/** GET / => { users: [ {username, firstName, lastName, email }, ... ] }
- *
- * Returns list of all users.
- *
- * Authorization required: admin
- **/
-
-router.get("/",  async function (req, res, next) {
+// Only used during dev
+router.get("/", isHCP,  async function (req, res, next) {
   try {
     const users = await User.findAll();
     return res.json({ users });
@@ -36,15 +26,8 @@ router.get("/",  async function (req, res, next) {
 });
 
 
-/** GET /[username] => { user }
- *
- * Returns { username, firstName, lastName, isAdmin, jobs }
- *   where jobs is { id, title, companyHandle, companyName, state }
- *
- * Authorization required: admin or same user-as-:username
- **/
+router.get("/:username", ensureCorrectUser, async function (req, res, next) {
 
-router.get("/:username", async function (req, res, next) {
   try {
     const user = await User.get(req.params.username);
     return res.json({ user });
@@ -54,7 +37,7 @@ router.get("/:username", async function (req, res, next) {
 });
 
 //GET today's appointments for HCP, all appointments for regular user
-router.get("/:username/appointments", async function (req,res,next){
+router.get("/:username/appointments", ensureCorrectUser, async function (req,res,next){
   try {
     let appointments;
     const user = await User.get(req.params.username);
@@ -68,7 +51,7 @@ router.get("/:username/appointments", async function (req,res,next){
 })
 
 //GET today's encounters for HCP, all encounters for regular user
-router.get("/:username/encounters", async function (req,res,next){
+router.get("/:username/encounters", ensureCorrectUser, async function (req,res,next){
   try {
     let encounters;
     const user = await User.get(req.params.username);
@@ -81,7 +64,7 @@ router.get("/:username/encounters", async function (req,res,next){
 })
 
 //GET all unsigned encounters 
-router.get("/:username/encounters/unsigned", async function (req,res,next){
+router.get("/:username/encounters/unsigned",ensureCorrectUser, isHCP, async function (req,res,next){
   try {
     let encounters;
     const user = await User.get(req.params.username);
@@ -103,7 +86,7 @@ router.get("/:username/encounters/unsigned", async function (req,res,next){
  **/
 
 // 
-router.patch("/:username", async function (req, res, next) {
+router.patch("/:username", ensureCorrectUser, async function (req, res, next) {
   try {
     const validator = jsonschema.validate(req.body, userUpdateSchema);
     if (!validator.valid) {

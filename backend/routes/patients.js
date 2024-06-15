@@ -30,7 +30,7 @@ router.get("/", isHCP, async function (req, res, next) {
 });
 
 // Patients search, only accessible as HCP
-router.get("/search", async function (req, res, next) {
+router.get("/search", isHCP, async function (req, res, next) {
   try {
     const patients = await Patient.queryPatient(req.params);
     return res.json({ patients});
@@ -197,7 +197,7 @@ router.post("/:pid/encounters/add", isHCP, async function (req,res,next){
   }
 })
 // GET all patient encounters
-router.get("/:pid/encounters", async function (req,res,next){
+router.get("/:pid/encounters", ensureCorrectUserOrHCP, async function (req,res,next){
   try {
     // Validate appointment making schema
     // const validator = jsonschema.validate(req.body, userAuthSchema);
@@ -214,7 +214,7 @@ router.get("/:pid/encounters", async function (req,res,next){
 })
 
 //GET patient encounter
-router.get("/:pid/encounters/:eid", async function (req,res,next){
+router.get("/:pid/encounters/:eid", ensureCorrectUserOrHCP, async function (req,res,next){
 
   try {
     // Validate appointment making schema
@@ -255,7 +255,7 @@ router.patch("/:pid/encounters/:eid", isHCP, async function (req,res,next){
 
 
 //Sign patient encounter 
-router.patch("/:pid/encounters/:eid/sign", async function (req,res,next){
+router.patch("/:pid/encounters/:eid/sign", isHCP, async function (req,res,next){
 
   try {
     // Validate appointment making schema
@@ -276,7 +276,7 @@ router.patch("/:pid/encounters/:eid/sign", async function (req,res,next){
 })
 
 //Unsign patient encounter 
-router.patch("/:pid/encounters/:eid/unsign", async function (req,res,next){
+router.patch("/:pid/encounters/:eid/unsign", isHCP, async function (req,res,next){
 
   try {
     // Validate appointment making schema

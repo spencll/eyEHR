@@ -5,6 +5,7 @@ const { UnauthorizedError } = require("../expressError");
 const {
   authenticateJWT,
   ensureLoggedIn,
+  ensureCorrectUser,
   isHCP
 } = require("./auth");
 
@@ -181,6 +182,49 @@ describe("ensureCorrectUserOrHCP", function () {
     const next = jest.fn();
 
     await ensureCorrectUserOrHCPFake(req, res, next);
+
+    expect(next).toHaveBeenCalledWith(expect.any(UnauthorizedError));
+  });
+});
+
+describe("ensureCorrectUser", () => {
+  test("works: correct user", async () => {
+    const req = { params: { username: "testuser" } };
+    const res = { locals: { user: { username: "testuser", email: "test@user.com" } } };
+    const next = jest.fn();
+
+    await ensureCorrectUser(req, res, next);
+
+    expect(next).toHaveBeenCalled();
+    expect(next).not.toHaveBeenCalledWith(expect.any(UnauthorizedError));
+  });
+
+  test("throws UnauthorizedError: incorrect user", async () => {
+    const req = { params: { username: "testuser" } };
+    const res = { locals: { user: { username: "wronguser", email: "wrong@user.com" } } };
+    const next = jest.fn();
+
+    await ensureCorrectUser(req, res, next);
+
+    expect(next).toHaveBeenCalledWith(expect.any(UnauthorizedError));
+  });
+
+  test("throws UnauthorizedError: no user in res.locals", async () => {
+    const req = { params: { username: "testuser" } };
+    const res = { locals: {} };
+    const next = jest.fn();
+
+    await ensureCorrectUser(req, res, next);
+
+    expect(next).toHaveBeenCalledWith(expect.any(UnauthorizedError));
+  });
+
+  test("throws UnauthorizedError: no user or params", async () => {
+    const req = { params: {} };
+    const res = { locals: {} };
+    const next = jest.fn();
+
+    await ensureCorrectUser(req, res, next);
 
     expect(next).toHaveBeenCalledWith(expect.any(UnauthorizedError));
   });

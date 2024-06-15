@@ -72,7 +72,7 @@ async function commonBeforeAll() {
     isHCP: false,
   });
 
-  // User is patient3, hence email is the same 
+  // User3 is patient3, hence email is the same 
   const user3= await User.register({
     username: "u3",
     firstName: "U3F",
@@ -124,6 +124,11 @@ const u2Token = createToken({username: "u2",
   email: "user2@user.com",
   id: testUserIds[1]});
 
+  // Patient user token
+  const u3Token = createToken({username: "u3",
+    isHCP: false,
+    email: "patient3@patient.com",
+    id: testUserIds[2]});
 
 
 module.exports = {
@@ -137,5 +142,6 @@ module.exports = {
   testAppointmentIds,
   testUserUsernames,
   u1Token,
-  u2Token
+  u2Token,
+  u3Token
 };

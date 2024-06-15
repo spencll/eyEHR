@@ -56,7 +56,8 @@ function isHCP(req, res, next) {
 }
 
 
-// Checks to see right user by checking email or HCP
+// Misnamed, should be ensureCorrectPatientOrHCP
+// Leaving it alone to avoid having to rewrite tests
 
 async function ensureCorrectUserOrHCP(req, res, next) {
   try {
@@ -76,10 +77,28 @@ async function ensureCorrectUserOrHCP(req, res, next) {
 }
 
 
+async function ensureCorrectUser(req, res, next) {
+  try {
+    // Logged in user
+    const user = res.locals.user;
+    
+    // Checking correct user via common email 
+    if (!(user && (user.username===req.params.username))) {
+      throw new UnauthorizedError();
+    }
+    return next();
+  } catch (err) {
+    return next(err);
+  }
+}
+
+
+
 
 module.exports = {
   authenticateJWT,
   ensureLoggedIn,
   isHCP,
-  ensureCorrectUserOrHCP
+  ensureCorrectUserOrHCP,
+  ensureCorrectUser
 };

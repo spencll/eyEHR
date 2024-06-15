@@ -22,8 +22,6 @@ function Home({userInfo, isLogged, formatDateTime}) {
     loadEncounter()
   }, [isLogged, userInfo]);
 
-
-
   return (
     <>
       {isLogged ? (

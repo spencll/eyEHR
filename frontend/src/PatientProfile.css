@@ -1,3 +1,7 @@
+/* Lot of my components refers to this CSS so I left it outside folder*/
+
+
+
 .patient-encounters, .patient-appointments {
   padding: 20px;
   max-width: 800px;
