@@ -1,6 +1,6 @@
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import { useState, useEffect } from "react";
-import { jwtDecode } from "jwt-decode";
+import {BrowserRouter as Router, Route, Routes} from "react-router-dom";
+import {useState, useEffect} from "react";
+import {jwtDecode} from "jwt-decode";
 import NavBar from "./NavBar/NavBar";
 import "./App.css";
 import Home from "./Home";
@@ -20,7 +20,7 @@ import EncounterDetails from "./EncounterListDetails/EncounterDetails";
 
 import Profile from "./EditUserForm/Profile";
 
-import { Navigate } from "react-router-dom";
+import {Navigate} from "react-router-dom";
 import CreateEncounter from "./EncounterForms/CreateEncounter";
 import EditAppointment from "./AppointmentForms/EditAppointment";
 
@@ -54,7 +54,7 @@ function App() {
     try {
       if (isLogged) {
         // Getting username from payload
-        const { username } = jwtDecode(isLogged);
+        const {username} = jwtDecode(isLogged);
         //  API requests
         const user = await EHRApi.getUser(username);
         const appointments = await EHRApi.getAppointments(username);
@@ -103,211 +103,202 @@ function App() {
       hour: "2-digit",
       minute: "2-digit",
     }); // Extract time
-    return { date, time };
+    return {date, time};
   };
 
   return (
     <>
-     {/* Don't need protection */}
-      <Router>
-        <NavBar isLogged={isLogged} logout={logout} userInfo={userInfo} />
-        <Routes>
-          <Route
-            exact
-            path="/"
-            element={
-              <Home
-                userInfo={userInfo}
+      {/* Don't need protection */}
+      <NavBar
+        isLogged={isLogged}
+        logout={logout}
+        userInfo={userInfo}
+      />
+      
+      <Routes>
+        <Route
+          exact
+          path="/"
+          element={
+            <Home
+              userInfo={userInfo}
+              isLogged={isLogged}
+              formatDateTime={formatDateTime}
+            />
+          }
+        />
+        <Route
+          exact
+          path="/signup"
+          element={
+            <SignUpForm
+              setIsLogged={setIsLogged}
+              refresh={refresh}
+              setRefresh={setRefresh}
+            />
+          }
+        />
+        <Route
+          exact
+          path="/login"
+          element={
+            <LoginForm
+              setIsLogged={setIsLogged}
+              isLogged={isLogged}
+              refresh={refresh}
+              setRefresh={setRefresh}
+            />
+          }
+        />
+
+        {/* Users routes */}
+        <Route
+          exact
+          path="/profile"
+          element={
+            isLogged ? (
+              <Profile
                 isLogged={isLogged}
+                refresh={refresh}
+                setRefresh={setRefresh}
+              />
+            ) : (
+              <Navigate to="/login" />
+            )
+          }
+        />
+
+        <Route
+          exact
+          path="/appointments"
+          element={
+            isLogged ? (
+              <AppointmentsList
+                appointments={appointments}
+                userInfo={userInfo}
                 formatDateTime={formatDateTime}
               />
-            }
-          />
-          <Route
-            exact
-            path="/signup"
-            element={
-              <SignUpForm
-                setIsLogged={setIsLogged}
+            ) : (
+              <Navigate to="/login" />
+            )
+          }
+        />
+
+        <Route
+          exact
+          path="/encounters"
+          element={
+            isLogged ? (
+              <EncountersList
+                encounters={encounters}
+                formatDateTime={formatDateTime}
                 refresh={refresh}
                 setRefresh={setRefresh}
+                userInfo={userInfo}
               />
-            }
-          />
-          <Route
-            exact
-            path="/login"
-            element={
-              <LoginForm
-                setIsLogged={setIsLogged}
+            ) : (
+              <Navigate to="/login" />
+            )
+          }
+        />
+
+        {/* Patient routes */}
+        <Route
+          exact
+          path="/patients/add"
+          element={
+            userInfo.isHCP ? (
+              <PatientForm
                 isLogged={isLogged}
+                userInfo={userInfo}
                 refresh={refresh}
                 setRefresh={setRefresh}
               />
-            }
-          />
+            ) : (
+              <Navigate to="/login" />
+            )
+          }
+        />
 
-          {/* Users routes */}
-          <Route
-            exact
-            path="/profile"
-            element={
-              isLogged ? (
-                <Profile
-                  isLogged={isLogged}
-                  refresh={refresh}
-                  setRefresh={setRefresh}
-                />
-              ) : (
-                <Navigate to="/login" />
-              )
-            }
-          />
+        <Route
+          exact
+          path="/patients/:pid"
+          element={
+            isLogged ? (
+              <PatientProfile
+                isLogged={isLogged}
+                userInfo={userInfo}
+                refresh={refresh}
+                setRefresh={setRefresh}
+              />
+            ) : (
+              <Navigate to="/login" />
+            )
+          }
+        />
 
-          <Route
-            exact
-            path="/appointments"
-            element={
-              isLogged ? (
-                <AppointmentsList
-                  appointments={appointments}
-                  userInfo={userInfo}
-                  formatDateTime={formatDateTime}
-                />
-              ) : (
-                <Navigate to="/login" />
-              )
-            }
-          />
+        <Route
+          exact
+          path="/patients/:pid/appointments/new"
+          element={
+            isLogged ? (
+              <AppointmentForm
+                userInfo={userInfo}
+                setAppointments={setAppointments}
+                refresh={refresh}
+                setRefresh={setRefresh}
+              />
+            ) : (
+              <Navigate to="/login" />
+            )
+          }
+        />
 
-          <Route
-            exact
-            path="/encounters"
-            element={
-              isLogged ? (
-                <EncountersList
-                  encounters={encounters}
-                  formatDateTime={formatDateTime}
-                  refresh={refresh}
-                  setRefresh={setRefresh}
-                  userInfo={userInfo}
-                />
-              ) : (
-                <Navigate to="/login" />
-              )
-            }
-          />
+        <Route
+          exact
+          path="/patients/:pid/appointments/:aid/edit"
+          element={
+            isLogged ? (
+              <EditAppointment
+                userInfo={userInfo}
+                setAppointments={setAppointments}
+                refresh={refresh}
+                setRefresh={setRefresh}
+              />
+            ) : (
+              <Navigate to="/login" />
+            )
+          }
+        />
 
-          {/* Patient routes */}
-          <Route
-            exact
-            path="/patients/add"
-            element={
-              userInfo.isHCP ? (
-                <PatientForm
-                  isLogged={isLogged}
-                  userInfo={userInfo}
-                  refresh={refresh}
-                  setRefresh={setRefresh}
-                />
-              ) : (
-                <Navigate to="/login" />
-              )
-            }
-          />
+        <Route
+          exact
+          path="/patients/:pid/encounters/new"
+          element={
+            isLogged ? (
+              <CreateEncounter
+                userInfo={userInfo}
+                setEncounters={setEncounters}
+              />
+            ) : (
+              <Navigate to="/login" />
+            )
+          }
+        />
 
-          <Route
-            exact
-            path="/patients/:pid"
-            element={
-              isLogged ? (
-                <PatientProfile
-                  isLogged={isLogged}
-                  userInfo={userInfo}
-                  refresh={refresh}
-                  setRefresh={setRefresh}
-                />
-              ) : (
-                <Navigate to="/login" />
-              )
-            }
-          />
+        {/* Protected in the component, redirects to encounter detail if not HCP */}
+        <Route
+          exact
+          path="/patients/:pid/encounters/:eid/edit"
+          element={isLogged ? <EncounterForm userInfo={userInfo} /> : <Navigate to="/login" />}
+        />
 
-          <Route
-            exact
-            path="/patients/:pid/appointments/new"
-            element={
-              isLogged ? (
-                <AppointmentForm
-                  userInfo={userInfo}
-                  setAppointments={setAppointments}
-                  refresh={refresh}
-                  setRefresh={setRefresh}
-                />
-              ) : (
-                <Navigate to="/login" />
-              )
-            }
-          />
-
-          <Route
-            exact
-            path="/patients/:pid/appointments/:aid/edit"
-            element={
-              isLogged ? (
-                <EditAppointment
-                  userInfo={userInfo}
-                  setAppointments={setAppointments}
-                  refresh={refresh}
-                  setRefresh={setRefresh}
-                />
-              ) : (
-                <Navigate to="/login" />
-              )
-            }
-          />
-
-          <Route
-            exact
-            path="/patients/:pid/encounters/new"
-            element={
-              isLogged ? (
-                <CreateEncounter
-                  userInfo={userInfo}
-                  setEncounters={setEncounters}
-                />
-              ) : (
-                <Navigate to="/login" />
-              )
-            }
-          />
-
-          {/* Protected in the component, redirects to encounter detail if not HCP */}
-          <Route
-            exact
-            path="/patients/:pid/encounters/:eid/edit"
-            element={
-              isLogged ? (
-                <EncounterForm userInfo={userInfo} />
-              ) : (
-                <Navigate to="/login" />
-              )
-            }
-          />
-
-          <Route
-            exact
-            path="/patients/:pid/encounters/:eid"
-            element={
-              isLogged ? (
-                <EncounterDetails userInfo={userInfo} />
-              ) : (
-                <Navigate to="/login" />
-              )
-            }
-          />
-        </Routes>
-      </Router>
+        <Route
+          exact
+          path="/patients/:pid/encounters/:eid"
+          element={isLogged ? <EncounterDetails userInfo={userInfo} /> : <Navigate to="/login" />}
+        />
+      </Routes>
     </>
   );
 }

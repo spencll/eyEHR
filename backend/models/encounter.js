@@ -57,7 +57,8 @@ class Encounter {
         `SELECT e.id, e.datetime, p.first_name AS "patientFirstName",
         p.last_name AS "patientLastName",
         u.first_name AS "drFirstName",
-        u.last_name AS "drLastName"
+        u.last_name AS "drLastName",
+        p.id AS "pid"
          FROM encounters AS e 
          JOIN users AS u ON e.user_id=u.id
          JOIN patients AS p ON e.patient_id = p.id

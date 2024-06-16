@@ -23,6 +23,7 @@ psql
 Dynamic listener on encounter form inputs. Every change is logged into the server rather than have to wait for page change for submission like in 
 real life EHR I'm using. 
 See all unsigned encounters at once. 
+Mobile device accessible
 
 ## Schemas
 
