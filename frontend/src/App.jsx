@@ -1,4 +1,4 @@
-import {BrowserRouter as Router, Route, Routes} from "react-router-dom";
+import {Route, Routes} from "react-router-dom";
 import {useState, useEffect} from "react";
 import {jwtDecode} from "jwt-decode";
 import NavBar from "./NavBar/NavBar";
@@ -28,29 +28,29 @@ function App() {
   // Checks local storage for existing token
   let token = localStorage.getItem("token");
 
-  // States /////////////////////////////////////////////////////////
+  //Loading state, set to false when loading done 
   const [isLoading, setIsLoading] = useState(true);
 
   // Stores existing token into isLogged, maintains logged in state
   const [isLogged, setIsLogged] = useState(token);
 
-  // The actual user info, pulled from local storage.
+  // The actual user info, pulled from local storage if it exists. 
   const [userInfo, setUserInfo] = useState(() => {
     const savedUserInfo = localStorage.getItem("user");
     return savedUserInfo ? JSON.parse(savedUserInfo) : {};
   });
 
-  // Appointment state, today's apppointments for HCP, all apointments for regular user. Can then query via front end
+  // Appointment state, today's apppointments for HCP, all apointments for regular user. 
   const [appointments, setAppointments] = useState([]);
 
-  // Encounter state, unassigned encounters for HCP, all encounters for regular user. Can then query via front end
+  // Encounter state, unassigned encounters for HCP, all encounters for regular user. 
   const [encounters, setEncounters] = useState([]);
 
-  // Helps reload pages for changes
+  // Helps reload pages after changes such as deletes 
   const [refresh, setRefresh] = useState(false);
 
   const fetchUserData = async () => {
-    // token verification-> username -> getUser
+    // token verification-> username -> get user info/appointments/encounters
     try {
       if (isLogged) {
         // Getting username from payload
@@ -66,6 +66,7 @@ function App() {
         setUserInfo(user);
 
         // Helps deal with page refreshes, userinfo stays active
+        // Useful since some html elements depends on userinfo state
         localStorage.setItem("user", JSON.stringify(user));
       }
     } catch (error) {
@@ -88,7 +89,7 @@ function App() {
     return <p>Loading &hellip;</p>;
   }
 
-  //  Logout, remove everything and token
+  //  Logout, reset states and empty local storage 
   function logout() {
     setIsLogged(null);
     setUserInfo({});
@@ -108,13 +109,13 @@ function App() {
 
   return (
     <>
-      {/* Don't need protection */}
+      
       <NavBar
         isLogged={isLogged}
         logout={logout}
         userInfo={userInfo}
       />
-      
+
       <Routes>
         <Route
           exact
@@ -299,6 +300,7 @@ function App() {
           element={isLogged ? <EncounterDetails userInfo={userInfo} /> : <Navigate to="/login" />}
         />
       </Routes>
+  
     </>
   );
 }

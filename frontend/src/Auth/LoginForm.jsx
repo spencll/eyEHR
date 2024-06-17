@@ -49,7 +49,7 @@ function LoginForm({ setIsLogged }) {
 
   return (
     <form className="form-container" onSubmit={handleSubmit}>
-      <h1>Login!</h1>
+      <h1>Log in!</h1>
       {error && <div className="alert">{error}</div>}{" "}
       {/* Display error message */}
       <label htmlFor="username">Username</label>

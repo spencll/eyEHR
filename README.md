@@ -8,20 +8,26 @@ Welcome to eyEHR, an electronic health record for eye care practioners but acces
 
 ## How to run
 
-Setting up back end:
+### Setting up back end:
 
-Run seed generator: node seed_generator.js
+Run seed generator: 
+```
+node seed_generator.js
+```
 
 Creating/seeding db:
+```
 psql 
 \i ehr.sql
+```
 
+## User flow
 
+Sign up as health care provider using the code 69. Can access patient database via search bar. Once on 
 
 ## Features 
 
-Dynamic listener on encounter form inputs. Every change is logged into the server rather than have to wait for page change for submission like in 
-real life EHR I'm using. 
+Dynamic listener on encounter form inputs. Every change is logged into the server rather than have to wait for page change for submission like in the real life EHR I'm using. 
 See all unsigned encounters at once. 
 Mobile device accessible
 
@@ -31,6 +37,14 @@ Users (CRU)
 Patients (CR)
 Appointments (CRUD)
 Encounters (CRUD)
+
+## Technology stack
+Vite 
+Node/express
+
+Testing:
+Jest
+Vitest: only tested app.js and navbar.js
 
 
 ## Guidelines
