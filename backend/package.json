@@ -4,11 +4,13 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "concurrently \"npm run start-backend\" \"npm run start-frontend\"",
+    "dev-full": "concurrently \"npm run start-backend\" \"npm run start-frontend\"",
     "dev": "nodemon --ignore sessions/ server.js",
     "test": "jest -i --detectOpenHandles",
     "start-backend": "nodemon --ignore sessions/ server.js",
-    "start-frontend": "cd ../frontend && npm run dev"
+    "start-frontend": "cd ../frontend && npm run dev",
+    "prod-full": "concurrently \"node server.js\" \"npm run start-frontend\"",
+    "build-frontend": "cd ../frontend && npm run build"
   },
   "jest": {
     "testPathIgnorePatterns": [

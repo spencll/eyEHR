@@ -11,7 +11,7 @@ function LoginForm({ setIsLogged }) {
   // state for form input
   const [formData, setFormData] = useState(INITIAL_STATE);
 
-  // State for error messages
+  // State for error messages to display
   const [error, setError] = useState("");
 
   const [showPassword, setShowPassword] = useState(false);

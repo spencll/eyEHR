@@ -1,10 +1,18 @@
 import {Route, Routes} from "react-router-dom";
 import {useState, useEffect} from "react";
 import {jwtDecode} from "jwt-decode";
-import NavBar from "./NavBar/NavBar";
+import {Navigate} from "react-router-dom";
 import "./App.css";
-import Home from "./Home";
+//Handles API requests to backend
 import EHRApi from "./api";
+
+// Navbar
+import NavBar from "./NavBar/NavBar";
+
+// Home page 
+import Home from "./Home";
+
+// Lists
 import AppointmentsList from "./AppointmentList/AppointmentsList";
 import EncountersList from "./EncounterListDetails/EncountersList";
 
@@ -14,15 +22,16 @@ import LoginForm from "./Auth/LoginForm";
 import AppointmentForm from "./AppointmentForms/AppointmentForm";
 import EncounterForm from "./EncounterForms/EncounterForm";
 import PatientForm from "./NewPatientForm/PatientForm";
+import Profile from "./EditUserForm/Profile";
+import EditAppointment from "./AppointmentForms/EditAppointment";
 
+// Detail pages
 import PatientProfile from "./PatientDetails/PatientProfile";
 import EncounterDetails from "./EncounterListDetails/EncounterDetails";
 
-import Profile from "./EditUserForm/Profile";
-
-import {Navigate} from "react-router-dom";
+// Route "middleware" to create encounter. Renders nothing 
 import CreateEncounter from "./EncounterForms/CreateEncounter";
-import EditAppointment from "./AppointmentForms/EditAppointment";
+
 
 function App() {
   // Checks local storage for existing token
@@ -74,7 +83,7 @@ function App() {
     }
   };
 
-  // If logged in status or refresh status changes, rerender
+  // If logged in status or refresh status changes, force rerender
   useEffect(() => {
     async function pullfromDB() {
       fetchUserData();
@@ -96,7 +105,7 @@ function App() {
     localStorage.clear();
   }
 
-  // Datetime formatting
+  // Datetime formatting. Important for appointment and encounter. 
   const formatDateTime = (datetime) => {
     const dateObj = new Date(datetime);
     const date = dateObj.toLocaleDateString(); // Extract date

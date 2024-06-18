@@ -2,10 +2,8 @@ import React, { useState, useEffect } from "react";
 import EHRApi from "../api";
 import { useNavigate, useParams } from "react-router-dom";
 
-// Only for PCP
 function PatientForm({ setRefresh, refresh }) {
-  const [patient, setPatient] = useState({});
-
+  
   const navigate = useNavigate();
 
   // Used for clearing form
@@ -21,13 +19,13 @@ function PatientForm({ setRefresh, refresh }) {
   // state for form input
   const [formData, setFormData] = useState(INITIAL_STATE);
 
-  // continues to udpate formdata object
+  // continues to update formdata object
   const handleChange = (event) => {
     const { name, value } = event.target;
     setFormData({ ...formData, [name]: value });
   };
 
-  // Calculate age based on date of birth
+  // Calculate age based on date of birth. Compares to today's date 
   const calculateAge = (dob) => {
     const birthDate = new Date(dob);
     const todayDate = new Date();
@@ -41,13 +39,14 @@ function PatientForm({ setRefresh, refresh }) {
     }
     return age;
   };
+
   // Getting right format for date input
   const formatDateToMMDDYYYY = (dateString) => {
     const [year, month, day] = dateString.split("-");
     return `${month}/${day}/${year}`;
   };
 
-  // Effect to update age when dob changes
+  // Effect to update age automatically when dob changes in the form 
   useEffect(() => {
     if (formData.dob) {
       const age = calculateAge(formData.dob);

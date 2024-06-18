@@ -6,9 +6,10 @@ import "./NavBar.css";
 import EHRApi from "../api";
 
 function NavBar({ isLogged, logout, userInfo }) {
-  //////////////////////////// Search bar stuff ////////////////////////////////////////////////
+  
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
+  // Search query always lags behind so need to debounce to wait
   const [debouncedQuery, setDebouncedQuery] = useState(searchQuery);
 
   const handleSearchChange = async (event) => {
@@ -23,6 +24,7 @@ function NavBar({ isLogged, logout, userInfo }) {
     }
   };
 
+  // Empties state after nagivating away 
   const handleNavLinkClick = async () => {
     setSearchResults("");
     setSearchQuery([]);

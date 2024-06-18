@@ -4,21 +4,35 @@ We have broken down the Capstone Project into easy-to-follow steps. Each step of
 
 ## Introduction
 
-Welcome to eyEHR, an electronic health record for eye care practioners but accessible by patients only to their own records. 
+Welcome to eyEHR, an electronic health record for eye care practioners but accessible by patients only to their own records. EHRApi manages server requests to the patient database as well as the user database. Patient database is seeded using https://randomuser.me/ API. Page 
 
 ## How to run
 
+### Clone repo:
+```
+git clone 
+```
+
+### Setting up front end:
+```
+cd frontend
+npm install
+```
+
+
 ### Setting up back end:
 
-Run seed generator: 
+
+Navigate to backend folder, install dependencies, and run seed generator: 
 ```
+cd backend
+npm install
 node seed_generator.js
 ```
 
 Creating/seeding db:
 ```
-psql 
-\i ehr.sql
+psql < ehr.sql
 ```
 
 ## User flow

@@ -27,6 +27,7 @@ function EncounterDetails() {
     return <div>Loading...</div>;
   }
   return (
+    // Only used in one location so did inline for css 
     <div className="patient-encounters">
       <h2>Exam report</h2>
       <li

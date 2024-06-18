@@ -3,8 +3,8 @@ import React, { useState, useEffect } from "react";
 import EHRApi from "../api";
 import { useNavigate, useParams } from "react-router-dom";
 
-// Only for PCP
-function EditAppointment({ setRefresh, refresh, userInfo }) {
+function EditAppointment({ setRefresh, refresh}) {
+
   // Parem extraction
   const { pid, aid } = useParams();
   const [patient, setPatient] = useState({});
@@ -37,7 +37,7 @@ function EditAppointment({ setRefresh, refresh, userInfo }) {
     setFormData({ ...formData, [name]: value });
   };
 
-  // Make appointment and change appointment state
+  // Make appointment and empty formdata 
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {

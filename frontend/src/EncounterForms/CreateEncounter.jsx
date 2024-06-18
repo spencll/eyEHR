@@ -33,7 +33,7 @@ const CreateEncounter = ({ userInfo, setEncounters }) => {
     }
   }, []);
 
-  return <div>Creating Encounter...</div>; // Optionally show a loading state
+  return <div>Creating Encounter...</div>; // If still loading 
 };
 
 export default CreateEncounter;

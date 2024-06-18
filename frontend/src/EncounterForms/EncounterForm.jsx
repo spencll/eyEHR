@@ -12,7 +12,6 @@ function EncounterForm({ userInfo }) {
 
   let navigate = useNavigate();
 
-  //   Can add more categories into result
   const INITIAL_STATE = {
     reason: "",
     rvision: 20,
@@ -48,7 +47,8 @@ function EncounterForm({ userInfo }) {
           : INITIAL_STATE;
         setFormData(initialResults);
         setLoading(false);
-        // Also initialize encounter data
+
+        // Also initialize encounter data to the empty initial state 
         if (!encounter.results)
           await EHRApi.updateEncounter(pid, eid, { formData });
 
@@ -60,7 +60,6 @@ function EncounterForm({ userInfo }) {
         }
       } catch (err) {
         console.error("Encounter not found:", err);
-        // Handle error appropriately
       }
     };
 
@@ -242,7 +241,7 @@ function EncounterForm({ userInfo }) {
           cols={50}
         ></textarea>
       </div>
-
+      {/* Manages signed/unsigned display */}
       <div className="form-actions">
         {isEditable ? (
           <button type="submit">Sign chart!</button>

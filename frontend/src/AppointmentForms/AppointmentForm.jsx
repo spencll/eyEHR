@@ -3,8 +3,8 @@ import React, { useState, useEffect } from "react";
 import EHRApi from "../api";
 import { useNavigate, useParams } from "react-router-dom";
 
-// Only for PCP
 function AppointmentForm({ setRefresh, refresh, userInfo }) {
+
   // Parem extraction
   const { pid } = useParams();
   const [patient, setPatient] = useState({});
@@ -25,13 +25,13 @@ function AppointmentForm({ setRefresh, refresh, userInfo }) {
 
   const navigate = useNavigate();
 
-  // Used for clearing form
+  // Initial state has user id and patient id ready to go, just need datetime filled
   const INITIAL_STATE = { datetime: "", userId: userInfo.id, patientId: pid };
 
   // state for form input
   const [formData, setFormData] = useState(INITIAL_STATE);
 
-  // continues to udpate formdata object
+  // updates formdata to what was changed 
   const handleChange = (event) => {
     const { name, value } = event.target;
     setFormData({ ...formData, [name]: value });

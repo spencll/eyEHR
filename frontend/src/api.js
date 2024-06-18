@@ -1,5 +1,6 @@
 import axios from "axios";
 
+// Backend URL 
 const BASE_URL = import.meta.env.VITE_APP_BASE_URL || "http://localhost:3001"; 
 
 /** API Class.
@@ -34,8 +35,6 @@ class EHRApi {
       throw Array.isArray(message) ? message : [message];
     }
   }
-
-  // Individual API routes
 
 
 //register/login/logout
@@ -153,7 +152,7 @@ static async queryPatients(q){
       }
     }
 
-       // Getting user appointments for today
+       // Getting user appointments 
        static async getAppointments(username) {
         try{
         let res = await this.request(`users/${username}/appointments`)
@@ -263,7 +262,7 @@ static async queryPatients(q){
         }
  
     
-     // Getting user encounters (today for HCP/all for regular)
+     // Getting user encounters
      static async getEncounters(username) {
       try{
       let res = await this.request(`users/${username}/encounters`)
@@ -276,7 +275,7 @@ static async queryPatients(q){
       }
     }
 
-      // Getting user encounters (today for HCP/all for regular)
+      // Getting unsigned encounters
       static async getUnsignedEncounters(username) {
         try{
         let res = await this.request(`users/${username}/encounters/unsigned`)
