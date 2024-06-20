@@ -1,28 +1,55 @@
 # eyEHR
 
-## Introduction
+eyEHR is an electronic health records (EHR) system designed to streamline the management of patient data for eye care providers and provide patients with easy access to their own health records and appointments. Written in Javascript with backend using node.js/express and frontend using react with Vite as dev environment. Database populated with https://randomuser.me API. 
 
-Welcome to eyEHR, an electronic health record for eye care practioners but accessible by patients only to their own records. EHRApi manages server requests to the patient database as well as the user database. Patient database is seeded using https://randomuser.me/ API. Page 
+---
 
-## How to run
+## Table of Contents
 
-### Clone repo:
+- [eyEHR](#eyehr)
+  - [Table of Contents](#table-of-contents)
+  - [General Features](#general-features)
+  - [Added Features lacking in the EHR I use at work](#added-features-lacking-in-the-ehr-i-use-at-work)
+  - [Installation](#installation)
+    - [Clone repo (to be updated after Hatchways approval):](#clone-repo-to-be-updated-after-hatchways-approval)
+    - [Setting up front end](#setting-up-front-end)
+    - [Setting up back end](#setting-up-back-end)
+  - [Usage](#usage)
+  - [License](#license)
+  - [Acknowledgements](#acknowledgements)
+
+## General Features
+
+- **Patient Management**: Add and view patient records.
+- **Appointment Scheduling**: Manage appointments for patients.
+- **Encounter Records**: Document and review patient encounters.
+- **Universal User Authentication**: Secure login/signup for providers and patients.
+- **Patient Search Functionality**: Search for patients in the database by name or DOB.
+  
+## Added Features lacking in the EHR I use at work
+
+- **Continuous encounter updating**: Dynamic listener on encounter form inputs. Every change is automatically logged into the server rather than have to wait for page change to handle submit. My technicians often forget to hit "next" after inputing pre-testing data which then leaves the form empty. 
+- **Home page showing unsigned encounters**: Work EHR requires querying for unsigned encounters. Why not just show all unsigned encounters on the home page to know what you have left to complete? Nothing left, go home, simple. 
+- **Mobile friendly**: Not really too practical but it was an idea recommended by my mentor. Horizontal elements align vertically. Minimal effort but it works.
+
+
+## Installation
+
+### Clone repo (to be updated after Hatchways approval):
 ```
 git clone 
 ```
-
-### Setting up front end:
-```
+### Setting up front end
+Navigate to frontend folder and install dependencies:
+```sh
 cd frontend
 npm install
 ```
 
-
-### Setting up back end:
-
+### Setting up back end
 
 Navigate to backend folder, install dependencies, and run seed generator: 
-```
+```sh
 cd backend
 npm install
 node seed_generator.js
@@ -33,40 +60,23 @@ Creating/seeding db:
 psql < ehr.sql
 ```
 
-## User flow
-
-Sign up as health care provider using the code 69. Can access patient database via search bar. Once on 
-
-## Features 
-
-Dynamic listener on encounter form inputs. Every change is logged into the server rather than have to wait for page change for submission like in the real life EHR I'm using. 
-See all unsigned encounters at once. 
-Mobile device accessible
 
 ## Usage
-Healthcare Providers
-Sign up or log in with your credentials.
-Add new patients and manage existing patient records.
-Schedule and manage appointments.
-Document and review patient encounters.
-Patients
-Sign up or log in with your credentials.
-View your health records and appointment history.
-Schedule appointments with healthcare providers.
 
-## Technology stack
-Vite 
-Node/express
-
-Testing:
-Jest
-Vitest: only tested app.js and navbar.js
+1. Start the development server/deploy frontend:
+    ```sh
+    cd backend
+    npm run dev-full
+    ```
+2. Open your browser and go to `http://localhost:5173`.
 
 
-## Guidelines
 
-1. You can use any technology we’ve taught you in the course, and there’s nothing stopping you from using outside libraries are services.That being said, we recommend you use React, and Node.js for this Capstone.If you completed the optional Redux unit, we recommend you use Redux as well. You can useFlask/Python but will be expected to make a much more fully featured application than last time.
-2. Every step of the project has submissions. This will alert your mentor to evaluate your work. Pay attention to the instructions so you submit the right thing. You will submit the link to your GitHub repo several times, this is for your mentor’s convenience. Your URL on GitHub is static and will not change.
-3. The first two steps require mentor approval to proceed, but after that, you are free to continue working on the project after you submit your work. For instance, you don’t need your mentor to approve your database schema before you start working on your site. Likewise, you don’t need your mentor to approve the first iteration of your site before you start polishing it.
-4. If you get stuck, there is a wealth of resources at your disposal. The course contains all of the material you will need to complete this project, but a well-phrased Google search might yield you an immediate solution to your problem. Don’t forget that your Slack community, TAs, and your mentor there to help you out.
-5.Make sure you use a free API or create your own API and deploy your project on Heroku, so everyone can see your work!
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+
+## Acknowledgements
+
+- Thanks to Springboard for providing software development fundamentals and mentor Daniel Pan for guidance. Also thanks to JesseB for technical assistance. 
+
