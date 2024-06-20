@@ -1,6 +1,4 @@
-# Capstone Project Two
-
-We have broken down the Capstone Project into easy-to-follow steps. Each step of the capstone contains a link with instructions for that step. You may notice this secondCapstone follows a similar pattern to your first Capstone, however, there are key differences. 
+# eyEHR
 
 ## Introduction
 
@@ -45,12 +43,16 @@ Dynamic listener on encounter form inputs. Every change is logged into the serve
 See all unsigned encounters at once. 
 Mobile device accessible
 
-## Schemas
-
-Users (CRU)
-Patients (CR)
-Appointments (CRUD)
-Encounters (CRUD)
+## Usage
+Healthcare Providers
+Sign up or log in with your credentials.
+Add new patients and manage existing patient records.
+Schedule and manage appointments.
+Document and review patient encounters.
+Patients
+Sign up or log in with your credentials.
+View your health records and appointment history.
+Schedule appointments with healthcare providers.
 
 ## Technology stack
 Vite 

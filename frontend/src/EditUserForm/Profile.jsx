@@ -11,6 +11,10 @@ function Profile({ isLogged, refresh, setRefresh }) {
     lastName: "",
     email: "",
   };
+
+    // State for error messages to display
+    const [error, setError] = useState("");
+
   const [formData, setFormData] = useState(INITIAL_STATE);
   const navigate = useNavigate();
 
@@ -25,7 +29,7 @@ function Profile({ isLogged, refresh, setRefresh }) {
       }
     };
     fetchUserData();
-  }, [isLogged]);
+  }, [isLogged,error]);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -47,6 +51,7 @@ function Profile({ isLogged, refresh, setRefresh }) {
       navigate("..", { relative: "path" });
       setRefresh(!refresh);
     } catch (error) {
+      setError(error);
       console.error("Error updating profile:", error);
     }
 
@@ -56,6 +61,7 @@ function Profile({ isLogged, refresh, setRefresh }) {
   return (
     <form onSubmit={handleSubmit} className="form-container">
       <h1>Edit Profile</h1>
+      {error && <div className="alert">{error}</div>}{" "}
 
       <div className="form-group">
         <label htmlFor="username" className="form-label">

@@ -24,6 +24,7 @@ const CreateEncounter = ({ userInfo, setEncounters }) => {
 
           navigate(`/patients/${pid}/encounters/${newEncounter.id}/edit`);
         } catch (err) {
+          navigate(`/patients/${pid}`)
           console.error("Failed to create encounter:", err);
           // Handle error appropriately
         }

@@ -38,9 +38,10 @@ function EncounterForm({ userInfo }) {
       if (!userInfo.isHCP) navigate(`/patients/${pid}/encounters/${eid}`);
 
       try {
+        // Getting most recent version of encounter
         const encounter = await EHRApi.getPatientEncounter(pid, eid);
         setEncounter(encounter);
-
+        
         // If results not populated yet, use initial state as results.
         const initialResults = encounter.results
           ? encounter.results
@@ -50,7 +51,7 @@ function EncounterForm({ userInfo }) {
 
         // Also initialize encounter data to the empty initial state 
         if (!encounter.results)
-          await EHRApi.updateEncounter(pid, eid, { formData });
+          await EHRApi.updateEncounter(pid, eid, formData);
 
         // Updates editable state if is correct user id and not signed
         if (encounter.uid === userInfo.id && !encounter.signed) {
@@ -70,12 +71,16 @@ function EncounterForm({ userInfo }) {
   const handleChange = async (event) => {
     if (isEditable) {
       const { name, value } = event.target;
-      //   carrying over formdata and updating values to form values
-      let newFormData = { ...formData, [name]: value };
-      await EHRApi.updateEncounter(pid, eid, { ...newFormData });
-      //   Update formData state
-      setFormData(newFormData);
-      setEncounter(encounter);
+
+       // New form data
+    const newFormData = {
+      ...formData,
+      [name]: value,
+    };
+    // Update encounter, then set form to new data
+    await EHRApi.updateEncounter(pid, eid, newFormData);
+    setFormData(newFormData);
+  
     }
   };
 
@@ -132,6 +137,7 @@ function EncounterForm({ userInfo }) {
         <input
           type="number"
           id="rpressure"
+          data-testid = "rpressure"
           name="rpressure"
           value={formData.rpressure}
           onChange={handleChange}
@@ -141,6 +147,7 @@ function EncounterForm({ userInfo }) {
         <input
           type="number"
           id="lpressure"
+          data-testid = "lpressure"
           name="lpressure"
           value={formData.lpressure}
           onChange={handleChange}
