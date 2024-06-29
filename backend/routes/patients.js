@@ -79,15 +79,6 @@ router.post("/", isHCP, async function (req, res, next) {
 });
 
 
-/** PATCH /[username] { user } => { user }
- *
- * Data can include:
- *   { firstName, lastName, password, email }
- *
- * Returns { username, firstName, lastName, email, isAdmin }
- *
- * Authorization required: admin or same-user-as-:username
- **/
 
 // Change patient info 
 // Patching user email as well if user is the patient 
@@ -135,13 +126,7 @@ router.get("/:pid/appointments", async function (req,res,next){
 router.post("/:pid/appointments/add", isHCP, async function (req,res,next){
 
   try {
-    // Validate appointment making schema
-    // const validator = jsonschema.validate(req.body, userAuthSchema);
-    // if (!validator.valid) {
-    //   const errs = validator.errors.map(e => e.stack);
-    //   throw new BadRequestError(errs);
-    // }
-    // Extract needed info to make appointment 
+
     const { datetime, userId } = req.body;
     // Fix date time insertion
     const appointment = await Appointment.makeAppointment(datetime, userId, req.params.pid)
@@ -182,13 +167,6 @@ router.delete("/:pid/appointments/:aid", isHCP, async function (req, res, next) 
 router.post("/:pid/encounters/add", isHCP, async function (req,res,next){
 
   try {
-    // Validate appointment making schema
-    // const validator = jsonschema.validate(req.body, userAuthSchema);
-    // if (!validator.valid) {
-    //   const errs = validator.errors.map(e => e.stack);
-    //   throw new BadRequestError(errs);
-    // }
-    // Extract needed info to make appointment 
    
     const encounter = await Encounter.makeEncounter(req.body, req.params.pid)
     return res.json({encounter});
@@ -199,13 +177,7 @@ router.post("/:pid/encounters/add", isHCP, async function (req,res,next){
 // GET all patient encounters
 router.get("/:pid/encounters", ensureCorrectUserOrHCP, async function (req,res,next){
   try {
-    // Validate appointment making schema
-    // const validator = jsonschema.validate(req.body, userAuthSchema);
-    // if (!validator.valid) {
-    //   const errs = validator.errors.map(e => e.stack);
-    //   throw new BadRequestError(errs);
-    // }
-    // Extract needed info to make appointment 
+
     const encounters = await Encounter.getEncounters(req.params.pid)
     return res.json({encounters});
   } catch (err) {
@@ -217,14 +189,7 @@ router.get("/:pid/encounters", ensureCorrectUserOrHCP, async function (req,res,n
 router.get("/:pid/encounters/:eid", ensureCorrectUserOrHCP, async function (req,res,next){
 
   try {
-    // Validate appointment making schema
-    // const validator = jsonschema.validate(req.body, userAuthSchema);
-    // if (!validator.valid) {
-    //   const errs = validator.errors.map(e => e.stack);
-    //   throw new BadRequestError(errs);
-    // }
-    // Extract needed info to make appointment 
- 
+
     const encounter = await Encounter.get(req.params.eid)
     return res.json({encounter});
   } catch (err) {
@@ -236,15 +201,6 @@ router.get("/:pid/encounters/:eid", ensureCorrectUserOrHCP, async function (req,
 router.patch("/:pid/encounters/:eid", isHCP, async function (req,res,next){
 
   try {
-    // Validate appointment making schema
-    // const validator = jsonschema.validate(req.body, userAuthSchema);
-    // if (!validator.valid) {
-    //   const errs = validator.errors.map(e => e.stack);
-    //   throw new BadRequestError(errs);
-    // }
-    // Extract needed info to make appointment 
-
-    // Convert results to json
 
     const encounter = await Encounter.update(req.params.eid, req.body)
     return res.json({encounter});
@@ -258,15 +214,6 @@ router.patch("/:pid/encounters/:eid", isHCP, async function (req,res,next){
 router.patch("/:pid/encounters/:eid/sign", isHCP, async function (req,res,next){
 
   try {
-    // Validate appointment making schema
-    // const validator = jsonschema.validate(req.body, userAuthSchema);
-    // if (!validator.valid) {
-    //   const errs = validator.errors.map(e => e.stack);
-    //   throw new BadRequestError(errs);
-    // }
-    // Extract needed info to make appointment 
-
-    // Convert results to json
 
     const encounter = await Encounter.signEncounter(req.params.eid, req.body)
     return res.json({encounter});
@@ -279,15 +226,6 @@ router.patch("/:pid/encounters/:eid/sign", isHCP, async function (req,res,next){
 router.patch("/:pid/encounters/:eid/unsign", isHCP, async function (req,res,next){
 
   try {
-    // Validate appointment making schema
-    // const validator = jsonschema.validate(req.body, userAuthSchema);
-    // if (!validator.valid) {
-    //   const errs = validator.errors.map(e => e.stack);
-    //   throw new BadRequestError(errs);
-    // }
-    // Extract needed info to make appointment 
-
-    // Convert results to json
 
     const encounter = await Encounter.unsignEncounter(req.params.eid)
     return res.json({encounter});

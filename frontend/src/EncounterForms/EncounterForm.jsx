@@ -24,10 +24,36 @@ function EncounterForm({ userInfo }) {
 
   //  Formdata is object be nested in results
   const [formData, setFormData] = useState(INITIAL_STATE);
+  
   // Encounter state for checking signed status
   const [encounter, setEncounter] = useState({});
   // loading placeholder
   const [loading, setLoading] = useState(true);
+
+  // Debouncing to delay API request until typing stops for certain period 
+  const [debouncedFormData, setDebouncedFormData] = useState(formData);
+
+  //formData changes, wait for 500ms of no typing, then setDebounced form data. Avoids making API request every keystroke as before
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedFormData(formData);
+    }, 500); 
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [formData]);
+
+  // Debouncedformdata changes, then make API call to update.  
+  useEffect(() => {
+    const updateEncounter = async () => {
+      if (isEditable) {
+        await EHRApi.updateEncounter(pid, eid, debouncedFormData);
+      }
+    };
+    updateEncounter();
+  }, [debouncedFormData, isEditable, pid, eid]);
+
 
   //  Getting encounter upon arriving to encouter form.
   // Populate form with existing data
@@ -77,8 +103,7 @@ function EncounterForm({ userInfo }) {
       ...formData,
       [name]: value,
     };
-    // Update encounter, then set form to new data
-    await EHRApi.updateEncounter(pid, eid, newFormData);
+    //Set form to new data
     setFormData(newFormData);
   
     }
