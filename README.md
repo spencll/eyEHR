@@ -3,15 +3,18 @@
 eyEHR is an electronic health records (EHR) system designed to streamline the management of patient data for eye care providers and provide patients with easy access to their own health records and appointments. Written in Javascript with backend using node.js/express and frontend using react with Vite as dev environment. Database populated with https://randomuser.me API. 
 
 ---
+## Live Deployment
+https://eyehr-qs76.onrender.com/
 
 ## Table of Contents
 
 - [eyEHR](#eyehr)
+  - [Live Deployment](#live-deployment)
   - [Table of Contents](#table-of-contents)
   - [General Features](#general-features)
   - [Added Features lacking in the EHR I use at work](#added-features-lacking-in-the-ehr-i-use-at-work)
   - [Installation](#installation)
-    - [Clone repo (to be updated after Hatchways approval):](#clone-repo-to-be-updated-after-hatchways-approval)
+    - [Clone repo:](#clone-repo)
     - [Setting up front end](#setting-up-front-end)
     - [Setting up back end](#setting-up-back-end)
   - [Usage](#usage)
@@ -35,9 +38,9 @@ eyEHR is an electronic health records (EHR) system designed to streamline the ma
 
 ## Installation
 
-### Clone repo (to be updated after Hatchways approval):
+### Clone repo:
 ```
-git clone 
+git clone https://github.com/spencll/eyEHR.git
 ```
 ### Setting up front end
 Navigate to frontend folder and install dependencies:
