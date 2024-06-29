@@ -5,6 +5,7 @@ eyEHR is an electronic health records (EHR) system designed to streamline the ma
 ---
 ## Live Deployment
 https://eyehr-qs76.onrender.com/
+Use provider code "69" to register as a health care provider.  
 
 ## Table of Contents
 
@@ -14,7 +15,7 @@ https://eyehr-qs76.onrender.com/
   - [General Features](#general-features)
   - [Added Features lacking in the EHR I use at work](#added-features-lacking-in-the-ehr-i-use-at-work)
   - [Installation](#installation)
-    - [Clone repo:](#clone-repo)
+    - [Clone repo](#clone-repo)
     - [Setting up front end](#setting-up-front-end)
     - [Setting up back end](#setting-up-back-end)
   - [Usage](#usage)
@@ -38,7 +39,7 @@ https://eyehr-qs76.onrender.com/
 
 ## Installation
 
-### Clone repo:
+### Clone repo
 ```
 git clone https://github.com/spencll/eyEHR.git
 ```
