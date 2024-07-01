@@ -31,6 +31,8 @@ function LoginForm({ setIsLogged }) {
 
     if (!formData.username || !formData.password) {
       setError("Please fill out all fields.");
+       // Ends the loading
+       setLoading(false);
     }
 
     try {
