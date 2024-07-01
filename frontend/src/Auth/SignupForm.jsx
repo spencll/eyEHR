@@ -32,13 +32,16 @@ function SignUpForm({ setIsLogged }) {
       const token = await EHRApi.signup(formData);
       setIsLogged(token);
       localStorage.setItem("token", token);
+      
+    // Ends the loading
+    setLoading(false);
+
       navigate("..", { relative: "path" });
     } catch (error) {
       console.error("Error registering:", error);
       setError([...error]);
     }
-    // Ends the loading
-    setLoading(false);
+  
     setFormData(INITIAL_STATE);
   };
 

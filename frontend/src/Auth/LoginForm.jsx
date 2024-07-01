@@ -37,13 +37,15 @@ function LoginForm({ setIsLogged }) {
     try {
       const token = await EHRApi.login(formData.username, formData.password);
       setIsLogged(token);
+      
+        // Ends the loading
+        setLoading(false);
       navigate("..", { relative: "path" });
     } catch (error) {
       console.error("Error logging in:", error);
       setError(error);
     }
-        // Ends the loading
-        setLoading(false);
+  
 
     setFormData(INITIAL_STATE);
   };
