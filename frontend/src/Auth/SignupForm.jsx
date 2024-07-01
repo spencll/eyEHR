@@ -32,7 +32,7 @@ function SignUpForm({ setIsLogged }) {
       const token = await EHRApi.signup(formData);
       setIsLogged(token);
       localStorage.setItem("token", token);
-      
+
     // Ends the loading
     setLoading(false);
 
@@ -41,8 +41,9 @@ function SignUpForm({ setIsLogged }) {
       console.error("Error registering:", error);
       setError([...error]);
     }
-  
-    setFormData(INITIAL_STATE);
+    
+             // Ends the loading
+             setLoading(false);
   };
 
   const toggleShowPassword = () => {

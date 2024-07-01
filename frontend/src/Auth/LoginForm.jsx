@@ -31,13 +31,12 @@ function LoginForm({ setIsLogged }) {
 
     if (!formData.username || !formData.password) {
       setError("Please fill out all fields.");
-      return;
     }
 
     try {
       const token = await EHRApi.login(formData.username, formData.password);
       setIsLogged(token);
-      
+
         // Ends the loading
         setLoading(false);
       navigate("..", { relative: "path" });
@@ -45,9 +44,8 @@ function LoginForm({ setIsLogged }) {
       console.error("Error logging in:", error);
       setError(error);
     }
-  
-
-    setFormData(INITIAL_STATE);
+               // Ends the loading
+               setLoading(false);
   };
 
   const toggleShowPassword = () => {
