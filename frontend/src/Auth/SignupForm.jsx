@@ -2,11 +2,9 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import EHRApi from "../api";
 
-// Bringing down functions for changing state as props
 function SignUpForm({ setIsLogged }) {
   const navigate = useNavigate();
 
-  // Used for clearing form
   const INITIAL_STATE = {
     username: "",
     password: "",
@@ -16,23 +14,20 @@ function SignUpForm({ setIsLogged }) {
     invitationCode: "",
   };
 
-  // state for form input
   const [formData, setFormData] = useState(INITIAL_STATE);
-
-  // State for error messages
   const [errors, setError] = useState([]);
-
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  // matches input value to what was typed
   const handleChange = (event) => {
     const { name, value } = event.target;
     setFormData({ ...formData, [name]: value });
   };
 
-  // Prevents empty submission/category. Adds item to appropriate state array. Clears input and redirect to changed menu.
   const handleSubmit = async (event) => {
     event.preventDefault();
+    // Starts the loading
+    setLoading(true);
     try {
       const token = await EHRApi.signup(formData);
       setIsLogged(token);
@@ -42,6 +37,8 @@ function SignUpForm({ setIsLogged }) {
       console.error("Error registering:", error);
       setError([...error]);
     }
+    // Ends the loading
+    setLoading(false);
     setFormData(INITIAL_STATE);
   };
 
@@ -57,8 +54,8 @@ function SignUpForm({ setIsLogged }) {
           <div className="alert" key={index}>
             {error}
           </div>
-        ))}{" "}
-      {/* Display error message */}
+        ))}
+      {loading && <div className="loading-indicator">Signing up...</div>}
       <label htmlFor="username">Username</label>
       <input
         id="username"
@@ -66,6 +63,7 @@ function SignUpForm({ setIsLogged }) {
         placeholder="Username"
         value={formData.username}
         onChange={handleChange}
+        disabled={loading}
       />
       <label htmlFor="password">Password</label>
       <input
@@ -75,6 +73,7 @@ function SignUpForm({ setIsLogged }) {
         placeholder="Password"
         value={formData.password}
         onChange={handleChange}
+        disabled={loading}
       />
       <div>
         <label htmlFor="showPassword">Show Password</label>
@@ -83,6 +82,7 @@ function SignUpForm({ setIsLogged }) {
           id="showPassword"
           checked={showPassword}
           onChange={toggleShowPassword}
+          disabled={loading}
         />
       </div>
       <label htmlFor="firstName">First name</label>
@@ -92,6 +92,7 @@ function SignUpForm({ setIsLogged }) {
         placeholder="First name"
         value={formData.firstName}
         onChange={handleChange}
+        disabled={loading}
       />
       <label htmlFor="lastName">Last name</label>
       <input
@@ -100,6 +101,7 @@ function SignUpForm({ setIsLogged }) {
         placeholder="Last name"
         value={formData.lastName}
         onChange={handleChange}
+        disabled={loading}
       />
       <label htmlFor="email">Email</label>
       <input
@@ -108,6 +110,7 @@ function SignUpForm({ setIsLogged }) {
         placeholder="Use same patient email if you are a patient"
         value={formData.email}
         onChange={handleChange}
+        disabled={loading}
       />
       <label htmlFor="invitationCode">Healthcare provider code</label>
       <input
@@ -116,12 +119,11 @@ function SignUpForm({ setIsLogged }) {
         placeholder="Leave blank if you are a patient"
         value={formData.invitationCode}
         onChange={handleChange}
+        disabled={loading}
       />
-      <button type="submit">Sign up!</button>
+      <button type="submit" disabled={loading}>Sign up!</button>
     </form>
   );
 }
-
-// end
 
 export default SignUpForm;

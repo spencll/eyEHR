@@ -15,6 +15,7 @@ function LoginForm({ setIsLogged }) {
   const [error, setError] = useState("");
 
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   // matches input value to what was typed
   const handleChange = (event) => {
@@ -25,6 +26,8 @@ function LoginForm({ setIsLogged }) {
   // Prevents empty submission/category. Adds item to appropriate state array. Clears input and redirect to changed menu.
   const handleSubmit = async (event) => {
     event.preventDefault();
+        // Starts the loading
+        setLoading(true);
 
     if (!formData.username || !formData.password) {
       setError("Please fill out all fields.");
@@ -39,6 +42,8 @@ function LoginForm({ setIsLogged }) {
       console.error("Error logging in:", error);
       setError(error);
     }
+        // Ends the loading
+        setLoading(false);
 
     setFormData(INITIAL_STATE);
   };
@@ -52,6 +57,7 @@ function LoginForm({ setIsLogged }) {
       <h1>Log in!</h1>
       {error && <div className="alert">{error}</div>}{" "}
       {/* Display error message */}
+      {loading && <div className="loading-indicator">Logging in...</div>}
       <label htmlFor="username">Username</label>
       <input
         id="username"
