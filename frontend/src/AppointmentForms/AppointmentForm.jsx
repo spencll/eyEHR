@@ -9,11 +9,17 @@ function AppointmentForm({ setRefresh, refresh, userInfo }) {
   const { pid } = useParams();
   const [patient, setPatient] = useState({});
 
+       // loading state
+       const [loading, setLoading] = useState(true);
+      
+    
+
   useEffect(() => {
     const fetchPatient = async () => {
       try {
         const patientData = await EHRApi.getPatient(pid);
         setPatient(patientData);
+        setLoading(false)
       } catch (err) {
         console.error("Failed to fetch patient data:", err);
         setError("Failed to fetch patient data");
@@ -49,6 +55,11 @@ function AppointmentForm({ setRefresh, refresh, userInfo }) {
     }
     setFormData(INITIAL_STATE);
   };
+
+     //loading placeholder
+     if (loading) {
+      return <div>Loading...</div>;
+    }
 
   return (
     <form onSubmit={handleSubmit}>

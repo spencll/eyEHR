@@ -5,6 +5,8 @@ import {NavLink} from 'react-router-dom';
 
 function Home({userInfo, isLogged, formatDateTime}) {
   const [notSignedEncounters, setNotSignedEncounters] = useState([])
+    // loading state
+    const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const loadEncounter = async () => {
@@ -12,7 +14,7 @@ function Home({userInfo, isLogged, formatDateTime}) {
       try {
         const encounters = await EHRApi.getUnsignedEncounters(userInfo.username)
         setNotSignedEncounters(encounters)
-
+        setLoading(false)
 
       } catch (err) {
         console.error('Encounters not found:', err);
@@ -21,6 +23,12 @@ function Home({userInfo, isLogged, formatDateTime}) {
     };
     loadEncounter()
   }, [isLogged, userInfo]);
+
+   //loading placeholder
+   if (loading && isLogged) {
+    return <div>Loading...</div>;
+  }
+
 
   return (
     <>

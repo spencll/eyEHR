@@ -15,6 +15,9 @@ function Profile({ isLogged, refresh, setRefresh }) {
     // State for error messages to display
     const [error, setError] = useState("");
 
+        // loading state
+        const [loading, setLoading] = useState(true);
+
   const [formData, setFormData] = useState(INITIAL_STATE);
   const navigate = useNavigate();
 
@@ -24,6 +27,7 @@ function Profile({ isLogged, refresh, setRefresh }) {
         const { username } = jwtDecode(isLogged);
         const userInfo = await EHRApi.getUser(username);
         setFormData(userInfo);
+        setLoading(false)
       } catch (error) {
         console.error("Error fetching user data:", error);
       }
@@ -57,6 +61,12 @@ function Profile({ isLogged, refresh, setRefresh }) {
 
     setFormData(INITIAL_STATE);
   };
+
+     //loading placeholder
+     if (loading) {
+      return <div>Loading...</div>;
+    }
+  
 
   return (
     <form onSubmit={handleSubmit} className="form-container">

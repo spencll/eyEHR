@@ -3,6 +3,9 @@ import { NavLink} from 'react-router-dom';
 
 function AppointmentsList({userInfo, appointments, formatDateTime}) {
 
+ 
+
+
     return (<>
     {userInfo.isHCP? (<h1>Today's appointments</h1>):<h1>Your appointments</h1>}
     

@@ -12,6 +12,10 @@ function PatientProfile({ userInfo, setRefresh, refresh }) {
   // patient state
   const [patient, setPatient] = useState({});
 
+       // loading placeholder
+       const [loading, setLoading] = useState(true);
+      
+  
   //Extracting date and time from datetime
   const formatDateTime = (datetime) => {
     const dateObj = new Date(datetime);
@@ -26,6 +30,7 @@ function PatientProfile({ userInfo, setRefresh, refresh }) {
     try {
       const patientData = await EHRApi.getPatient(pid);
       setPatient(patientData);
+      setLoading(false)
     } catch (error) {
       console.error("Error fetching patient details:", error);
     }
@@ -41,6 +46,11 @@ function PatientProfile({ userInfo, setRefresh, refresh }) {
     else await EHRApi.deleteAppointment(pid, id);
     setRefresh(!refresh);
   };
+
+     //loading state
+     if (loading) {
+      return <div>Loading...</div>;
+    }
 
   return (
     <>
