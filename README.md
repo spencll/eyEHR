@@ -74,6 +74,17 @@ psql < ehr.sql
     ```
 2. Open your browser and go to `http://localhost:5173`.
 
+## Testing
+
+1. Navigate to frontend folder or backend folder and run test
+    ```sh
+    cd frontend
+    npm test 
+    ```
+    ```sh
+    cd backend
+    npm test 
+    ```
 
 
 ## License
